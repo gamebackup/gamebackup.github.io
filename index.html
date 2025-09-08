@@ -1,545 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>x3e</title>
-  <link rel="icon" type="image/x-icon" href="images/Cat-looks-inside-meme.png">
-  
-  <style>
-    body {
-      margin: 0;
-      font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-      background-color: #111;
-      color: white;
-      zoom: 150%;
-    }
-    header {
-      background-color: black;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      position: relative; /* Needed for dropdown positioning */
-      z-index: 1000; /* Ensure header is above other content */
-    }
-    header img {
-      height: 40px;
-      border-radius: 5px;
-    }
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-    }
-    .game-count {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 5px;
-    }
-    .hero {
-    background-image: url("images/darken_tree_hd.png");
-    background-repeat: no-repeat;
-    text-align: center;
-    padding: 60px 20px;
-    }
-    .herotext {
-      max-width: 100%;
-      margin: 10px auto;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .hero h1 {
-      font-size: 36px;
-      font-weight: bold;
-      color: white;
-      -webkit-text-stroke: 1px black;
-    }
-    .hero p {
-      max-width: 100%;
-      margin: 10px auto;
-      font-size: 24px;
-      color: white;
-      -webkit-text-stroke: 1px black;
-    }
-    .section {
-      padding: 30px 20px;
-    }
-    .section h2 {
-      color: #e61587;
-      margin-bottom: 20px;
-    }
-    .button-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .button-grid button {
-      background-color: #800040;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .button-grid button:hover {
-      background-color: #a00050;
-    }
-    
-    @media (max-width: 600px) {
-      .button-grid {
-        flex-direction: column;
-        align-items: center;
-      }
-      /* Adjust header for smaller screens if needed */
-      header {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-      }
-      nav {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .section {
-        text-align: center;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>x3e</title>
+  <link rel="icon" type="image/x-icon" href="images/Cat-looks-inside-meme.png">
+  
+  <style>
+    body {
+      margin: 0;
+      font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      background-color: #111;
+      color: white;
+      zoom: 150%;
+    }
+    header {
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      position: relative; /* Needed for dropdown positioning */
+      z-index: 1000; /* Ensure header is above other content */
+    }
+    header img {
+      height: 40px;
+      border-radius: 5px;
+    }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    .game-count {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .hero {
+    background-image: url("images/darken_tree_hd.png");
+    background-repeat: no-repeat;
+    text-align: center;
+    padding: 60px 20px;
+    }
+    .herotext {
+      max-width: 100%;
+      margin: 10px auto;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: bold;
+      color: white;
+      -webkit-text-stroke: 1px black;
+    }
+    .hero p {
+      max-width: 100%;
+      margin: 10px auto;
+      font-size: 24px;
+      color: white;
+      -webkit-text-stroke: 1px black;
+    }
+    .section {
+      padding: 30px 20px;
+    }
+    .section h2 {
+      color: #e61587;
+      margin-bottom: 20px;
+    }
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .button-grid button {
+      background-color: #800040;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button-grid button:hover {
+      background-color: #a00050;
+    }
+    
+    @media (max-width: 600px) {
+      .button-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+      /* Adjust header for smaller screens if needed */
+      header {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+      }
+      nav {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .section {
+        text-align: center;
+    }
+  </style>
 </head>
-  
+  
 <body>
- <header>
-            <div style="display: flex; align-items: center;">
-            <img src="images/Cat-looks-inside-meme.png" style="margin-right: 10px;">
-            <div style="margin: 0; color: white;"> Unblocked Games x3e</div>
-            </div>
-            <div class="game-count">Live Title Count: 213</div>
-            <nav>
-            </div>
-                <a href="https://forms.gle/4qtsrTs18sW5equ9A">Request Form</a>
-                <a href="https://forms.gle/TPk7ZofJveGqhbXs6">Block/Bug Report</a>
-            </nav>
-        </header>
+ <header>
+            <div style="display: flex; align-items: center;">
+            <img src="images/Cat-looks-inside-meme.png" style="margin-right: 10px;">
+            <div style="margin: 0; color: white;"> Unblocked Games x3e</div>
+            </div>
+            <div class="game-count">Live Title Count: 213</div>
+            <nav>
+            </div>
+                <a href="https://forms.gle/4qtsrTs18sW5equ9A">Request Form</a>
+                <a href="https://forms.gle/TPk7ZofJveGqhbXs6">Block/Bug Report</a>
+            </nav>
+        </header>
 
 </body>
 </html>
 
-  <div class="hero">
-    <div class="herotext">
-        <h1>Share with  Friends!!</h1>
-        <p><strong>Please look at <a href="https://docs.google.com/document/d/1fcxK3R7WY0uziLYrDB_yemCgy_2J-jbITnalzgEuW2M/edit?usp=sharing" target="_blank" style="color: #d200ff;">This Page</a></strong> first!</p>
-        <p><strong>Please be patient with the games, give them time to load before refreshing, the file for this site is over 4GB in size so performance may vary</strong></p>
-        <p><strong>Anyone who finds a bug (that could be spelling error on the site, missing title, missing game file, etc) and reports them will be added to the dedications page!</strong></p>
-        <p><strong>For any games hosted through Ruffle, if you right click on the game screen, a menu will appear, there is a fullscreen option</strong></p>
-    </div>
-  </div>
+  <div class="hero">
+    <div class="herotext">
+        <h1>Share with  Friends!!</h1>
+        <p><strong>Please look at <a href="https://docs.google.com/document/d/1fcxK3R7WY0uziLYrDB_yemCgy_2J-jbITnalzgEuW2M/edit?usp=sharing" target="_blank" style="color: #d200ff;">This Page</a></strong> first!</p>
+        <p><strong>Please be patient with the games, give them time to load before refreshing, the file for this site is over 4GB in size so performance may vary</strong></p>
+        <p><strong>Anyone who finds a bug (that could be spelling error on the site, missing title, missing game file, etc) and reports them will be added to the dedications page!</strong></p>
+        <p><strong>For any games hosted through Ruffle, if you right click on the game screen, a menu will appear, there is a fullscreen option</strong></p>
+    </div>
+  </div>
 
-  <div class="section">
-    <h2>Featured Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/tanukisunset/'">Tanuki Sunset</button>
-      <button onclick="location.href='standalone_games/undertale/'">UNDERTALE</button>
-      <button onclick="location.href='standalone_games/fluidsim/'">Fluid Simulation</button>
-      <button onclick="location.href='standalone_games/totm/'">Tomb of the Mask</button>
-      <button onclick="location.href='standalone_games/aztecride/'">Aztec Ride</button>
-      <button onclick="location.href='standalone_games/stratagemhero'">Stratagem Trainer</button>
-      <button onclick="location.href='flash_games/games/rccreator/'">Roller Coaster Creator</button>
-      <button onclick="location.href='flash_games/games/therightmix/'">Bartender - The Right Mix</button>
-      <button onclick="location.href='standalone_games/hellspinball/'">Hell's Pinball</button>
-      <button onclick="location.href='standalone_games/dl4rm/index.html'">Duck Life 4 - Remaster</button>
-    </div>
-  </div>
+  <div class="section">
+    <h2>Featured Games</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/tanukisunset/index.html'">Tanuki Sunset</button>
+      <button onclick="location.href='standalone_games/undertale/index.html'">UNDERTALE</button>
+      <button onclick="location.href='standalone_games/fluidsim/index.html'">Fluid Simulation</button>
+      <button onclick="location.href='standalone_games/totm/index.html'">Tomb of the Mask</button>
+      <button onclick="location.href='standalone_games/aztecride/index.html'">Aztec Ride</button>
+      <button onclick="location.href='standalone_games/stratagemhero/index.html'">Stratagem Trainer</button>
+      <button onclick="location.href='flash_games/games/rccreator/index.html'">Roller Coaster Creator</button>
+      <button onclick="location.href='flash_games/games/therightmix/index.html'">Bartender - The Right Mix</button>
+      <button onclick="location.href='standalone_games/hellspinball/index.html'">Hell's Pinball</button>
+      <button onclick="location.href='standalone_games/dl4rm/index.html'">Duck Life 4 - Remaster</button>
+    </div>
+  </div>
 
-  <div class="section">
-    <h2>Action & Adventure</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/bbrevenge/'">Burrito Bison: Revenge</button>
-      <button onclick="location.href='flash_games/games/burritobisonLL/'">Burrito Bison: Launcha Libre</button> 
-      <button onclick="location.href='standalone_games/superhotlinemiami/'">SUPERHOTLine Miami</button>
-      <button onclick="location.href='flash_games/games/cactusmccoy/'">Cactus Mccoy</button>
-      <button onclick="location.href='flash_games/games/cactusmccoy2/'">Cactus Mccoy 2</button>
-      <button onclick="location.href='flash_games/games/johnnyupgrade/'">Johnny Upgrade</button>
-      <button onclick="location.href='flash_games/games/diggy/'">Diggy</button>
-      <button onclick="location.href='standalone_games/retro bowl/'">Retro Bowl</button>
-      <button onclick="location.href='pico8_games/justoneboss/web'">Just One Boss</button>
-      <button onclick="location.href='flash_games/games/supersmashflash/'">Super Smash Flash</button>
-      <button onclick="location.href='standalone_games/re-run/'">RE:RUN</button>
-      <button onclick="location.href='flash_games/games/earntodie/'">Earn to Die</button>
-      <button onclick="location.href='flash_games/games/earntodie2/'">Earn to Die 2</button>
-      <button onclick="location.href='standalone_games/superhot/'">SUPERHOT</button>
-      <button onclick="location.href='standalone_games/supercold/'">SUPERCOLD</button>
-      <button onclick="location.href='standalone_games/hk/'">Hollow Knight</button>
-      <button onclick="location.href='standalone_games/undertale/'">UNDERTALE</button>
-      <button onclick="location.href='standalone_games/deltarune/'">DELTARUNE</button>
-      <button onclick="location.href='standalone_games/fnf/'">Friday Night Funkin'</button>
-    </div>
-  </div>
+  <div class="section">
+    <h2>Action & Adventure</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/bbrevenge/index.html'">Burrito Bison: Revenge</button>
+      <button onclick="location.href='flash_games/games/burritobisonLL/index.html'">Burrito Bison: Launcha Libre</button> 
+      <button onclick="location.href='standalone_games/superhotlinemiami/index.html'">SUPERHOTLine Miami</button>
+      <button onclick="location.href='flash_games/games/cactusmccoy/index.html'">Cactus Mccoy</button>
+      <button onclick="location.href='flash_games/games/cactusmccoy2/index.html'">Cactus Mccoy 2</button>
+      <button onclick="location.href='flash_games/games/johnnyupgrade/index.html'">Johnny Upgrade</button>
+      <button onclick="location.href='flash_games/games/diggy/index.html'">Diggy</button>
+      <button onclick="location.href='standalone_games/retro bowl/index.html'">Retro Bowl</button>
+      <button onclick="location.href='pico8_games/justoneboss/web/index.html'">Just One Boss</button>
+      <button onclick="location.href='flash_games/games/supersmashflash/index.html'">Super Smash Flash</button>
+      <button onclick="location.href='standalone_games/re-run/index.html'">RE:RUN</button>
+      <button onclick="location.href='flash_games/games/earntodie/index.html'">Earn to Die</button>
+      <button onclick="location.href='flash_games/games/earntodie2/index.html'">Earn to Die 2</button>
+      <button onclick="location.href='standalone_games/superhot/index.html'">SUPERHOT</button>
+      <button onclick="location.href='standalone_games/supercold/index.html'">SUPERCOLD</button>
+      <button onclick="location.href='standalone_games/hk/index.html'">Hollow Knight</button>
+      <button onclick="location.href='standalone_games/undertale/index.html'">UNDERTALE</button>
+      <button onclick="location.href='standalone_games/deltarune/index.html'">DELTARUNE</button>
+      <button onclick="location.href='standalone_games/fnf/index.html'">Friday Night Funkin'</button>
+    </div>
+  </div>
 
-  <div class="section">
-    <h2>Arcade & Classic</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/worldshardestgame/'">World's Hardest Game</button>
-      <button onclick="location.href='standalone_games/pacman/'">Pacman</button>
-      <button onclick="location.href='standalone_games/2048/'">2048</button>
-      <button onclick="location.href='standalone_games/9007/'">90071992547409</button>
-      <button onclick="location.href='standalone_games/tinyfishing/'">Tiny Fishing</button>
-      <button onclick="location.href='flash_games/games/hauntthehouse/'">Haunt the House</button>
-      <button onclick="location.href='standalone_games/wordleunlimited/'">Wordle Infinite</button>
-      <button onclick="location.href='flash_games/games/qwop/'">QWOP</button>
-      <button onclick="location.href='standalone_games/doodlejump/'">Doodle Jump</button>
-      <button onclick="location.href='standalone_games/bounce/'">Bounce</button>
-      <button onclick="location.href='standalone_games/paperio2/'">Paper.io 2</button>
-      <button onclick="location.href='standalone_games/flappybird/'">Flappy Bird</button>
-      <button onclick="location.href='standalone_games/googlesnake/'">Google Snake</button>
-      <button onclick="location.href='flash_games/games/donkeykong'">Donkey Kong</button>
-      <button onclick="location.href='standalone_games/soccerphysics'">Soccer Physics</button>
-    </div>
-  </div>
-
-<div class="section">
-    <h2>Experiments & Physics</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/antcolony/'">Ant Colony Simulator</button>
-      <button onclick="location.href='standalone_games/ailearning/'">AI Learning</button>
-      <button onclick="location.href='standalone_games/adjfireworks/'">Adjustable Fireworks</button>
-      <button onclick="location.href='standalone_games/fluidsim/'">Fluid Simulation</button>
-      <button onclick="location.href='standalone_games/urres/'">Your Resolution</button>
-      <button onclick="location.href='standalone_games/3ddiceroll/'">3D Dice Roller</button>
-      <button onclick="location.href='standalone_games/asciicam/'">Ascii Camera</button>
-      <button onclick="location.href='standalone_games/gameoflife/'">Conway's Game of Life</button>
-      <button onclick="location.href='standalone_games/ripples/'">Ripples</button>
-      <button onclick="location.href='standalone_games/fishies/'">FISHIES</button>
-      <button onclick="location.href='standalone_games/bitsrain/'">Raining Bits</button>
-      <button onclick="location.href='standalone_games/urip/'">Your IP</button>
-    </div>
-  </div>
+  <div class="section">
+    <h2>Arcade & Classic</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/worldshardestgame/index.html'">World's Hardest Game</button>
+      <button onclick="location.href='standalone_games/pacman/index.html'">Pacman</button>
+      <button onclick="location.href='standalone_games/2048/index.html'">2048</button>
+      <button onclick="location.href='standalone_games/9007/index.html'">90071992547409</button>
+      <button onclick="location.href='standalone_games/tinyfishing/index.html'">Tiny Fishing</button>
+      <button onclick="location.href='flash_games/games/hauntthehouse/index.html'">Haunt the House</button>
+      <button onclick="location.href='standalone_games/wordleunlimited/index.html'">Wordle Infinite</button>
+      <button onclick="location.href='flash_games/games/qwop/index.html'">QWOP</button>
+      <button onclick="location.href='standalone_games/doodlejump/index.html'">Doodle Jump</button>
+      <button onclick="location.href='standalone_games/bounce/index.html'">Bounce</button>
+      <button onclick="location.href='standalone_games/paperio2/index.html'">Paper.io 2</button>
+      <button onclick="location.href='standalone_games/flappybird/index.html'">Flappy Bird</button>
+      <button onclick="location.href='standalone_games/googlesnake/index.html'">Google Snake</button>
+      <button onclick="location.href='flash_games/games/donkeykong/index.html'">Donkey Kong</button>
+      <button onclick="location.href='standalone_games/soccerphysics/index.html'">Soccer Physics</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Platformers & Runners</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/subwaysurfersny/'">Subway Surfers</button>
-      <button onclick="location.href='standalone_games/run2/'">Run 2</button>
-      <button onclick="location.href='standalone_games/run3/'">Run 3</button>
-      <button onclick="location.href='standalone_games/jetpackjoyride'">Jetpack Joyride</button>
-      <button onclick="location.href='standalone_games/templerun2/'">Temple Run 2</button>
-      <button onclick="location.href='standalone_games/crossyroad/'">Crossy Road</button>
-      <button onclick="location.href='standalone_games/crossyspace/'">Crossy Road: Space</button>
-      <button onclick="location.href='flash_games/games/sonicultimate/'">Sonic: Ultimate</button>
-      <button onclick="location.href='standalone_games/stumbleguys/'">Stumble Guys</button>
-      <button onclick="location.href='flash_games/games/happywheels/'">Happy Wheels</button>
-      <button onclick="location.href='standalone_games/chromedino/'">Chrome Dino Game</button>
-      <button onclick="location.href='standalone_games/totm/'">Tomb of the Mask</button>
-      <button onclick="location.href='flash_games/games/moneymovers1/'">Money Movers 1</button>
-      <button onclick="location.href='flash_games/games/moneymovers3/'">Money Movers 3</button>
-    </div>
-  </div>
+    <h2>Experiments & Physics</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/antcolony/index.html'">Ant Colony Simulator</button>
+      <button onclick="location.href='standalone_games/ailearning/index.html'">AI Learning</button>
+      <button onclick="location.href='standalone_games/adjfireworks/index.html'">Adjustable Fireworks</button>
+      <button onclick="location.href='standalone_games/fluidsim/index.html'">Fluid Simulation</button>
+      <button onclick="location.href='standalone_games/urres/index.html'">Your Resolution</button>
+      <button onclick="location.href='standalone_games/3ddiceroll/index.html'">3D Dice Roller</button>
+      <button onclick="location.href='standalone_games/asciicam/index.html'">Ascii Camera</button>
+      <button onclick="location.href='standalone_games/gameoflife/index.html'">Conway's Game of Life</button>
+      <button onclick="location.href='standalone_games/ripples/index.html'">Ripples</button>
+      <button onclick="location.href='standalone_games/fishies/index.html'">FISHIES</button>
+      <button onclick="location.href='standalone_games/bitsrain/index.html'">Raining Bits</button>
+      <button onclick="location.href='standalone_games/urip/index.html'">Your IP</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Puzzle & Skill</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/blockblast'">Block Blast</button>
-      <button onclick="location.href='flash_games/games/badpiggies/'">Bad Piggies</button>
-      <button onclick="location.href='flash_games/games/impossiblequiz/'">The Impossible Quiz</button>
-      <button onclick="location.href='flash_games/games/impossiblequiz2/'">The Impossible Quiz 2</button>
-      <button onclick="location.href='flash_games/games/angrybirdsrio/'">Angry Birds: Rio</button>
-      <button onclick="location.href='standalone_games/blockthepig/'">Block the Pig</button>
-      <button onclick="location.href='standalone_games/stacking/'">Stacking</button>
-      <button onclick="location.href='standalone_games/tether/'">Tether</button>
-      <button onclick="location.href='flash_games/games/snowline/'">Snowline</button>
-      <button onclick="location.href='flash_games/games/snowline2/'">Snowline 2</button>
-      <button onclick="location.href='flash_games/games/portal2d/'">Portal 2D</button>
-      <button onclick="location.href='standalone_games/cutrope/'">Cut the Rope</button>
-      <button onclick="location.href='standalone_games/littlealchemy2/'">Little Alchemy 2</button>
-      <button onclick="location.href='standalone_games/gameinagame/'">Game Inside a Game</button>
-      <button onclick="location.href='flash_games/games/bloxors/'">Bloxorz</button>
-      <button onclick="location.href='flash_games/games/cannonbasketball2/'">Cannon Basketball 2</button>
-      <button onclick="location.href='standalone_games/passwordcracker/'">Password Cracker</button>
-      <button onclick="location.href='standalone_games/thereisnogame/'">There is No Game</button>
-      <button onclick="location.href='standalone_games/8ballpool/'">8 Ball Pool</button>
-      <button onclick="location.href='flash_games/games/bobtherobber/'">Bob the Robber</button>
-      <button onclick="location.href='standalone_games/tetris/'">Tetris</button>
-      <button onclick="location.href='standalone_games/sandtris/'">Sand Tetris</button>
-      <button onclick="location.href='standalone_games/hextris/'">Hextris</button>
-      <button onclick="location.href='standalone_games/stratagemhero/'">Stratagem Trainer</button>
-      <button onclick="location.href='standalone_games/hangman/'">Hangman</button>      
-    </div>
-  </div>
+    <h2>Platformers & Runners</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/subwaysurfersny/index.html'">Subway Surfers</button>
+      <button onclick="location.href='standalone_games/run2/index.html'">Run 2</button>
+      <button onclick="location.href='standalone_games/run3/index.html'">Run 3</button>
+      <button onclick="location.href='standalone_games/jetpackjoyride/index.html'">Jetpack Joyride</button>
+      <button onclick="location.href='standalone_games/templerun2/index.html'">Temple Run 2</button>
+      <button onclick="location.href='standalone_games/crossyroad/index.html'">Crossy Road</button>
+      <button onclick="location.href='standalone_games/crossyspace/index.html'">Crossy Road: Space</button>
+      <button onclick="location.href='flash_games/games/sonicultimate/index.html'">Sonic: Ultimate</button>
+      <button onclick="location.href='standalone_games/stumbleguys/index.html'">Stumble Guys</button>
+      <button onclick="location.href='flash_games/games/happywheels/index.html'">Happy Wheels</button>
+      <button onclick="location.href='standalone_games/chromedino/index.html'">Chrome Dino Game</button>
+      <button onclick="location.href='standalone_games/totm/index.html'">Tomb of the Mask</button>
+      <button onclick="location.href='flash_games/games/moneymovers1/index.html'">Money Movers 1</button>
+      <button onclick="location.href='flash_games/games/moneymovers3/index.html'">Money Movers 3</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Racing & Driving</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/hexgl/'">HexGL</button>
-      <button onclick="location.href='flash_games/games/awesomecars/'">Awesome Cars</button>
-      <button onclick="location.href='flash_games/games/jellytruck/'">Jellytruck</button>
-      <button onclick="location.href='standalone_games/slope/'">Slope</button>
-      <button onclick="location.href='standalone_games/snowrider3d/'">Snowrider 3D</button>
-      <button onclick="location.href='standalone_games/rocketsoccer/'">Rocket League</button>
-      <button onclick="location.href='standalone_games/polytrack/'">Polytrack</button>
-      <button onclick="location.href='standalone_games/crazycattle3d/'">Crazy Cattle 3D</button>
-      <button onclick="location.href='standalone_games/crazykitty3d/'">Crazy Kitty 3D</button>
-      <button onclick="location.href='standalone_games/crazychicken3d/'">Crazy Chicken 3D</button>
-      <button onclick="location.href='standalone_games/tanukisunset/'">Tanuki Sunset</button>
-      <button onclick="location.href='standalone_games/highontrack/html/11779646/html5/'">High on Track</button>
-    </div>
-  </div>
+    <h2>Puzzle & Skill</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/blockblast/index.html'">Block Blast</button>
+      <button onclick="location.href='flash_games/games/badpiggies/index.html'">Bad Piggies</button>
+      <button onclick="location.href='flash_games/games/impossiblequiz/index.html'">The Impossible Quiz</button>
+      <button onclick="location.href='flash_games/games/impossiblequiz2/index.html'">The Impossible Quiz 2</button>
+      <button onclick="location.href='flash_games/games/angrybirdsrio/index.html'">Angry Birds: Rio</button>
+      <button onclick="location.href='standalone_games/blockthepig/index.html'">Block the Pig</button>
+      <button onclick="location.href='standalone_games/stacking/index.html'">Stacking</button>
+      <button onclick="location.href='standalone_games/tether/index.html'">Tether</button>
+      <button onclick="location.href='flash_games/games/snowline/index.html'">Snowline</button>
+      <button onclick="location.href='flash_games/games/snowline2/index.html'">Snowline 2</button>
+      <button onclick="location.href='flash_games/games/portal2d/index.html'">Portal 2D</button>
+      <button onclick="location.href='standalone_games/cutrope/index.html'">Cut the Rope</button>
+      <button onclick="location.href='standalone_games/littlealchemy2/index.html'">Little Alchemy 2</button>
+      <button onclick="location.href='standalone_games/gameinagame/index.html'">Game Inside a Game</button>
+      <button onclick="location.href='flash_games/games/bloxors/index.html'">Bloxorz</button>
+      <button onclick="location.href='flash_games/games/cannonbasketball2/index.html'">Cannon Basketball 2</button>
+      <button onclick="location.href='standalone_games/passwordcracker/index.html'">Password Cracker</button>
+      <button onclick="location.href='standalone_games/thereisnogame/index.html'">There is No Game</button>
+      <button onclick="location.href='standalone_games/8ballpool/index.html'">8 Ball Pool</button>
+      <button onclick="location.href='flash_games/games/bobtherobber/index.html'">Bob the Robber</button>
+      <button onclick="location.href='standalone_games/tetris/index.html'">Tetris</button>
+      <button onclick="location.href='standalone_games/sandtris/index.html'">Sand Tetris</button>
+      <button onclick="location.href='standalone_games/hextris/index.html'">Hextris</button>
+      <button onclick="location.href='standalone_games/stratagemhero/index.html'">Stratagem Trainer</button>
+      <button onclick="location.href='standalone_games/hangman/index.html'">Hangman</button>      
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Retro Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/minesweeper/'">Minesweeper</button>
-      <button onclick="location.href='standalone_games/supermariokart/'">Super Mario Kart</button>
-      <button onclick="location.href='standalone_games/sm64/'">Super Mario 64</button>
-      <button onclick="location.href='standalone_games/quake3'">Quake III Arena</button>
-      <button onclick="location.href='flash_games/games/pong/'">Pong</button>
-      <button onclick="location.href='pico8_games/celeste/'">8-Bit Celeste</button>
-    </div>
-  </div>
+    <h2>Racing & Driving</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/hexgl/index.html'">HexGL</button>
+      <button onclick="location.href='flash_games/games/awesomecars/index.html'">Awesome Cars</button>
+      <button onclick="location.href='flash_games/games/jellytruck/index.html'">Jellytruck</button>
+      <button onclick="location.href='standalone_games/slope/index.html'">Slope</button>
+      <button onclick="location.href='standalone_games/snowrider3d/index.html'">Snowrider 3D</button>
+      <button onclick="location.href='standalone_games/rocketsoccer/index.html'">Rocket League</button>
+      <button onclick="location.href='standalone_games/polytrack/index.html'">Polytrack</button>
+      <button onclick="location.href='standalone_games/crazycattle3d/index.html'">Crazy Cattle 3D</button>
+      <button onclick="location.href='standalone_games/crazykitty3d/index.html'">Crazy Kitty 3D</button>
+      <button onclick="location.href='standalone_games/crazychicken3d/index.html'">Crazy Chicken 3D</button>
+      <button onclick="location.href='standalone_games/tanukisunset/index.html'">Tanuki Sunset</button>
+      <button onclick="location.href='standalone_games/highontrack/html/11779646/html5/index.html'">High on Track</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Roguelike & Roleplaying</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/tboi/'">The Binding of Isaac</button>
-      <button onclick="location.href='flash_games/games/blacksmithlab/'">Blacksmith Lab</button>
-      <button onclick="location.href='flash_games/games/therightmix/'">Bartender - The Right Mix</button>
-      <button onclick="location.href='standalone_games/webfishing/'">Webfishing</button>
-      <button onclick="location.href='standalone_games/gk/'">Gun Knight</button>
-      <button onclick="location.href='standalone_games/10tilldawn/'">10 Minutes Till Dawn</button>
-      <button onclick="location.href='standalone_games/wrangleranch/'">Wrangle Ranch</button>
-    </div>
-  </div>
+    <h2>Retro Games</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/minesweeper/index.html'">Minesweeper</button>
+      <button onclick="location.href='standalone_games/supermariokart/index.html'">Super Mario Kart</button>
+      <button onclick="location.href='standalone_games/sm64/index.html'">Super Mario 64</button>
+      <button onclick="location.href='standalone_games/quake3/index.html'">Quake III Arena</button>
+      <button onclick="location.href='flash_games/games/pong/index.html'">Pong</button>
+      <button onclick="location.href='pico8_games/celeste/index.html'">8-Bit Celeste</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Shooting & Defense</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/spaceinvaders/'">Space Invaders</button>
-      <button onclick="location.href='flash_games/games/galaga/'">Galaga</button>
-      <button onclick="location.href='flash_games/games/raftwars/'">Raft Wars</button>
-      <button onclick="location.href='flash_games/games/raftwars2/'">Raft Wars 2</button>
-      <button onclick="location.href='standalone_games/bullethell/'">Bullet Hell</button>
-      <button onclick="location.href='flash_games/games/stormthehouse2/'">Storm the House 2</button>
-      <button onclick="location.href='flash_games/games/awesometanks/'">Awesome Tanks</button>
-      <button onclick="location.href='flash_games/games/awesometanks2/'">Awesome Tanks 2</button>
-      <button onclick="location.href='flash_games/games/awesomeplanes/'">Awesome Planes</button>
-      <button onclick="location.href='standalone_games/endoparasitic/'">Endoparasitic</button>
-    </div>
-  </div>
+    <h2>Roguelike & Roleplaying</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/tboi/index.html'">The Binding of Isaac</button>
+      <button onclick="location.href='flash_games/games/blacksmithlab/index.html'">Blacksmith Lab</button>
+      <button onclick="location.href='flash_games/games/therightmix/index.html'">Bartender - The Right Mix</button>
+      <button onclick="location.href='standalone_games/webfishing/index.html'">Webfishing</button>
+      <button onclick="location.href='standalone_games/gk/index.html'">Gun Knight</button>
+      <button onclick="location.href='standalone_games/10tilldawn/index.html'">10 Minutes Till Dawn</button>
+      <button onclick="location.href='standalone_games/wrangleranch/index.html'">Wrangle Ranch</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Strategy & Simulation</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/adarkroom'">A Dark Room</button>
-      <button onclick="location.href='flash_games/games/ageofwar/'">Age of War</button>
-      <button onclick="location.href='flash_games/games/ageofwar2/'">Age of War 2</button>
-      <button onclick="location.href='flash_games/games/armyofages/'">Army of Ages</button>
-      <button onclick="location.href='standalone_games/finalearth2/'">The Final Earth 2</button>
-      <button onclick="location.href='flash_games/games/jacksmith/'">Jacksmith</button>
-      <button onclick="location.href='standalone_games/sandboxels/'">Sandboxels</button>
-      <button onclick="location.href='standalone_games/openttd/'">OpenTTD</button>      
-      <button onclick="location.href='standalone_games/sortthecourt/'">Sort the Court</button>
-      <button onclick="location.href='standalone_games/civclicker/'">Civ Clicker</button>
-      <button onclick="location.href='standalone_games/waterworks/'">Waterworks</button>
-      <button onclick="location.href='standalone_games/idledice/'">Idle Dice</button>
-      <button onclick="location.href='standalone_games/cellmachine/'">Cell Machine</button>
-      <button onclick="location.href='standalone_games/basketballstars/'">Basketball Stars</button>
-      <button onclick="location.href='standalone_games/freshwaterfishing/'">Freshwater Fishing Simulator</button>
-      <button onclick="location.href='flash_games/games/rccreator/'">Roller Coaster Creator</button>
-      <button onclick="location.href='standalone_games/horseracer/'">Horse Racing</button>
-      <button onclick="location.href='standalone_games/21js/'">21 (BlackJack)</button>
-      <button onclick="location.href='standalone_games/hardwaretycoon/'">Hardware Tycoon</button>
-      <button onclick="location.href='standalone_games/aztecride/'">Aztec Ride</button>
-    </div>
-  </div>
+    <h2>Shooting & Defense</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/spaceinvaders/index.html'">Space Invaders</button>
+      <button onclick="location.href='flash_games/games/galaga/index.html'">Galaga</button>
+      <button onclick="location.href='flash_games/games/raftwars/index.html'">Raft Wars</button>
+      <button onclick="location.href='flash_games/games/raftwars2/index.html'">Raft Wars 2</button>
+      <button onclick="location.href='standalone_games/bullethell/index.html'">Bullet Hell</button>
+      <button onclick="location.href='flash_games/games/stormthehouse2/index.html'">Storm the House 2</button>
+      <button onclick="location.href='flash_games/games/awesometanks/index.html'">Awesome Tanks</button>
+      <button onclick="location.href='flash_games/games/awesometanks2/index.html'">Awesome Tanks 2</button>
+      <button onclick="location.href='flash_games/games/awesomeplanes/index.html'">Awesome Planes</button>
+      <button onclick="location.href='standalone_games/endoparasitic/index.html'">Endoparasitic</button>
+    </div>
+  </div>
+
+<div class="section">
+    <h2>Strategy & Simulation</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/adarkroom/index.html'">A Dark Room</button>
+      <button onclick="location.href='flash_games/games/ageofwar/index.html'">Age of War</button>
+      <button onclick="location.href='flash_games/games/ageofwar2/index.html'">Age of War 2</button>
+      <button onclick="location.href='flash_games/games/armyofages/index.html'">Army of Ages</button>
+      <button onclick="location.href='standalone_games/finalearth2/index.html'">The Final Earth 2</button>
+      <button onclick="location.href='flash_games/games/jacksmith/index.html'">Jacksmith</button>
+      <button onclick="location.href='standalone_games/sandboxels/index.html'">Sandboxels</button>
+      <button onclick="location.href='standalone_games/openttd/index.html'">OpenTTD</button>      
+      <button onclick="location.href='standalone_games/sortthecourt/index.html'">Sort the Court</button>
+      <button onclick="location.href='standalone_games/civclicker/index.html'">Civ Clicker</button>
+      <button onclick="location.href='standalone_games/waterworks/index.html'">Waterworks</button>
+      <button onclick="location.href='standalone_games/idledice/index.html'">Idle Dice</button>
+      <button onclick="location.href='standalone_games/cellmachine/index.html'">Cell Machine</button>
+      <button onclick="location.href='standalone_games/basketballstars/index.html'">Basketball Stars</button>
+      <button onclick="location.href='standalone_games/freshwaterfishing/index.html'">Freshwater Fishing Simulator</button>
+      <button onclick="location.href='flash_games/games/rccreator/index.html'">Roller Coaster Creator</button>
+      <button onclick="location.href='standalone_games/horseracer/index.html'">Horse Racing</button>
+      <button onclick="location.href='standalone_games/21js/index.html'">21 (BlackJack)</button>
+      <button onclick="location.href='standalone_games/hardwaretycoon/index.html'">Hardware Tycoon</button>
+      <button onclick="location.href='standalone_games/aztecride/index.html'">Aztec Ride</button>
+    </div>
+  </div>
 
 <div>
-  <center>
-    <h2 style="color: #e61587;">⇓ All Game Collection Tabs are below ⇓</h2>
-  </center>
+  <center>
+    <h2 style="color: #e61587;">⇓ All Game Collection Tabs are below ⇓</h2>
+  </center>
 </div>
 
 <div class="section">
-    <h2>Bloons Tower Defense Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/btd1/'">Bloons Tower Defense 1</button>
-      <button onclick="location.href='flash_games/games/btd2/'">Bloons Tower Defense 2</button>
-      <button onclick="location.href='flash_games/games/btd3/'">Bloons Tower Defense 3</button>
-      <button onclick="location.href='flash_games/games/btd4/'">Bloons Tower Defense 4</button>
-      <button onclick="location.href='flash_games/games/btd5/'">Bloons Tower Defense 5</button>
-    </div>
-  </div>
+    <h2>Bloons Tower Defense Games</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/btd1/index.html'">Bloons Tower Defense 1</button>
+      <button onclick="location.href='flash_games/games/btd2/index.html'">Bloons Tower Defense 2</button>
+      <button onclick="location.href='flash_games/games/btd3/index.html'">Bloons Tower Defense 3</button>
+      <button onclick="location.href='flash_games/games/btd4/index.html'">Bloons Tower Defense 4</button>
+      <button onclick="location.href='flash_games/games/btd5/index.html'">Bloons Tower Defense 5</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Duck Life Collection</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/dl1/'">Duck Life 1</button>
-      <button onclick="location.href='flash_games/games/dl2/'">Duck Life 2</button>
-      <button onclick="location.href='flash_games/games/dl3/'">Duck Life 3</button>
-      <button onclick="location.href='flash_games/games/dl4/'">Duck Life 4</button>
-      <button onclick="location.href='standalone_games/dl4rm/index.html'">Duck Life 4 - Remaster</button>
-      <button onclick="location.href='flash_games/games/dl5/'">Duck Life 5</button>
-    </div>
-  </div>
+    <h2>Duck Life Collection</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/dl1/index.html'">Duck Life 1</button>
+      <button onclick="location.href='flash_games/games/dl2/index.html'">Duck Life 2</button>
+      <button onclick="location.href='flash_games/games/dl3/index.html'">Duck Life 3</button>
+      <button onclick="location.href='flash_games/games/dl4/index.html'">Duck Life 4</button>
+      <button onclick="location.href='standalone_games/dl4rm/index.html'">Duck Life 4 - Remaster</button>
+      <button onclick="location.href='flash_games/games/dl5/index.html'">Duck Life 5</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Fancy Pants Adventure</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/fancypants1/'">Fancy Pants Adventures 1</button>
-      <button onclick="location.href='flash_games/games/fancypants2/'">Fancy Pants Adventures 2</button>
-      <button onclick="location.href='flash_games/games/fancypants3/'">Fancy Pants Adventures 3</button>
-    </div>
-  </div>
+    <h2>Fancy Pants Adventure</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/fancypants1/index.html'">Fancy Pants Adventures 1</button>
+      <button onclick="location.href='flash_games/games/fancypants2/index.html'">Fancy Pants Adventures 2</button>
+      <button onclick="location.href='flash_games/games/fancypants3/index.html'">Fancy Pants Adventures 3</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Henry Stickmin Collection</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/btb/'">Breaking the Bank</button>
-      <button onclick="location.href='flash_games/games/etp/'">Escaping the Prison</button>
-      <button onclick="location.href='flash_games/games/sthed/'">Stealing the Diamond</button>
-      <button onclick="location.href='flash_games/games/ita/'">Infiltrating the Airship</button>
-      <button onclick="location.href='flash_games/games/ftc/'">Fleeing the Complex</button>
-    </div>
-  </div>
+    <h2>Henry Stickmin Collection</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/btb/index.html'">Breaking the Bank</button>
+      <button onclick="location.href='flash_games/games/etp/index.html'">Escaping the Prison</button>
+      <button onclick="location.href='flash_games/games/sthed/index.html'">Stealing the Diamond</button>
+      <button onclick="location.href='flash_games/games/ita/index.html'">Infiltrating the Airship</button>
+      <button onclick="location.href='flash_games/games/ftc/index.html'">Fleeing the Complex</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Learn to Fly Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/learntofly1'">Learn to Fly 1</button>
-      <button onclick="location.href='flash_games/games/learntofly2'">Learn to Fly 2</button>
-      <button onclick="location.href='flash_games/games/learntofly3'">Learn to Fly 3</button>
-    </div>
-  </div>
+    <h2>Learn to Fly Games</h2>
+    <div class="button-grid">
+      <button onclick="location.href='flash_games/games/learntofly1/index.html'">Learn to Fly 1</button>
+      <button onclick="location.href='flash_games/games/learntofly2/index.html'">Learn to Fly 2</button>
+      <button onclick="location.href='flash_games/games/learntofly3/index.html'">Learn to Fly 3</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Minecraft (Check Instructions First)</h2>
-    <div class="button-grid">
-      <button onclick="location.href='https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing'">Instructions</button>
-      <button onclick="location.href='standalone_games/eagle1.12/'">Minecraft Link</button>
-    </div>
-  </div>
+    <h2>Minecraft (Check Instructions First)</h2>
+    <div class="button-grid">
+      <button onclick="location.href='https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing'">Instructions</button>
+      <button onclick="location.href='standalone_games/eagle1.12/index.html'">Minecraft Link</button>
+    </div>
+  </div>
 
 <div class="section">
-    <h2>Moto X3M</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/motox3m/'">Moto X3M 1</button>
-      <button onclick="location.href='standalone_games/motox3m2/'">Moto X3M 2</button>
-      <button onclick="location.href='standalone_games/motox3mpool/'">Moto X3M: Pool Party</button>
-      <button onclick="location.href='standalone_games/motox3mspooky/'">Moto X3M: Spooky Land</button>
-      <button onclick="location.href='standalone_games/motox3mwinter/'">Moto X3M: Winter</button>
-    </div>
-  </div>
-
-<div class="section">
-    <h2>Papa's Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/wpa/'">Papa Louie 1: When Pizzas Attack!</button>
-      <button onclick="location.href='flash_games/games/wba/'">Papa Louie 2: When Burgers Attack!</button>
-      <button onclick="location.href='flash_games/games/wsa/'">Papa Louie 3: When Sundaes Attack!</button>
-      <button onclick="location.href='flash_games/games/scooperia/'">Papa's Scooperia</button>
-      <button onclick="location.href='flash_games/games/pastaria/'">Papa's Pastaria</button>
-      <button onclick="location.href='flash_games/games/freezeria/'">Papa's Freezeria</button>
-      <button onclick="location.href='flash_games/games/burgeria/'">Papa's Burgeria</button>
-      <button onclick="location.href='flash_games/games/pancakeria/'">Papa's PanCakeria</button>
-      <button onclick="location.href='flash_games/games/wingeria/'">Papa's Wingeria</button>
-      <button onclick="location.href='flash_games/games/donuteria/'">Papa's Donuteria</button>
-      <button onclick="location.href='flash_games/games/bakeria/'">Papa's Bakeria</button>
-      <button onclick="location.href='flash_games/games/pizzeria/'">Papa's Pizzeria</button>
-      <button onclick="location.href='flash_games/games/tacomia/'">Papa's Taco Mia</button>
-      <button onclick="location.href='flash_games/games/cupcakeria/'">Papa's Cupcakeria</button>
-      <button onclick="location.href='flash_games/games/hotdoggeria/'">Papa's Hotdoggeria</button>
-      <button onclick="location.href='flash_games/games/sushiria/'">Papa's Sushiria</button>
-      <button onclick="location.href='flash_games/games/cheeseria/'">Papa's Cheeseria</button>
-    </div>
-  </div>
-
-<div class="section">
-    <h2>Pinball Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='standalone_games/hellspinball/'">Hell's Pinball</button>
-      <button onclick="location.href='standalone_games/spacecadet/'">Space Cadet Pinball</button>
-      <button onclick="location.href='flash_games/games/pepsipinball/'">Pepsi Pinball</button>
-    </div>
-  </div>
-
-<div class="section">
-    <h2>Pokémon Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='gba_games/games/pokemonruby/'">Pokémon: Ruby</button>
-      <button onclick="location.href='gba_games/games/pokemonsapphire/'">Pokémon: Sapphire</button>
-      <button onclick="location.href='gba_games/games/pokemonemerald/'">Pokémon: Emerald</button>
-      <button onclick="location.href='gba_games/games/pokemonfirered/'">Pokémon: Fire Red</button>
-      <button onclick="location.href='gba_games/games/pokemonleafgreen/'">Pokémon: Leaf Green</button>
-
-    </div>
-  </div>
-
-
-<div class="section">
-    <h2>Red Ball Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/redball2/'">Red Ball 2</button>
-      <button onclick="location.href='flash_games/games/redball3/'">Red Ball 3</button>
-      <button onclick="location.href='flash_games/games/redball4/'">Red Ball 4</button>
-      <button onclick="location.href='flash_games/games/redball5/'">Red Ball 5</button>
-    </div>
-  </div>
-
-<div class="section">
-    <h2>Snail Bob Collection</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/snailbob1/'">Snail Bob 1</button>
-      <button onclick="location.href='flash_games/games/snailbob2/'">Snail Bob 2</button>
-      <button onclick="location.href='flash_games/games/snailbob3/'">Snail Bob 3</button>
-      <button onclick="location.href='flash_games/games/snailbob4/'">Snail Bob 4</button>
-      <button onclick="location.href='flash_games/games/snailbob5/'">Snail Bob 5</button>
-      <button onclick="location.href='flash_games/games/snailbob6/'">Snail Bob 6</button>
-      <button onclick="location.href='flash_games/games/snailbob7/'">Snail Bob 7</button>
-      <button onclick="location.href='flash_games/games/snailbob8/'">Snail Bob 8</button>
-  </div>
-</div>
-
-<div class="section">
-    <h2>Vex Games</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/vex1/'">Vex 1</button>
-      <button onclick="location.href='flash_games/games/vex2/'">Vex 2</button>
-      <button onclick="location.href='flash_games/games/vex3/'">Vex 3</button>
-      <button onclick="location.href='standalone_games/vex4/'">Vex 4</button>
-      <button onclick="location.href='standalone_games/vex5/'">Vex 5</button>
-      <button onclick="location.href='standalone_games/vex6/'">Vex 6</button>
-  </div>
-</div>
-
-<div class="section">
-    <h2>Wheely Collection</h2>
-    <div class="button-grid">
-      <button onclick="location.href='flash_games/games/wheely1/'">Wheely 1</button>
-      <button onclick="location.href='flash_games/games/wheely2/'">Wheely 2</button>
-      <button onclick="location.href='flash_games/games/wheely3/'">Wheely 3</button>
-      <button onclick="location.href='flash_games/games/wheely4/'">Wheely 4</button>
-      <button onclick="location.href='flash_games/games/wheely5/'">Wheely 5</button>
-      <button onclick="location.href='flash_games/games/wheely6/'">Wheely 6</button>
-      <button onclick="location.href='flash_games/games/wheely7/'">Wheely 7</button>
-      <button onclick="location.href='flash_games/games/wheely8/'">Wheely 8</button>
-      <button onclick="location.href='flash_games/games/wheely8/'">Wheely 8</button>
-  </div>
-</div>
-
-<div style="height: 10px;"></div>
-  
-<div style="text-align: center; padding: 5px; font-size: 14px; color: #888;">
-    © COMPOUND//CREATIONS 2025  <br>
-  </div>
-   <div class="dmca-footer" style="text-align: center;font-size: 10px; color: #888">
-     Check out the <a href="dedications.html" target="_blank" style="color: #d200ff;">Dedications</a> page!
-  </div>
-    
-   <div class="dmca-footer" style="text-align: center;font-size: 10px; color: #666">
-    All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
-  </div>
-</body>
-</html>
-
-
-
-
+    <h2>Moto X3M</h2>
+    <div class="button-grid">
+      <button onclick="location.href='standalone_games/motox3m/index.html'">Moto X3M 1</button>
+      <button onclick="location.href='standalone_games/motox3m2/index.html'">Moto X3M 2</button>
+      <button onclick="location.href='standalone_games/motox3mpool/index.html'">Moto X3M: Pool Party</button>
+      <button onclick="location.href='standalone_games/motox3mspooky/index.html'">Moto X3M: Spooky Land</button>
+      <button onclick="location.href='standalone_games/motox3mwinter/index.html'">Moto X3M: Winter</button>
