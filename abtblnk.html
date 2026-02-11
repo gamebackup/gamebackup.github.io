@@ -7,22 +7,40 @@
     <script>
         function autoCreate() {
             var url = "https://gamebackup.github.io"; 
-            
             var win = window.open();
             
             if (win) {
                 win.document.body.style.margin = '0';
                 win.document.body.style.height = '100vh';
-                
+                win.document.body.style.overflow = 'hidden';
+                var btn = win.document.createElement('button');
+                btn.innerHTML = '← Back to Menu';
+                btn.style.position = 'fixed';
+                btn.style.bottom = '20px';
+                btn.style.right = '20px';
+                btn.style.zIndex = '9999';
+                btn.style.padding = '10px 15px';
+                btn.style.backgroundColor = '#800040'; // Matches your site theme
+                btn.style.color = 'white';
+                btn.style.border = '2px solid white';
+                btn.style.borderRadius = '5px';
+                btn.style.cursor = 'pointer';
+                btn.style.fontFamily = 'sans-serif';
+                btn.style.opacity = '0.7';
+                btn.onmouseover = function() { btn.style.opacity = '1'; };
+                btn.onmouseout = function() { btn.style.opacity = '0.7'; };
                 var iframe = win.document.createElement('iframe');
                 iframe.style.border = 'none';
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.margin = '0';
                 iframe.src = url;
-                
+                iframe.id = 'game-frame';
+                btn.onclick = function() {
+                    iframe.src = url;
+                };
+                win.document.body.appendChild(btn);
                 win.document.body.appendChild(iframe);
-                
                 window.close();
             } else {
                 alert("Please allow pop-ups for this file to launch the games.");
