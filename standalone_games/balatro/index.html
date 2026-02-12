@@ -1,134 +1,139 @@
-<!doctype html>
-<html lang="en-us">
-
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1">
-  <title>Balatro</title>
-
-  <!-- Load custom style sheet -->
-  <link rel="stylesheet" type="text/css" href="theme/love.css">
-
-  <script src="consolewrapper.js"></script>
-</head>
-
-<body>
-  <center>
-    <div>
-      <!-- <h1>Balatro</h1> -->
-      <canvas id="loadingCanvas" oncontextmenu="event.preventDefault()" width="800" height="600"></canvas>
-      <canvas id="canvas" oncontextmenu="event.preventDefault()" width="100%" height="100%"></canvas>
-    </div>
-  </center>
-
-  <script type='text/javascript'>
-    window.callad = () => {
-      window.parent.postMessage({
-        type: 'adcall'
-      }, '*');
+    <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/gamebackup/balatrotest6@refs/heads/main/favicon.ico">
+    <style>
+    #canvas {
+        /* Your existing canvas styles to make it full screen */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
     }
-    var canvas = document.getElementById("loadingCanvas");
-    canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    
+    body {
+        /* Your existing body styles */
+        width: 100vw;
+        height: 100vh;
+        margin: 0px;
 
-    function goFullScreen() {
-      var canvas = document.getElementById("canvas");
-      if (canvas.requestFullScreen)
-        canvas.requestFullScreen();
-      else if (canvas.webkitRequestFullScreen)
-        canvas.webkitRequestFullScreen();
-      else if (canvas.mozRequestFullScreen)
-        canvas.mozRequestFullScreen();
+        /* --- ✨ NEW BACKGROUND STYLES HERE ✨ --- */
+        
+        /* OPTION 1: Solid Color (e.g., a dark gaming screen color) */
+        background-color: #1a1a1a; 
+        
+        /* OPTION 2: Image Background (Uncomment this and replace URL if needed) */
+        /*
+        background-image: url('https://example.com/background.jpg');
+        background-size: cover; /* Ensures the image covers the whole body */
+        background-repeat: no-repeat; /* Prevents tiling */
+        background-attachment: fixed; /* Keeps the background static when scrolling (if scrolling were possible) */
+        */
+        
     }
+</style>
+    <script>
+        const PREFIX = "Balatro_Vanilla_";
+        const originalOpen = indexedDB.open;
+        const originalDeleteDatabase = indexedDB.deleteDatabase;
+        indexedDB.open = function(name, version) {
+            const prefixedName = PREFIX + name;
+            return version !== undefined ? originalOpen.call(this, prefixedName, version) : originalOpen.call(this, prefixedName);
+        };
+        indexedDB.deleteDatabase = function(name) {
+            const prefixedName = PREFIX + name;
+            return originalDeleteDatabase.call(this, prefixedName);
+        };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/gamebackup/balatrotest6@main/love.min.js"></script>
 
-    function FullScreenHook() {
-      var canvas = document.getElementById("canvas");
-      canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-      canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    }
-    var loadingContext = document.getElementById('loadingCanvas').getContext('2d');
-
-    function drawLoadingText(text) {
-      var canvas = loadingContext.canvas;
-
-      loadingContext.fillStyle = "rgb(142, 195, 227)";
-      loadingContext.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
-
-      loadingContext.font = '2em arial';
-      loadingContext.textAlign = 'center'
-      loadingContext.fillStyle = "rgb( 11, 86, 117 )";
-      loadingContext.fillText(text, canvas.scrollWidth / 2, canvas.scrollHeight / 2);
-
-      // loadingContext.fillText("Powered By Emscripten.", canvas.scrollWidth / 2, canvas.scrollHeight / 4);
-      // loadingContext.fillText("Powered By LÖVE.", canvas.scrollWidth / 2, canvas.scrollHeight / 4 * 3);
-    }
-
-    window.onload = function() {
-      window.focus();
-    };
-    window.onclick = function() {
-      window.focus();
-    };
-
-    window.addEventListener("keydown", function(e) {
-      // space and arrow keys
-      if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-        e.preventDefault();
-      }
-    }, false);
-
-    var Module = {
-      arguments: ["./game.love"],
-      INITIAL_MEMORY: 256000000,
-      printErr: console.error.bind(console),
-      canvas: (function() {
-        var canvas = document.getElementById('canvas');
-
-        // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-        // application robust, you may want to override this behavior before shipping!
-        // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-        canvas.addEventListener("webglcontextlost", function(e) {
-          alert('WebGL context lost. You will need to reload the page.');
-          e.preventDefault();
-        }, false);
-
-        return canvas;
-      })(),
-      setStatus: function(text) {
-        if (text) {
-          drawLoadingText(text);
-        } else if (Module.remainingDependencies === 0) {
-          document.getElementById('loadingCanvas').style.display = 'none';
-          document.getElementById('canvas').style.visibility = 'visible';
+    <title>Love.js</title>
+    <style>
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
         }
-      },
-      totalDependencies: 0,
-      remainingDependencies: 0,
-      monitorRunDependencies: function(left) {
-        this.remainingDependencies = left;
-        this.totalDependencies = Math.max(this.totalDependencies, left);
-        Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-      }
-    };
-    Module.setStatus('Downloading...');
-    window.onerror = function(event) {
-      // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
-      Module.setStatus('Exception thrown, see JavaScript console');
-      Module.setStatus = function(text) {
-        if (text) Module.printErr('[post-exception status] ' + text);
-      };
-    };
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
 
-    var applicationLoad = function(e) {
-      Love(Module);
-    }
-  </script>
-  <script type="text/javascript" src="game.js?v=d7e34743-2fea-4de6-8a0e-1103b5fcf07f"></script>
-  <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
-  <!-- <footer>
-      <p>Built with <a href="https://github.com/Davidobot/love.js">love.js</a> <button onclick="goFullScreen();">Go Fullscreen</button><br>Hint: Reload the page if screen is blank</p>
-    </footer> -->
-</body>
+    <script>
+        const BASE_URL = "https://cdn.jsdelivr.net/gh/gamebackup/balatrotest6@main/";
+        const moduleParts = [
+            "module.js.part1",
+            "module.js.part2",
+            "module.js.part3",
+            "module.js.part4",
+            "module.js.part5",
+            "module.js.part6"
+        ];
 
+        async function loadAndExecuteModule() {
+            let combinedCode = "";
+
+            // Fetch each part sequentially and append its text content
+            for (const part of moduleParts) {
+                const url = BASE_URL + part; // Since files are in the root, the name is the URL
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Failed to load module part: ${url}. Status: ${response.status}`);
+                    }
+                    const text = await response.text();
+                    combinedCode += text; 
+                } catch (error) {
+                    console.error("Critical Error loading game module:", error);
+                    alert("Failed to load game files. Check console for details.");
+                    return;
+                }
+            }
+
+            // Execute the full module code. This defines the 'Module' object globally.
+            // This is the functional replacement for the original <script src="module.js">.
+            eval(combinedCode); 
+            
+            // Proceed to the final initialization step.
+            runLoveInitialization();
+        }
+        
+        // This function contains the final logic from your original last script tag
+        async function runLoveInitialization() {
+            // NOTE: getSource() must have been defined in one of the previously loaded scripts (love.min.js or module parts)
+            const d = await getSource();
+            
+            Module = {
+                INITIAL_MEMORY: 2**28,
+                canvas: canvas,
+                printErr: console.error,
+                arguments: ["game.love"]
+            };
+            
+            Module.preRun = [function(){
+                Module.addRunDependency("fp game.love");
+                var ptr = Module.getMemory(d.length);
+                Module['HEAPU8'].set(d, ptr);
+                Module.FS_createDataFile('/', "game.love", d, true, true, true);
+                Module.removeRunDependency("fp game.love");
+            }];
+            
+            // Love() must have been defined by love.min.js
+            Love(Module);
+        }
+
+        // Start the process when the HTML body loads
+        loadAndExecuteModule();
+
+    </script>
+    </body>
 </html>
