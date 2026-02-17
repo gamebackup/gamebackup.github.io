@@ -1,9 +1,0 @@
-{
-  "start": "Inizia",
-  "luckIndicator": "Fortuna:",
-  "shinyOnHover": "Shiny",
-  "commonShiny": "Comune",
-  "rareShiny": "Raro",
-  "epicShiny": "Epico",
-  "money": "{{amount, number}} ₽"
-}

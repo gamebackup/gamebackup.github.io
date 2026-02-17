@@ -1,1 +1,0 @@
-Image for Facebook crawler.
