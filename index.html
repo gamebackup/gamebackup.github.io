@@ -12,7 +12,6 @@
       font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
       background-color: #111;
       color: white;
-      zoom: 150%;
     }
     header {
       background-color: black;
@@ -39,15 +38,16 @@
     }
     .hero {
       background-image: url("images/darken_tree_hd.png"); 
-      background-repeat: no-repeat;
+      background-size: cover; /* Ensures the background fills the area */
+      background-position: center;
       text-align: center;
-      padding: 60px 20px;
-    }
-    .herotext {
-      max-width: 100%;
-      margin: 10px auto;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5vh 20px; /* vh units scale with the height of the screen */
+    }    
+
+  .section {
+      padding: 30px 5%; /* Uses percentage for horizontal padding */
+      max-width: 1200px; /* Prevents the grid from getting too wide on ultrawide monitors */
+      margin: 0 auto;    /* Centers the section */
     }
     .hero h1 {
       font-size: 36px;
@@ -129,9 +129,9 @@
   
 <body>
   <header>
-      <div style="display: flex; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 15px;">
         <img src="images/Cat-looks-inside-meme.png">
-          <div style="margin: 0; color: white;"> x3e Unblocked Games</div>
+          <div style="margin: 0; color: white;">x3e unblocked games</div>
       </div>
       <div class="game-count">Live Game Count: 237</div>
       <nav>
