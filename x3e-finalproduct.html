@@ -2,7 +2,7 @@
     launch();
     function launch() {
       try {
-        fetch("https://raw.githubusercontent.com/gamebackup/test-for-gamebackup.github.io/refs/heads/main/index.html?t=" + Date.now())
+        fetch("https://raw.githubusercontent.com/gamebackup/gamebackup.github.io/refs/heads/main/index.html?t=" + Date.now())
           .then(response => response.text())
           .then(html => {
                 document.documentElement.innerHTML = html;
