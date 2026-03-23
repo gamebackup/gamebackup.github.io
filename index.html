@@ -44,26 +44,35 @@
       padding: 5vh 20px; 
     }    
 
-  .section {
+    .content-box {
+      background-color: rgba(30, 30, 30, 0.4); 
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.2), 
+        2px 2px 10px rgba(0, 0, 0, 0.5);
+      padding: 25px;
+      color: white;
+      max-width: 900px;
+      margin: 20px auto;
+      backdrop-filter: blur(2px); 
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 0;
+    }
+    .hero p {
+      font-size: 20px;
+      margin: 12px auto;
+    }
+
+    .section {
       padding: 30px 5%; 
       max-width: 1200px; 
       margin: 0 auto;    
-    }
-    .hero h1 {
-      font-size: 36px;
-      font-weight: bold;
-      color: white;
-      -webkit-text-stroke: 1px black;
-    }
-    .hero p {
-      max-width: 100%;
-      margin: 10px auto;
-      font-size: 24px;
-      color: white;
-      -webkit-text-stroke: 1px black;
-    }
-    .section {
-      padding: 30px 20px;
     }
     .section h2 {
       color: #e61587;
@@ -106,22 +115,22 @@
         text-align: center;
       }
       #back-to-x3e {
-      position: fixed;
-      bottom: 15px; 
-      right: 15px; 
-      z-index: 100000;
-      padding: 10px 20px;
-      background-color: #e61587;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      opacity: 0.5; 
-      transition: opacity 0.3s ease;
+        position: fixed;
+        bottom: 15px; 
+        right: 15px; 
+        z-index: 100000;
+        padding: 10px 20px;
+        background-color: #e61587;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        opacity: 0.5; 
+        transition: opacity 0.3s ease;
       }
       #back-to-x3e:hover {
-      opacity: 1;
+        opacity: 1;
       }
     }
   </style>
@@ -129,28 +138,29 @@
   
 <body>
   <header>
-      <div style="display: flex; align-items: center; gap: 15px;">
-    <img src="images/Cat-looks-inside-meme.png">
-    <div style="display: flex; flex-direction: column;">
-        <div style="margin: 0; color: white; font-weight: bold; font-size: 18px;">x3e unblocked games</div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <img src="images/Cat-looks-inside-meme.png">
+      <div style="display: flex; flex-direction: column;">
+          <div style="margin: 0; color: white; font-weight: bold; font-size: 18px;">x3e unblocked games</div>
+      </div>
     </div>
-</div>
-      <div class="game-count">Live Game Count: 248</div>
-      <nav>
-          <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
-          <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
-      </nav>
+    <div class="game-count">Live Game Count: 248</div>
+    <nav>
+        <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
+        <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
+    </nav>
   </header>
-</body>
-</html>
+
   <div class="hero">
-    <div class="herotext">
-        <h1>Share with  Friends!! Tell them to go to tinyurl.com/x3e-at-school</h1>
-        <p><strong>Make sure to refresh the page every day for new games!</strong></p>
-        <p><strong>Anyone who finds a bug (that could be spelling error on the site, missing title, missing game file, etc) and reports them will be added to the dedications page!</strong></p>
-        <p><strong>For any games hosted through Ruffle, if you right click on the game screen, a menu will appear, there is a fullscreen option</strong></p>
-        <p><strong>Use "ctrl" key and "+" or "-" to zoom in or out on the games, as they are sometimes too small or too big</strong></p>
-        <p><strong>Any games that may lag lower end devices will be marked with a * on a scale of 1 star to 3 stars. * = Laggy, *** = Don't play on chromebooks</strong></p>
+    <div class="content-box"> <div class="herotext">
+          <h1>Share with Friends!! Tell them to go to tinyurl.com/x3e-at-school</h1>
+          <p><strong>Make sure to refresh the page every day for new games!</strong></p>
+          <p><strong>Anyone who finds a bug (spelling errors, missing titles, etc) and reports them will be added to the dedications page!</strong></p>
+          <p><strong>For Ruffle games, right-click the screen for a fullscreen option.</strong></p>
+          <p><strong>Double click whatever game's main menu when it loads, to make sure the controls are focused.</strong></p>
+		  <p><strong>Stars next to games mean the following: * = Laggy, ** = ~50/50 Playability, *** = Don't play on chromebooks.</strong></p>
+          <p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
+      </div>
     </div>
   </div>
 
@@ -160,7 +170,6 @@
       <button onclick="playGame('https://webosumania.com/')">Osu!Mania</button>
       <button onclick="playGame('https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing')">Chat Room</button>
       <button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
-      <button onclick="playGame('https://docs.google.com/document/d/1J6hZXbQYOKtuaj-j-TP4O8vFMMtROCJJKu-JCRaeXtI/')">Free Movies</button>
       <button onclick="playGame('https://gamebackup.github.io/cheese/')">Cheese</button>
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/irnlng/')">Iron Lung</button>
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/flyinggorilla/')">Flying Gorilla</button>
