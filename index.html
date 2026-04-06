@@ -150,6 +150,10 @@
         <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
 		<a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A Form</a>
     </nav>
+	  <div class="search-container" style="text-align: center; padding: 20px 0;">
+  <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." 
+  style="width: 80%; max-width: 500px; padding: 12px 20px; border-radius: 25px; border: 2px solid #e61587; background: #222; color: white; font-size: 16px; outline: none; box-shadow: 0 0 10px rgba(230, 21, 135, 0.3);">
+</div>
   </header>
 
   <div class="hero">
@@ -168,7 +172,6 @@
   <div class="section">
     <h2>10 Most Recent Games:</h2>
     <div class="button-grid">
-      <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/irnlng/')">Iron Lung</button>
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/flyinggorilla/')">Flying Gorilla</button>
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/amongus/')">Among Us - Singleplayer</button>
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/granny/')">Granny*</button>
@@ -178,6 +181,7 @@
 	  <button onclick="playGame('https://gamebackup.github.io/itchio_games/innoveryourhead/')">Inn Over Your Head*</button>
 	  <button onclick="playGame('https://gamebackup.github.io/itchio_games/devileddice/')">Deviled Dice</button>
 	  <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/yomihustle/')">Your Only Move is Hustle</button>
+	  <button onlcikc="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
     </div>
   </div>
 
@@ -252,7 +256,7 @@
       <button onclick="playGame('https://gamebackup.github.io/standalone_games/urip/')">Your IP</button>
       <button onclick="playGame('https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing')">Chat Room</button>
       <button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
-      <button onclick="playGame('https://gamebackup.github.io/cheese/')">Cheese</button>
+	  <button onlcikc="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
     </div>
   </div>
 
@@ -621,6 +625,35 @@
     All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
   </div>
   <script>
+	  function searchGames() {
+  // Get the search input and convert to lowercase for easy matching
+  let input = document.getElementById('gameSearch').value.toLowerCase();
+  
+  // Find every button in your game grids
+  let buttons = document.querySelectorAll('.button-grid button');
+
+  buttons.forEach(button => {
+    let gameName = button.innerText.toLowerCase();
+    
+    // If the game name contains the search text, show it. Otherwise, hide it.
+    if (gameName.includes(input)) {
+      button.style.display = ""; // Shows the button
+    } else {
+      button.style.display = "none"; // Hides the button
+    }
+  });
+
+  // Optional: Hide empty section headers if no games in that category match
+  let sections = document.querySelectorAll('.section');
+  sections.forEach(section => {
+    let visibleButtons = section.querySelectorAll('button[style="display: px;"], button:not([style*="display: none"])');
+    if (visibleButtons.length === 0 && input !== "") {
+      section.style.display = "none";
+    } else {
+      section.style.display = "block";
+    }
+  });
+}
     function playGame(gameUrl) {
       if (!gameUrl) {
           alert("Placeholder: Game coming soon!");
