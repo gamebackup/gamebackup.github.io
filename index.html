@@ -133,9 +133,75 @@
         opacity: 1;
       }
     }
+
+    .search-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #222;
+      border: 2px solid #e61587;
+      border-radius: 50px;
+      width: 50px;
+      height: 50px;
+      transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      overflow: hidden;
+      position: relative; /* Keep this for absolute positioning of the icon */
+      box-sizing: border-box;
+    }
+
+    .search-bar:hover, 
+    .search-bar:focus-within {
+      width: 300px;
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 16px;
+      width: 100%;
+      /* Push the text to the right so it doesn't overlap the locked icon */
+      padding: 0 15px 0 50px; 
+      opacity: 0;
+      white-space: nowrap; 
+      transition: opacity 0.2s;
+      box-sizing: border-box;
+    }
+
+    .search-bar:hover .search-input,
+    .search-bar:focus-within .search-input {
+      opacity: 1;
+    }
+
+    .search-icon {
+      /* This locks the icon to the left side so it CANNOT move or squish */
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 46px; /* 50px minus borders */
+      height: 46px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: #e61587;
+      pointer-events: none; /* Let clicks pass through to the bar */
+    }
+
+    .search-icon svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
   </style>
 </head>
-  
+
 <body>
   <header>
     <div style="display: flex; align-items: center; gap: 15px;">
@@ -144,16 +210,24 @@
           <div style="margin: 0; color: white; font-weight: bold; font-size: 18px;">x3e unblocked games</div>
       </div>
     </div>
-    <div class="game-count">Live Game Count: 253</div>
+    <div class="game-count">Live Game Count: 254</div>
     <nav>
         <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
         <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
 		<a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A Form</a>
     </nav>
-	  <div class="search-container" style="text-align: center; padding: 20px 0;">
-  <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." 
-  style="width: 80%; max-width: 500px; padding: 12px 20px; border-radius: 25px; border: 2px solid #e61587; background: #222; color: white; font-size: 16px; outline: none; box-shadow: 0 0 10px rgba(230, 21, 135, 0.3);">
-</div>
+    
+    <div class="search-wrapper">
+      <div class="search-bar">
+        <div class="search-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
+      </div>
+    </div>
   </header>
 
   <div class="hero">
@@ -168,8 +242,7 @@
       </div>
     </div>
   </div>
-
-  <div class="section">
+   <div class="section">
     <h2>10 Most Recent Games:</h2>
     <div class="button-grid">
       <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/amongus/')">Among Us - Singleplayer</button>
@@ -626,35 +699,35 @@
     All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
   </div>
   <script>
-	  function searchGames() {
-  // Get the search input and convert to lowercase for easy matching
-  let input = document.getElementById('gameSearch').value.toLowerCase();
-  
-  // Find every button in your game grids
-  let buttons = document.querySelectorAll('.button-grid button');
+    /* Updated searchGames logic */
+    function searchGames() {
+      let input = document.getElementById('gameSearch').value.toLowerCase();
+      let buttons = document.querySelectorAll('.button-grid button');
+      let sections = document.querySelectorAll('.section');
 
-  buttons.forEach(button => {
-    let gameName = button.innerText.toLowerCase();
-    
-    // If the game name contains the search text, show it. Otherwise, hide it.
-    if (gameName.includes(input)) {
-      button.style.display = ""; // Shows the button
-    } else {
-      button.style.display = "none"; // Hides the button
-    }
-  });
+      // Filter Buttons
+      buttons.forEach(button => {
+        let gameName = button.innerText.toLowerCase();
+        if (gameName.includes(input)) {
+          button.style.display = ""; 
+        } else {
+          button.style.display = "none";
+        }
+      });
 
-  // Optional: Hide empty section headers if no games in that category match
-  let sections = document.querySelectorAll('.section');
-  sections.forEach(section => {
-    let visibleButtons = section.querySelectorAll('button[style="display: px;"], button:not([style*="display: none"])');
-    if (visibleButtons.length === 0 && input !== "") {
-      section.style.display = "none";
-    } else {
-      section.style.display = "block";
+      // Filter Sections (Hide if no games match inside them)
+      sections.forEach(section => {
+        // Look for buttons that are NOT set to display: none
+        let visibleButtons = section.querySelectorAll('.button-grid button:not([style*="display: none"])');
+        
+        if (visibleButtons.length === 0 && input !== "") {
+          section.style.display = "none";
+        } else {
+          section.style.display = "block";
+        }
+      });
     }
-  });
-}
+
     function playGame(gameUrl) {
       if (!gameUrl) {
           alert("Placeholder: Game coming soon!");
