@@ -334,10 +334,25 @@
          .back-btn:active {
          transform: scale(0.95);
          }
+         :root {
+  	     --pink: #e61587;
+    	 --cyan: #00f0ff;
+  	     }
+ 	     #particle-canvas {
+   	     position: fixed;
+    	 top: 0; 
+    	 left: 0;
+    	 width: 100%; 
+    	 height: 100%;
+    	 pointer-events: none; /* Allows you to click buttons through the canvas */
+    	 z-index: 0;           /* Keeps it behind your buttons and text */
+    	 opacity: 0.4;         /* Makes the dots subtle */
+  	     
          }
       </style>
    </head>
    <body>
+    <canvas id="particle-canvas"></canvas>
       <header>
          <div style="display: flex; align-items: center; gap: 15px;">
             <img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
@@ -798,6 +813,72 @@
          All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
       </div>
       <script>
+    /* ============ PARTICLE SYSTEM ============ */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.3;
+    this.speedX = (Math.random() - 0.5) * 0.4;
+    this.speedY = -Math.random() * 0.6 - 0.1; // Floating up
+    this.life = 1;
+    this.decay = Math.random() * 0.003 + 0.001;
+    this.hue = Math.random() < 0.7 ? 320 : 185; // Pink or Cyan
+  }
+
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset();
+  }
+
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.life * 0.8;
+    ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
+    ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+// Create the dots
+for (let i = 0; i < 200; i++) {
+  const p = new Particle();
+  p.life = Math.random(); 
+  particles.push(p);
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+
+animateParticles();
          /* Updated searchGames logic */
          function searchGames() {
            let input = document.getElementById('gameSearch').value.toLowerCase();
