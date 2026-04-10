@@ -28,7 +28,6 @@
          border-radius: 5px;
          flex-shrink: 0;
          }
-         /* --- ENHANCED NAVIGATION LINKS --- */
          nav {
          display: flex;
          gap: 15px;
@@ -71,7 +70,6 @@
          nav a:hover::after {
          left: 120%;
          }
-         /* --- GAME COUNT PILL --- */
          .game-count {
          background: rgba(230, 21, 135, 0.2);
          backdrop-filter: blur(4px);
@@ -84,10 +82,8 @@
          box-shadow: 0 0 6px rgba(230, 21, 135, 0.3);
          flex-shrink: 0;
          white-space: nowrap;
-         /* 1. This pushes it to the center of the available space */
          margin-left: auto;
          margin-right: auto;
-         /* 2. This nudges it to the right. 
          Increase 50px to move it further right, decrease to move it left. */
          transform: translateX(150px);
          }
@@ -133,7 +129,6 @@
          text-transform: uppercase;
          letter-spacing: 1px;
          }
-         /* --- ENHANCED GAME BUTTONS (With new SWISH effect) --- */
          .button-grid {
          display: flex;
          flex-wrap: wrap;
@@ -152,7 +147,6 @@
          position: relative; /* REQUIRED FOR THE EFFECT */
          overflow: hidden; /* REQUIRED FOR THE EFFECT */
          }
-         /* THE SWISH EFFECT LAYER */
          .button-grid button::after {
          content: '';
          position: absolute;
@@ -176,7 +170,6 @@
          box-shadow: 0 8px 20px rgba(230, 21, 135, 0.5); /* Neon Glow */
          border-color: #fff;
          }
-         /* ACTIVATES THE SWISH ON HOVER */
          .button-grid button:hover::after {
          left: 140%;
          }
@@ -199,7 +192,6 @@
          text-align: center;
          }
          }
-         /* --- SEARCH BAR --- */
          .search-bar {
          display: flex;
          align-items: center;
@@ -304,7 +296,6 @@
          overflow: hidden; /* Required to clip the swish */
          outline: none;
          }
-         /* THE SWISH LAYER for the Back Button */
          .back-btn::after {
          content: '';
          position: absolute;
@@ -363,7 +354,6 @@
     transition: opacity 1s ease; /* Smooth fade out */
 }
 
-/* Your specific loading animation CSS */
 #load {
     position: absolute;
     width: 600px;
@@ -552,11 +542,11 @@
                <div class="glitch-title" data-text="x3e unblocked games">x3e unblocked games</div>
             </div>
          </div>
-         <div class="game-count">Game Count: 256</div>
+         <div class="game-count">Game Count: 257</div>
          <nav>
             <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
             <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
-            <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A Form</a>
+            <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
          </nav>
          <div class="search-wrapper">
             <div class="search-bar">
@@ -897,6 +887,7 @@
       <div class="section">
          <h2>Minecraft Versions</h2>
          <div class="button-grid">
+			<button onclick="playGame('https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing')">Video Settings Instructions</button>
             <button onclick="playGame('https://gamebackup.github.io/standalone_games/1.8.8/')">Minecraft 1.8.8 - Working Multiplayer</button>
             <button onclick="playGame('https://gamebackup.github.io/standalone_games/eagle1.12/')">Minecraft 1.12 - Only Singleplayer</button>
          </div>
