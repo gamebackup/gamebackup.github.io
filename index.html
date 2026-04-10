@@ -33,6 +33,7 @@
             <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
             <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
             <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
+            <a href="#" onclick="openSettings(); return false;">Settings</a>
          </nav>
          <div class="search-wrapper">
             <div class="search-bar">
@@ -611,12 +612,83 @@ animateParticles();
            document.getElementById('game-overlay').style.display = 'none';
            document.getElementById('game-frame').src = '';
          }
+         /* ============ TAB CLOAKING & SETTINGS ============ */
+         const cloakPresets = {
+             "Google": { title: "Google", icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png" },
+             "YouTube": { title: "YouTube", icon: "https://www.youtube.com/s/desktop/1040a6b7/img/favicon_32.png" },
+             "Canvas": { title: "Dashboard", icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico" },
+             "Khan": { title: "Khan Academy", icon: "https://cdn.kastatic.org/images/favicon.ico" },
+             "Docs": { title: "Google Docs", icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" },
+             "Desmos": { title: "Desmos | Graphing Calculator", icon: "https://www.desmos.com/favicon.ico" },
+             "Drive": { title: "My Drive - Google Drive", icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" }
+         };
+
+         // Function to change the title and icon
+         function applyCloak(presetKey) {
+             if (!cloakPresets[presetKey]) return;
+             
+             const preset = cloakPresets[presetKey];
+             
+             // Change Title
+             document.title = preset.title;
+             
+             // Change Favicon
+             let link = document.querySelector("link[rel~='icon']");
+             if (!link) {
+                 link = document.createElement('link');
+                 link.rel = 'icon';
+                 document.head.appendChild(link);
+             }
+             link.href = preset.icon;
+
+             // Save to localStorage so it persists on refresh
+             localStorage.setItem("userCloak", presetKey);
+             
+             // Update the dropdown menu to match the current selection
+             document.getElementById("cloak-select").value = presetKey;
+         }
+
+         // Check if they have a saved disguise when the page loads
+         window.onload = function() {
+             const savedCloak = localStorage.getItem("userCloak") || "Google";
+             applyCloak(savedCloak);
+         };
+
+         // Open and Close Settings Menu Functions
+         function openSettings() {
+             document.getElementById('settings-modal').style.display = 'block';
+         }
+
+         function closeSettings() {
+             document.getElementById('settings-modal').style.display = 'none';
+         }
       </script>
       <div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
          <button onclick="closeGame()" class="back-btn">
          ← Back to x3e
          </button>
          <iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
+      </div>
+    <div id="settings-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 1000000; backdrop-filter: blur(5px);">
+         <div class="settings-content">
+            <span class="close-settings" onclick="closeSettings()">&times;</span>
+            <h2 style="color: #e61587; font-family: 'Orbitron', sans-serif; margin-top: 0;">Settings</h2>
+            
+            <div class="setting-item">
+               <label for="cloak-select" style="font-family: 'Space Grotesk', sans-serif; font-weight: bold; color: white;">Disguise Tab As:</label>
+               <select id="cloak-select" onchange="applyCloak(this.value)" class="settings-dropdown">
+                  <option value="Google">Google</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="Canvas">Canvas</option>
+                  <option value="Khan">Khan Academy</option>
+                  <option value="Docs">Google Docs</option>
+                  <option value="Desmos">Desmos</option>
+                  <option value="Drive">Google Drive</option>
+                  <option value="x3e">x3e unblocked games</option>
+               </select>
+            </div>
+            
+         </div>
       </div>
    </body>
 </html>
