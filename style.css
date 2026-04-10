@@ -1,0 +1,513 @@
+         body {
+         margin: 0;
+         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+         background-color: #111;
+         color: white;
+         }
+         header {
+         background-color: black;
+         display: flex;
+         align-items: center;
+         justify-content: space-between; 
+         padding: 8px 20px;
+         position: relative; 
+         z-index: 1000;
+         gap: 20px;
+         }
+         header img {
+         height: 40px;
+         border-radius: 5px;
+         flex-shrink: 0;
+         }
+         nav {
+         display: flex;
+         gap: 15px;
+         margin: 0 20px;
+         }
+         nav a {
+         color: #fff;
+         text-decoration: none;
+         font-family: 'Space Grotesk', sans-serif;
+         font-size: 0.8rem;
+         font-weight: 600;
+         text-transform: uppercase;
+         letter-spacing: 1px;
+         padding: 8px 16px;
+         background: rgba(255, 255, 255, 0.05);
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         position: relative;
+         overflow: hidden;
+         }
+         nav a:hover {
+         color: #fff;
+         background: rgba(230, 21, 135, 0.2);
+         border-color: #e61587;
+         box-shadow: 0 0 15px rgba(230, 21, 135, 0.4);
+         transform: translateY(-2px);
+         }
+         /* SHIMMER EFFECT */
+         nav a::after {
+         content: '';
+         position: absolute;
+         top: -50%;
+         left: -60%;
+         width: 20%;
+         height: 200%;
+         background: rgba(255, 255, 255, 0.1);
+         transform: rotate(30deg);
+         transition: all 0.5s;
+         }
+         nav a:hover::after {
+         left: 120%;
+         }
+         .game-count {
+         background: rgba(230, 21, 135, 0.2);
+         backdrop-filter: blur(4px);
+         padding: 5px 14px;
+         border-radius: 60px;
+         font-size: 0.85rem;
+         font-weight: 600;
+         font-family: 'Space Grotesk', monospace;
+         border: 1px solid rgba(230, 21, 135, 0.5);
+         box-shadow: 0 0 6px rgba(230, 21, 135, 0.3);
+         flex-shrink: 0;
+         white-space: nowrap;
+         margin-left: auto;
+         margin-right: auto;
+         Increase 50px to move it further right, decrease to move it left. */
+         transform: translateX(150px);
+         }
+         .hero {
+         background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05)), url("https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/darken_tree_hd.png"); 
+         background-size: cover; 
+         background-position: center;
+         text-align: center;
+         padding: 5vh 20px; 
+         }    
+         .content-box {
+         background-color: rgba(30, 30, 30, .6); 
+         border-radius: 15px;
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         box-shadow: 
+         inset 0 1px 1px rgba(255, 255, 255, 0.2), 
+         2px 2px 10px rgba(0, 0, 0, 0.5);
+         padding: 25px;
+         color: pink;
+         max-width: 900px;
+         margin: 20px auto;
+         backdrop-filter: blur(4.5px); 
+         -webkit-backdrop-filter: blur(2px);
+         }
+         .hero h1 {
+         font-size: 32px;
+         font-weight: bold;
+         margin-top: 0;
+         }
+         .hero p {
+         font-size: 20px;
+         margin: 12px auto;
+         }
+         .section {
+         padding: 30px 5%; 
+         max-width: 1200px; 
+         margin: 0 auto;    
+         }
+         .section h2 {
+         color: #e61587;
+         margin-bottom: 20px;
+         font-family: 'Orbitron', sans-serif;
+         text-transform: uppercase;
+         letter-spacing: 1px;
+         }
+         .button-grid {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 12px;
+         }
+         .button-grid button {
+         background-color: rgba(128, 0, 64, 0.3); /* Transparent dark base */
+         color: white;
+         border: 0px solid rgba(230, 21, 135, 0.3);
+         padding: 12px 18px;
+         border-radius: 8px;
+         cursor: pointer;
+         font-family: 'Space Grotesk', sans-serif;
+         font-weight: 500;
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         position: relative; /* REQUIRED FOR THE EFFECT */
+         overflow: hidden; /* REQUIRED FOR THE EFFECT */
+         }
+         .button-grid button::after {
+         content: '';
+         position: absolute;
+         top: -50%;
+         left: -60%;
+         width: 25%; /* Slightly wider shine than nav links for contrast */
+         height: 200%;
+         background: linear-gradient(
+         to bottom,
+         rgba(255, 255, 255, 0.0) 0%,
+         rgba(255, 255, 255, 0.3) 50%,
+         rgba(255, 255, 255, 0.0) 100%
+         );
+         transform: rotate(35deg); /* Match your images */
+         transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+         pointer-events: none;
+         }
+         .button-grid button:hover {
+         background-color: #e61587; /* Changes to Bright Pink */
+         transform: translateY(-4px) scale(1.05); /* Grows and Lifts */
+         box-shadow: 0 8px 20px rgba(230, 21, 135, 0.5); /* Neon Glow */
+         border-color: #fff;
+         }
+         .button-grid button:hover::after {
+         left: 140%;
+         }
+         @media (max-width: 600px) {
+         .button-grid {
+         flex-direction: column;
+         align-items: center;
+         }
+         header {
+         flex-direction: column;
+         align-items: center;
+         padding: 10px;
+         }
+         nav {
+         margin-top: 10px;
+         flex-direction: column;
+         align-items: center;
+         }
+         .section {
+         text-align: center;
+         }
+         }
+         .search-bar {
+         display: flex;
+         align-items: center;
+         background: #222;
+         border: 2px solid #e61587;
+         border-radius: 50px;
+         width: 46px;
+         height: 46px;
+         transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+         overflow: hidden;
+         position: relative; 
+         }
+         .search-bar:hover, .search-bar:focus-within {
+         width: 250px;
+         }
+         .search-input {
+         background: transparent;
+         border: none;
+         outline: none;
+         color: white;
+         padding: 0 15px 0 46px; 
+         width: 100%;
+         opacity: 0;
+         transition: opacity 0.3s;
+         }
+         .search-bar:hover .search-input, .search-bar:focus-within .search-input {
+         opacity: 1;
+         }
+         .search-icon {
+         position: absolute;
+         left: 10px;
+         color: #e61587;
+         pointer-events: none;
+         }
+         .header-right {
+         display: flex;
+         align-items: center;
+         gap: 15px;
+         flex-shrink: 0;
+         justify-content: flex-end;
+         }
+         .glitch-title {
+         font-family: 'Orbitron', monospace;
+         font-weight: 800;
+         font-size: 1.4rem;
+         background: linear-gradient(135deg, #fff, #e61587);
+         background-clip: text;
+         -webkit-background-clip: text;
+         color: transparent;
+         letter-spacing: -0.3px;
+         position: relative;
+         }
+         .glitch-title::before,
+         .glitch-title::after {
+         content: attr(data-text);
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         overflow: hidden;
+         background: linear-gradient(135deg, #fff, #e61587);
+         background-clip: text;
+         -webkit-background-clip: text;
+         color: transparent;
+         }
+         .glitch-title::before {
+         color: var(--cyan);
+         animation: glitch1 4s infinite;
+         clip-path: polygon(0 25%, 100% 25%, 100% 45%, 0 45%);
+         }
+         .glitch-title::after {
+         color: var(--primary);
+         animation: glitch2 2s infinite;
+         clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+         }
+         @keyframes glitch1 {
+         0%,88%,100% { transform: none; opacity: 0; }
+         89% { transform: translateX(-3px); opacity: 1; }
+         91% { transform: translateX(2px); opacity: 1; }
+         93% { transform: none; opacity: 0; }
+         }
+         @keyframes glitch2 {
+         0%,91%,100% { transform: none; opacity: 0; }
+         92% { transform: translateX(3px); opacity: 1; }
+         94% { transform: translateX(-1px); opacity: 1; }
+         96% { transform: none; opacity: 0; }
+         }
+         .back-btn {
+         position: absolute; 
+         bottom: 20px; 
+         right: 15px; 
+         z-index: 100000; 
+         padding: 12px 18px; /* Matched padding to your game buttons */
+         color: white !important; 
+         background-color: rgba(128, 0, 64, 0.3) !important; /* Matches game button base */
+         border: 0px solid rgba(230, 21, 135, 0.3) !important; 
+         border-radius: 8px; 
+         cursor: pointer; 
+         font-weight: 500; 
+         font-family: 'Space Grotesk', sans-serif;
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         overflow: hidden; /* Required to clip the swish */
+         outline: none;
+         }
+         .back-btn::after {
+         content: '';
+         position: absolute;
+         top: -50%;
+         left: -60%;
+         width: 25%;
+         height: 200%;
+         background: linear-gradient(
+         to bottom,
+         rgba(255, 255, 255, 0.0) 0%,
+         rgba(255, 255, 255, 0.3) 50%,
+         rgba(255, 255, 255, 0.0) 100%
+         );
+         transform: rotate(35deg);
+         transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+         pointer-events: none;
+         }
+         .back-btn:hover {
+         background-color: #e61587 !important; /* Changes to Bright Pink like game buttons */
+         transform: translateY(-4px) scale(1.05);
+         box-shadow: 0 8px 20px rgba(230, 21, 135, 0.5);
+         border-color: #fff !important;
+         }
+         .back-btn:hover::after {
+         left: 140%;
+         }
+         .back-btn:active {
+         transform: scale(0.95);
+         }
+         :root {
+  	     --pink: #e61587;
+    	 --cyan: #00f0ff;
+  	     }
+ 	     #particle-canvas {
+   	     position: fixed;
+    	 top: 0; 
+    	 left: 0;
+    	 width: 100%; 
+    	 height: 100%;
+    	 pointer-events: none; /* Allows you to click buttons through the canvas */
+    	 z-index: 0;           /* Keeps it behind your buttons and text */
+    	 opacity: 0.4;         /* Makes the dots subtle */
+  	     
+         }
+         #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000; /* Solid black background */
+    z-index: 999999;  /* Higher than everything else */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease; /* Smooth fade out */
+}
+
+#load {
+    position: absolute;
+    width: 600px;
+    height: 36px;
+    left: 50%;
+    top: 50%; /* Adjusted from 40% to 50% for perfect center */
+    margin-left: -300px;
+    margin-top: -18px;
+    overflow: visible;
+    user-select: none;
+    cursor: default;
+}
+
+#load div {
+    position: absolute;
+    width: 30px;
+    height: 46px;
+    opacity: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    animation: move 3.25s linear infinite;
+    transform: rotate(180deg);
+    color: #FF00E6; /* Your Hot Pink color */
+}
+#load div:nth-child(2) {
+  animation-delay:0.2s;
+  -o-animation-delay:0.2s;
+  -moz-animation-delay:0.2s;
+  -webkit-animation-delay:0.2s;
+}
+#load div:nth-child(3) {
+  animation-delay:0.4s;
+  -o-animation-delay:0.4s;
+  -webkit-animation-delay:0.4s;
+  -webkit-animation-delay:0.4s;
+}
+#load div:nth-child(4) {
+  animation-delay:0.6s;
+  -o-animation-delay:0.6s;
+  -moz-animation-delay:0.6s;
+  -webkit-animation-delay:0.6s;
+}
+#load div:nth-child(5) {
+  animation-delay:0.8s;
+  -o-animation-delay:0.8s;
+  -moz-animation-delay:0.8s;
+  -webkit-animation-delay:0.8s;
+}
+#load div:nth-child(6) {
+  animation-delay:1s;
+  -o-animation-delay:1s;
+  -moz-animation-delay:1s;
+  -webkit-animation-delay:1s;
+}
+#load div:nth-child(7) {
+  animation-delay:1.2s;
+  -o-animation-delay:1.2s;
+  -moz-animation-delay:1.2s;
+  -webkit-animation-delay:1.2s;
+}
+
+@keyframes move {
+  0% {
+    left:0;
+    opacity:0;
+  }
+	35% {
+		left: 41%; 
+		-moz-transform:rotate(0deg);
+		-webkit-transform:rotate(0deg);
+		-o-transform:rotate(0deg);
+		transform:rotate(0deg);
+		opacity:1;
+	}
+	65% {
+		left:59%; 
+		-moz-transform:rotate(0deg); 
+		-webkit-transform:rotate(0deg); 
+		-o-transform:rotate(0deg);
+		transform:rotate(0deg); 
+		opacity:1;
+	}
+	100% {
+		left:100%; 
+		-moz-transform:rotate(-180deg); 
+		-webkit-transform:rotate(-180deg); 
+		-o-transform:rotate(-180deg); 
+		transform:rotate(-180deg);
+		opacity:0;
+	}
+}
+
+@-moz-keyframes move {
+	0% {
+		left:0; 
+		opacity:0;
+	}
+	35% {
+		left:41%; 
+		-moz-transform:rotate(0deg); 
+		transform:rotate(0deg);
+		opacity:1;
+	}
+	65% {
+		left:59%; 
+		-moz-transform:rotate(0deg); 
+		transform:rotate(0deg);
+		opacity:1;
+	}
+	100% {
+		left:100%; 
+		-moz-transform:rotate(-180deg); 
+		transform:rotate(-180deg);
+		opacity:0;
+	}
+}
+
+@-webkit-keyframes move {
+	0% {
+		left:0; 
+		opacity:0;
+	}
+	35% {
+		left:41%; 
+		-webkit-transform:rotate(0deg); 
+		transform:rotate(0deg); 
+		opacity:1;
+	}
+	65% {
+		left:59%; 
+		-webkit-transform:rotate(0deg); 
+		transform:rotate(0deg); 
+		opacity:1;
+	}
+	100% {
+		left:100%;
+		-webkit-transform:rotate(-180deg); 
+		transform:rotate(-180deg); 
+		opacity:0;
+	}
+}
+
+@-o-keyframes move {
+	0% {
+		left:0; 
+		opacity:0;
+	}
+	35% {
+		left:41%; 
+		-o-transform:rotate(0deg); 
+		transform:rotate(0deg); 
+		opacity:1;
+	}
+	65% {
+		left:59%; 
+		-o-transform:rotate(0deg); 
+		transform:rotate(0deg); 
+		opacity:1;
+	}
+	100% {
+		left:100%; 
+		-o-transform:rotate(-180deg); 
+		transform:rotate(-180deg); 
+		opacity:0;
+	}
+}
