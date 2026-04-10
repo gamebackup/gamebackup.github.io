@@ -1006,23 +1006,26 @@
          All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
       </div>
       <script>
-window.addEventListener('load', function() {
+(function() {
     // Generates a random number between 3000ms (3s) and 7000ms (7s)
     const min = 3000;
     const max = 7000;
     const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    console.log("Loading for: " + displayTime + "ms"); // Optional: see the time in console
+    console.log("Loading for: " + displayTime + "ms");
 
     setTimeout(function() {
         const loader = document.getElementById('preloader');
-        loader.style.opacity = '0'; 
-        
-        setTimeout(function() {
-            loader.style.display = 'none';
-        }, 1000); 
+        // Check if the loader exists before trying to hide it
+        if (loader) {
+            loader.style.opacity = '0'; 
+            
+            setTimeout(function() {
+                loader.style.display = 'none';
+            }, 1000); 
+        }
     }, displayTime);
-});
+})();
     /* ============ PARTICLE SYSTEM ============ */
 const canvas = document.getElementById('particle-canvas');
 const ctx = canvas.getContext('2d');
