@@ -482,19 +482,14 @@
       </div>
       <script>
 (function() {
-    // Generates a random number between 3000ms (3s) and 7000ms (7s)
     const min = 3000;
     const max = 7000;
     const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
-
     console.log("Loading for: " + displayTime + "ms");
-
     setTimeout(function() {
         const loader = document.getElementById('preloader');
-        // Check if the loader exists before trying to hide it
         if (loader) {
             loader.style.opacity = '0'; 
-            
             setTimeout(function() {
                 loader.style.display = 'none';
             }, 1000); 
