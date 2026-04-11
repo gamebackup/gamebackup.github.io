@@ -75,7 +75,7 @@
          white-space: nowrap;
          margin-left: auto;
          margin-right: auto;
-         Increase 50px to move it further right, decrease to move it left. */
+         /* Increase 50px to move it further right, decrease to move it left. */
          transform: translateX(150px);
          }
          .hero {
@@ -319,6 +319,7 @@
          :root {
   	     --pink: #e61587;
     	 --cyan: #00f0ff;
+	     --primary: #e61587;
   	     }
  	     #particle-canvas {
    	     position: fixed;
