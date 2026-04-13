@@ -877,17 +877,17 @@ function closeGame() {
 
 /* ============ TAB CLOAKING & SETTINGS ============ */
 const cloakPresets = {
+  "x3e unblocked games": { title: "x3e unblocked games", icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games", url: "x3e" },
   "Google":   { title: "Google",                    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        label: "Google",         url: "google.com" },
   "YouTube":  { title: "YouTube",                   icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                label: "YouTube",        url: "youtube.com" },
   "Canvas":   { title: "Dashboard",                 icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                     label: "Canvas",         url: "instructure.com" },
   "Khan":     { title: "Khan Academy",              icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     label: "Khan Academy",   url: "khanacademy.org" },
   "Docs":     { title: "Google Docs",               icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  label: "Google Docs",    url: "docs.google.com" },
   "Desmos":   { title: "Desmos | Graphing Calculator", icon: "https://www.desmos.com/favicon.ico",                                                           label: "Desmos",         url: "desmos.com" },
-  "Drive":    { title: "My Drive - Google Drive",   icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        label: "Google Drive",   url: "drive.google.com" },
-  "x3e unblocked games": { title: "x3e unblocked games", icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games", url: "x3e" }
+  "Drive":    { title: "My Drive - Google Drive",   icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        label: "Google Drive",   url: "drive.google.com" }
 };
 
-let currentCloakKey = "Google";
+let currentCloakKey = "x3e unblocked games";
 
 function applyCloak(presetKey) {
   if (!cloakPresets[presetKey]) return;
