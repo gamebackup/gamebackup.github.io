@@ -357,7 +357,7 @@
 			<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
 			<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/chord/')">Chorde - Early Access (chat room replacement)</button>
+			<button onclick="playChorde('https://gamebackup.github.io/standalone_games_3/chord/')">🔒Chorde - Early Access🔒</button>
          </div>
       </div>
       <div class="section">
@@ -432,7 +432,6 @@
             <button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
             <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
             <button onclick="playGame('https://minhhua.com/space_marine_painter_3d/')">Space Marine Painter 3D</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/chord/')">Chorde - Early Access (chat room replacement)</button>
          </div>
       </div>
       <div class="section">
@@ -944,6 +943,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === this) closeSettings();
   });
 });
+/* ============ EARLY ACCESS PROTECTION ============ */
+function playChorde(gameUrl) {
+  const accessCode = prompt("Please enter the Early Access Password:");
+
+  if (accessCode === "x3e-beta-2026") {
+    playGame(gameUrl);
+  } else if (accessCode !== null) {
+    alert("Incorrect password. Access denied.");
+  }
+}
       </script>
 
       <div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
@@ -973,13 +982,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <span class="close-settings" onclick="closeSettings()">[✕]</span>
           </div>
-
-          <!-- Body -->
           <div class="settings-body">
             <div class="setting-section-label">Tab Cloaking</div>
             <p class="setting-description">Changes tab name and icon instantly. You can request more pages in the game request form.</p>
             <div class="cloak-grid" id="cloak-grid">
-              <!-- Cards injected by buildCloakCards() -->
             </div>
           </div>
         </div>
