@@ -873,14 +873,15 @@ function closeGame() {
 
 /* ============ TAB CLOAKING & SETTINGS ============ */
 const cloakPresets = {
-  "x3e unblocked games": { title: "x3e unblocked games", icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games", url: "x3e" },
-  "Google":   { title: "Google",                    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        label: "Google",         url: "google.com" },
-  "YouTube":  { title: "YouTube",                   icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                label: "YouTube",        url: "youtube.com" },
-  "Canvas":   { title: "Dashboard",                 icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                     label: "Canvas",         url: "instructure.com" },
-  "Khan":     { title: "Khan Academy",              icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     label: "Khan Academy",   url: "khanacademy.org" },
-  "Docs":     { title: "Google Docs",               icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  label: "Google Docs",    url: "docs.google.com" },
-  "Desmos":   { title: "Desmos | Graphing Calculator", icon: "https://www.desmos.com/favicon.ico",                                                           label: "Desmos",         url: "desmos.com" },
-  "Drive":    { title: "My Drive - Google Drive",   icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        label: "Google Drive",   url: "drive.google.com" }
+  "x3e unblocked games": { title: "x3e unblocked games", 		    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",  label: "x3e Games", 			url: "x3e" },
+  "Google":   			 { title: "Google",                    	 	icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        	label: "Google",            	url: "google.com" },
+  "YouTube": 			 { title: "YouTube",                   	 	icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                	label: "YouTube",           	url: "youtube.com" },
+  "Canvas":   			 { title: "Dashboard",                 	 	icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                      	label: "Canvas",            	url: "instructure.com" },
+  "Khan":     			 { title: "Khan Academy",              	 	icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     	label: "Khan Academy",      	url: "khanacademy.org" },
+  "Docs":     			 { title: "Google Docs",               	 	icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  	label: "Google Docs",       	url: "docs.google.com" },
+  "Desmos":   			 { title: "Desmos | Graphing Calculator",   icon: "https://www.desmos.com/favicon.ico",                                                           	 	label: "Desmos",            	url: "desmos.com" },
+  "Drive":    			 { title: "My Drive - Google Drive",        icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        	label: "Google Drive",      	url: "drive.google.com" },
+  "Google Classroom": 	 { title: "Home - Classroom",       		icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg",                           		 	label: "Google Classroom",  	url: "classroom.google.com"}
 };
 
 let currentCloakKey = "x3e unblocked games";
@@ -894,7 +895,6 @@ function applyCloak(presetKey) {
   if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
   link.href = preset.icon;
   localStorage.setItem("userCloak", presetKey);
-  // Update card active states
   document.querySelectorAll('.cloak-card').forEach(card => {
     card.classList.toggle('active', card.dataset.key === presetKey);
   });
@@ -929,21 +929,17 @@ function openSettings() {
   buildCloakCards();
   const modal = document.getElementById('settings-modal');
   modal.style.display = 'flex';
-  // Trigger reflow for animation
   void modal.offsetWidth;
 }
 
 function closeSettings() {
   document.getElementById('settings-modal').style.display = 'none';
 }
-
-// Close on backdrop click
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('settings-modal').addEventListener('click', function(e) {
     if (e.target === this) closeSettings();
   });
 });
-/* ============ EARLY ACCESS PROTECTION ============ */
 function playChorde(gameUrl) {
   const accessCode = prompt("Please enter Early Access key:");
 
