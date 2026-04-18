@@ -1,1256 +1,1990 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chorde — x3e chat</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-  :root {
-    --bg-deepest: #0b0d12;
-    --bg-dark: #10121a;
-    --bg-mid: #15182280;
-    --bg-panel: #151820;
-    --bg-sidebar: #0f111a;
-    --bg-input: #1e2130;
-    --bg-hover: #1e2235;
-    --bg-active: #252a3d;
-    --bg-msg-hover: #1a1d2a;
-    --accent: #7c6af7;
-    --accent-bright: #9d8fff;
-    --accent-dim: #4a3fa8;
-    --accent-glow: rgba(124,106,247,0.25);
-    --green: #3ddc84;
-    --red: #ff5c5c;
-    --yellow: #f5f543;
-    --text-main: #e0e0e0;
-    --text-dim: #949ba4;
-    --text-muted: #4e5058;
-    --border: rgba(255,255,255,0.06);
-    --radius-lg: 12px;
-    --radius-md: 8px;
-    --radius-sm: 4px;
-    --shadow-soft: 0 4px 20px rgba(0,0,0,0.4);
-  }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: var(--bg-deepest);
-    color: var(--text-main);
-    font-family: 'Sora', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-  }
+   <head>
 
-  button, input { font-family: inherit; }
-  .hidden { display: none !important; }
+      <meta charset="UTF-8"/>
 
-  /* AUTH SCREEN */
-  #auth-screen {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, #1a1d2e 0%, #0b0d12 100%);
-  }
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  .auth-card {
-    background: var(--bg-panel);
-    width: 400px;
-    padding: 40px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-soft);
-    text-align: center;
-  }
+      <title>x3e unblocked games</title>
 
-  .logo-text {
-    font-family: 'Space Mono', monospace;
-    font-weight: 700;
-    font-size: 32px;
-    letter-spacing: -2px;
-    margin-bottom: 30px;
-    color: var(--accent-bright);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+      <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
 
-  .logo-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+      <base href="https://gamebackup.github.io/">
 
-  .auth-form h2 { margin-bottom: 8px; font-weight: 600; }
-  .auth-form p { color: var(--text-dim); margin-bottom: 24px; font-size: 14px; }
+   </head>
 
-  .input-group { text-align: left; margin-bottom: 16px; }
-  .input-group label { display: block; font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
-  .input-group input {
-    width: 100%;
-    background: var(--bg-input);
-    border: 1px solid transparent;
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    color: #fff;
-    outline: none;
-    transition: border 0.2s;
-  }
-  .input-group input:focus { border-color: var(--accent); }
-
-  .btn-primary {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 14px;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: var(--accent-bright); }
-
-  .auth-toggle { margin-top: 20px; font-size: 13px; color: var(--text-dim); }
-  .auth-toggle span { color: var(--accent-bright); cursor: pointer; }
-
-  .color-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .color-swatch {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: transform 0.2s;
-  }
-  .color-swatch:hover { transform: scale(1.1); }
-  .color-swatch.selected { border-color: #fff; }
-
-  /* MAIN APP LAYOUT */
-  #chat-screen {
-    display: flex;
-    height: 100vh;
-  }
-
-  .sidebar {
-    width: 260px;
-    background: var(--bg-sidebar);
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--border);
-  }
-
-  .sidebar-header {
-    padding: 16px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    font-weight: 700;
-    font-family: 'Space Mono', monospace;
-  }
-
-  .channels-list { flex: 1; overflow-y: auto; padding: 12px 8px; }
-  .section-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--text-dim);
-    margin: 16px 8px 8px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .add-btn { cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
-  .add-btn:hover { opacity: 1 !important; }
-
-  .channel-item {
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    color: var(--text-dim);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 2px;
-    font-size: 14px;
-  }
-  .channel-item:hover { background: var(--bg-hover); color: var(--text-main); }
-  .channel-item.active { background: var(--bg-active); color: #fff; }
-  .channel-item::before { content: "#"; opacity: 0.5; font-family: 'Space Mono', monospace; }
-
-  .user-bar {
-    padding: 12px;
-    background: rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .u-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 12px;
-    color: #fff;
-  }
-  .u-info { flex: 1; overflow: hidden; }
-  .u-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .u-status { font-size: 11px; color: var(--text-dim); }
-
-  /* CHAT AREA */
-  .chat-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-panel);
-  }
-
-  .chat-header {
-    height: 60px;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    gap: 10px;
-  }
-  .ch-hash { color: var(--text-dim); font-size: 20px; font-family: 'Space Mono', monospace; }
-  .ch-title { font-weight: 600; }
-
-  .messages-wrap {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .message { display: flex; gap: 16px; position: relative; }
-  .message:hover { background: var(--bg-msg-hover); margin: 0 -20px; padding: 0 20px; }
-  
-  .del-msg {
-    position: absolute;
-    right: 25px;
-    top: 5px;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 18px;
-    display: none;
-  }
-  .message:hover .del-msg { display: block; }
-  .del-msg:hover { color: var(--red); }
-
-  .msg-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .msg-content { flex: 1; min-width: 0; }
-  .msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-  .msg-user { font-weight: 600; font-size: 14px; cursor: pointer; }
-  .msg-user:hover { text-decoration: underline; }
-  .msg-time { color: var(--text-dim); font-size: 11px; }
-  .msg-text { font-size: 14px; line-height: 1.5; color: #dbdee1; word-wrap: break-word; }
-
-  .input-area { padding: 0 20px 24px; }
-  .input-box {
-    background: var(--bg-input);
-    border-radius: var(--radius-md);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .input-box input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: #fff;
-    padding: 8px 0;
-    font-size: 14px;
-  }
-  .typing-indicator { height: 20px; padding: 0 24px; font-size: 12px; color: var(--text-dim); font-style: italic; }
-
-  /* MODALS */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-  }
-  .modal {
-    background: var(--bg-panel);
-    width: 440px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 24px;
-  }
-  .modal h3 { margin-bottom: 20px; }
-  .modal-btns { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
-  .btn-ghost { background: none; border: none; color: #fff; cursor: pointer; padding: 8px 16px; font-size: 14px; }
-  .btn-action { background: var(--accent); border: none; color: #fff; cursor: pointer; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 600; }
+   <style>body{margin:0;font-family:'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif;background-color:#111;color:white}header{background-color:black;display:flex;align-items:center;justify-content:space-between;padding:8px 20px;position:relative;z-index:1000;gap:20px}header img{height:40px;border-radius:5px;flex-shrink:0}nav{display:flex;gap:15px;margin:0 20px}nav a{color:#fff;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}nav a:hover{color:#fff;background:rgba(230,21,135,.2);border-color:#e61587;box-shadow:0 0 15px rgba(230,21,135,.4);transform:translateY(-2px)}nav a::after{content:'';position:absolute;top:-50%;left:-60%;width:20%;height:200%;background:rgba(255,255,255,.1);transform:rotate(30deg);transition:all .5s}nav a:hover::after{left:120%}.game-count{background:rgba(230,21,135,.2);backdrop-filter:blur(4px);padding:5px 14px;border-radius:60px;font-size:.85rem;font-weight:600;font-family:'Space Grotesk',monospace;border:1px solid rgba(230,21,135,.5);box-shadow:0 0 6px rgba(230,21,135,.3);flex-shrink:0;white-space:nowrap;margin-left:auto;margin-right:auto;transform:translateX(175px)}.hero{background-image:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.05)),url("https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/darken_tree_hd.png");background-size:cover;background-position:center;text-align:center;padding:5vh 20px}.content-box{background-color:rgba(30,30,30,.6);border-radius:15px;border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 1px rgba(255,255,255,.2),2px 2px 10px rgba(0,0,0,.5);padding:25px;color:pink;max-width:900px;margin:20px auto;backdrop-filter:blur(4.5px);-webkit-backdrop-filter:blur(2px)}.hero h1{font-size:32px;font-weight:bold;margin-top:0}.hero p{font-size:20px;margin:12px auto}.section{padding:30px 5%;max-width:1200px;margin:0 auto}.section h2{color:#e61587;margin-bottom:20px;font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:1px}.button-grid{display:flex;flex-wrap:wrap;gap:12px}.button-grid button{background-color:rgba(128,0,64,.3);color:white;border:0px solid rgba(230,21,135,.3);padding:12px 18px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:500;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}.button-grid button::after{content:'';position:absolute;top:-50%;left:-60%;width:25%;height:200%;background:linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);transform:rotate(35deg);transition:all .6s cubic-bezier(.4,0,.2,1);pointer-events:none}.button-grid button:hover{background-color:#e61587;transform:translateY(-4px) scale(1.05);box-shadow:0 8px 20px rgba(230,21,135,.5);border-color:#fff}.button-grid button:hover::after{left:140%}@media (max-width:600px){.button-grid{flex-direction:column;align-items:center}header{flex-direction:column;align-items:center;padding:10px}nav{margin-top:10px;flex-direction:column;align-items:center}.section{text-align:center}}.search-bar{display:flex;align-items:center;background:#222;border:2px solid #e61587;border-radius:50px;width:46px;height:46px;transition:width .4s cubic-bezier(.175,.885,.32,1.275);overflow:hidden;position:relative}.search-bar:focus-within,.search-bar:hover{width:250px}.search-input{background:transparent;border:none;outline:none;color:white;padding:0 15px 0 46px;width:100%;opacity:0;transition:opacity .3s}.search-bar:focus-within .search-input,.search-bar:hover .search-input{opacity:1}.search-icon{position:absolute;left:10px;color:#e61587;pointer-events:none}.header-right{display:flex;align-items:center;gap:15px;flex-shrink:0;justify-content:flex-end}.glitch-title{font-family:'Orbitron',monospace;font-weight:800;font-size:1.4rem;background:linear-gradient(135deg,#fff,#e61587);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-.3px;position:relative}.glitch-title::after,.glitch-title::before{content:attr(data-text);position:absolute;top:0;left:0;width:100%;overflow:hidden;background:linear-gradient(135deg,#fff,#e61587);background-clip:text;-webkit-background-clip:text;color:transparent}.glitch-title::before{color:var(--cyan);animation:glitch1 4s infinite;clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%)}.glitch-title::after{color:var(--primary);animation:glitch2 2s infinite;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%)}@keyframes glitch1{0%,100%,88%{transform:none;opacity:0}89%{transform:translateX(-3px);opacity:1}91%{transform:translateX(2px);opacity:1}93%{transform:none;opacity:0}}@keyframes glitch2{0%,100%,91%{transform:none;opacity:0}92%{transform:translateX(3px);opacity:1}94%{transform:translateX(-1px);opacity:1}96%{transform:none;opacity:0}}.back-btn{position:absolute;bottom:20px;right:15px;z-index:100000;padding:12px 18px;color:white!important;background-color:rgba(128,0,64,.3)!important;border:0px solid rgba(230,21,135,.3)!important;border-radius:8px;cursor:pointer;font-weight:500;font-family:'Space Grotesk',sans-serif;transition:all .3s cubic-bezier(.4,0,.2,1);overflow:hidden;outline:none}.back-btn::after{content:'';position:absolute;top:-50%;left:-60%;width:25%;height:200%;background:linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);transform:rotate(35deg);transition:all .6s cubic-bezier(.4,0,.2,1);pointer-events:none}.back-btn:hover{background-color:#e61587!important;transform:translateY(-4px) scale(1.05);box-shadow:0 8px 20px rgba(230,21,135,0.5);border-color:#fff!important}.back-btn:hover::after{left:140%}.back-btn:active{transform:scale(.95)}:root{--pink:#e61587;--cyan:#00f0ff;--primary:#e61587}#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.4}#preloader{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999999;display:flex;justify-content:center;align-items:center;transition:opacity 1s ease}#load{position:absolute;width:600px;height:36px;left:50%;top:50%;margin-left:-300px;margin-top:-18px;overflow:visible;user-select:none;cursor:default}#load div{position:absolute;width:30px;height:46px;opacity:0;font-family:Helvetica,Arial,sans-serif;font-weight:bold;animation:move 3.25s linear infinite;transform:rotate(180deg);color:#f0e}#load div:nth-child(2){animation-delay:.2s}#load div:nth-child(3){animation-delay:.4s}#load div:nth-child(4){animation-delay:.6s}#load div:nth-child(5){animation-delay:.8s}#load div:nth-child(6){animation-delay:1s}#load div:nth-child(7){animation-delay:1.2s}@keyframes move{0%{left:0;opacity:0}35%{left:41%;transform:rotate(0deg);opacity:1}65%{left:59%;transform:rotate(0deg);opacity:1}100%{left:100%;transform:rotate(-180deg);opacity:0}}
 
 
-  /* MEMBER LIST */
-  .member-list {
-    width: 220px;
-    background: var(--bg-sidebar);
-    border-left: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .member-list-header {
-    padding: 16px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--text-dim);
-    gap: 6px;
-  }
-  .online-pip {
-    width: 8px; height: 8px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 6px var(--green);
-    flex-shrink: 0;
-  }
-  .members-scroll { flex: 1; overflow-y: auto; padding: 12px 8px; }
-  .member-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 8px;
-    border-radius: var(--radius-sm);
-    cursor: default;
-    transition: background 0.15s;
-  }
-  .member-item:hover { background: var(--bg-hover); }
-  .member-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 11px; color: #fff;
-    flex-shrink: 0;
-  }
-  .member-name { font-size: 13px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .member-item:hover .member-name { color: var(--text-main); }
-  .you-tag { font-size: 10px; color: var(--text-muted); }
 
-  /* MARKDOWN */
-  .msg-text strong { color: #fff; font-weight: 700; }
-  .msg-text em { font-style: italic; }
-  .msg-text u  { text-decoration: underline; }
-  .msg-text del { text-decoration: line-through; opacity: 0.6; }
-  .msg-text code {
-    background: #1e2030;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 3px;
-    padding: 1px 5px;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: #e06c75;
-  }
-  .msg-text pre {
-    background: #1a1d2e;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    margin: 6px 0;
-    overflow-x: auto;
-  }
-  .msg-text pre code {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #abb2bf;
-    font-size: 13px;
-  }
-  .msg-text blockquote {
-    border-left: 4px solid var(--accent-dim);
-    padding-left: 12px;
-    margin: 4px 0;
-    color: var(--text-dim);
-    font-style: italic;
-  }
+#settings-modal {
 
-  /* TYPING DOTS ANIMATION */
-  .typing-indicator { height: 24px; padding: 0 24px 4px; font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-  .typing-dots { display: inline-flex; gap: 3px; align-items: center; }
-  .typing-dots span {
-    width: 5px; height: 5px;
-    background: var(--text-dim);
-    border-radius: 50%;
-    animation: typingBounce 1.2s ease-in-out infinite;
-  }
-  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30%            { transform: translateY(-4px); opacity: 1; }
-  }
+  display: none;
+
+  position: fixed;
+
+  top: 0; left: 0;
+
+  width: 100%; height: 100%;
+
+  background: rgba(0,0,0,0.85);
+
+  z-index: 1000000;
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  justify-content: center;
+
+  align-items: center;
+
+}
+
+#settings-modal.open { display: flex; }
 
 
-  /* CHANNEL DELETE BUTTON (admin only) */
-  .channel-item .del-ch {
-    margin-left: auto;
-    opacity: 0;
-    color: var(--text-muted);
-    font-size: 13px;
-    line-height: 1;
-    padding: 2px 4px;
-    border-radius: 3px;
-    transition: opacity 0.15s, color 0.15s, background 0.15s;
-    flex-shrink: 0;
-  }
-  .channel-item:hover .del-ch { opacity: 1; }
-  .del-ch:hover { color: var(--red) !important; background: rgba(255,92,92,0.15); }
 
-  /* LOCKED CHANNEL (rules not yet accepted) */
-  .channel-item.ch-locked { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
-  .channel-item.ch-locked::before { content: "🔒"; font-size: 10px; opacity: 1; font-family: inherit; }
+.settings-content {
 
-  /* RULES CHANNEL — always highlighted slightly */
-  .channel-item.ch-rules::before { content: "📜"; font-size: 11px; opacity: 1; font-family: inherit; }
+  position: relative;
 
-  /* RULES GATE BAR */
-  #rules-gate {
-    margin: 0 20px 8px;
-    border-radius: var(--radius-md);
-    padding: 12px 16px;
-    font-size: 12px;
-    text-align: center;
-    transition: all 0.3s;
-  }
-  #rules-gate.gate-scroll {
-    background: rgba(124,106,247,0.12);
-    border: 1px solid rgba(124,106,247,0.25);
-    color: var(--text-dim);
-  }
-  #rules-gate.gate-accept {
-    background: rgba(61,220,132,0.12);
-    border: 1px solid rgba(61,220,132,0.3);
-    color: var(--text-main);
-  }
-  .btn-accept-rules {
-    background: var(--green);
-    color: #0b0d12;
-    border: none;
-    padding: 8px 20px;
-    border-radius: var(--radius-sm);
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 8px;
-    font-size: 12px;
-    display: block;
-    width: 100%;
-    transition: opacity 0.2s;
-  }
-  .btn-accept-rules:hover { opacity: 0.85; }
+  background: linear-gradient(160deg, rgba(18,5,15,0.98) 0%, rgba(10,10,18,0.98) 100%);
 
-  /* READ-ONLY NOTICE in rules channel for non-admins */
-  .rules-readonly {
-    padding: 10px 20px 16px;
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: center;
-    font-style: italic;
-  }
+  border: 1px solid rgba(230,21,135,0.5);
 
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2b2d31; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #35373c; }
+  border-radius: 16px;
 
-</style>
-</head>
-<body>
+  width: 90%;
 
-  <div id="auth-screen">
-    <div class="auth-card">
-      <div class="logo-text"><div class="logo-dot"></div> CHORDE</div>
-      
-      <div id="login-view" class="auth-form">
-        <h2>Welcome to Chorde!</h2>
-        <p>If you've been here before, welcome back!</p>
-        <div class="input-group">
-          <label>Username</label>
-          <input type="text" id="login-user">
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="login-pass">
-        </div>
-        <button class="btn-primary" onclick="tryLogin()">Log In</button>
-        <div class="auth-toggle">Need an account? <span onclick="toggleAuth(false)">Register</span></div>
+  max-width: 520px;
+
+  overflow: hidden;
+
+  box-shadow:
+
+    0 0 0 1px rgba(230,21,135,0.15),
+
+    0 0 40px rgba(230,21,135,0.25),
+
+    0 0 100px rgba(230,21,135,0.08),
+
+    inset 0 1px 0 rgba(255,255,255,0.06);
+
+  animation: settingsSlideIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+
+}
+
+
+
+@keyframes settingsSlideIn {
+
+  from { opacity: 0; transform: scale(0.88) translateY(20px); }
+
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+
+}
+
+
+
+.settings-content::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  background: repeating-linear-gradient(
+
+    0deg,
+
+    rgba(0,0,0,0.08) 0px,
+
+    rgba(0,0,0,0.08) 1px,
+
+    transparent 1px,
+
+    transparent 3px
+
+  );
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  border-radius: 16px;
+
+}
+
+
+
+.settings-topbar {
+
+  position: relative;
+
+  z-index: 1;
+
+  height: 4px;
+
+  background: linear-gradient(90deg, #e61587, #00f0ff, #e61587);
+
+  background-size: 200% 100%;
+
+  animation: shiftGradient 3s linear infinite;
+
+}
+
+@keyframes shiftGradient {
+
+  0%   { background-position: 0% 0%; }
+
+  100% { background-position: 200% 0%; }
+
+}
+
+
+
+.settings-header {
+
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 22px 28px 16px;
+
+  border-bottom: 1px solid rgba(230,21,135,0.2);
+
+}
+
+
+
+.settings-header-left {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+
+
+.settings-gear-icon {
+
+  width: 38px;
+
+  height: 38px;
+
+  color: #e61587;
+
+  filter: drop-shadow(0 0 8px rgba(230,21,135,0.7));
+
+  animation: spinGear 8s linear infinite;
+
+  flex-shrink: 0;
+
+}
+
+@keyframes spinGear {
+
+  from { transform: rotate(0deg); }
+
+  to   { transform: rotate(360deg); }
+
+}
+
+
+
+.settings-title-text {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+}
+
+.settings-title-text h2 {
+
+  margin: 0;
+
+  font-family: 'Orbitron', sans-serif;
+
+  font-size: 1.15rem;
+
+  font-weight: 800;
+
+  letter-spacing: 3px;
+
+  text-transform: uppercase;
+
+  background: linear-gradient(135deg, #fff 30%, #e61587);
+
+  background-clip: text;
+
+  -webkit-background-clip: text;
+
+  color: transparent;
+
+}
+
+.settings-title-text .settings-sub {
+
+  font-family: 'Space Grotesk', monospace;
+
+  font-size: 0.65rem;
+
+  color: rgba(230,21,135,0.7);
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+}
+
+
+
+.close-settings {
+
+  color: rgba(255,255,255,0.4);
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition: color 0.2s, text-shadow 0.2s;
+
+  line-height: 1;
+
+  padding: 4px 8px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  border-radius: 6px;
+
+  background: rgba(255,255,255,0.04);
+
+  font-family: monospace;
+
+  z-index: 1;
+
+  position: relative;
+
+}
+
+.close-settings:hover {
+
+  color: #e61587;
+
+  border-color: rgba(230,21,135,0.5);
+
+  text-shadow: 0 0 12px rgba(230,21,135,0.8);
+
+  background: rgba(230,21,135,0.1);
+
+}
+
+
+
+.settings-body {
+
+  position: relative;
+
+  z-index: 1;
+
+  padding: 24px 28px 28px;
+
+}
+
+
+
+.setting-section-label {
+
+  font-family: 'Space Grotesk', sans-serif;
+
+  font-size: 0.65rem;
+
+  font-weight: 700;
+
+  letter-spacing: 3px;
+
+  text-transform: uppercase;
+
+  color: rgba(230,21,135,0.6);
+
+  margin-bottom: 8px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+}
+
+.setting-section-label::after {
+
+  content: '';
+
+  flex: 1;
+
+  height: 1px;
+
+  background: linear-gradient(90deg, rgba(230,21,135,0.3), transparent);
+
+}
+
+
+
+.setting-description {
+
+  font-family: 'Space Grotesk', sans-serif;
+
+  font-size: 0.75rem;
+
+  color: rgba(255,255,255,0.35);
+
+  margin: 0 0 16px;
+
+  letter-spacing: 0.3px;
+
+}
+
+
+
+.cloak-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 10px;
+
+}
+
+
+
+.cloak-card {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 14px;
+
+  border-radius: 9px;
+
+  border: 1px solid rgba(255,255,255,0.07);
+
+  background: rgba(255,255,255,0.03);
+
+  cursor: pointer;
+
+  transition: all 0.25s cubic-bezier(.4,0,.2,1);
+
+  overflow: hidden;
+
+  font-family: 'Space Grotesk', sans-serif;
+
+  font-size: 0.8rem;
+
+  font-weight: 500;
+
+  color: rgba(255,255,255,0.6);
+
+  text-align: left;
+
+}
+
+.cloak-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  top: -50%; left: -60%;
+
+  width: 25%; height: 200%;
+
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0) 100%);
+
+  transform: rotate(35deg);
+
+  transition: left 0.5s cubic-bezier(.4,0,.2,1);
+
+  pointer-events: none;
+
+}
+
+.cloak-card:hover {
+
+  border-color: rgba(230,21,135,0.4);
+
+  background: rgba(230,21,135,0.08);
+
+  color: #fff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 4px 16px rgba(230,21,135,0.2);
+
+}
+
+.cloak-card:hover::before { left: 140%; }
+
+
+
+.cloak-card.active {
+
+  border-color: #e61587;
+
+  background: rgba(230,21,135,0.15);
+
+  color: #fff;
+
+  box-shadow: 0 0 0 1px rgba(230,21,135,0.3), 0 4px 20px rgba(230,21,135,0.2);
+
+}
+
+.cloak-card.active::after {
+
+  content: '✓';
+
+  position: absolute;
+
+  top: 6px; right: 8px;
+
+  font-size: 0.6rem;
+
+  color: #e61587;
+
+  font-weight: 900;
+
+  background: rgba(230,21,135,0.2);
+
+  border-radius: 50%;
+
+  width: 14px; height: 14px;
+
+  display: flex; align-items: center; justify-content: center;
+
+  line-height: 14px;
+
+  text-align: center;
+
+}
+
+
+
+.cloak-card img {
+
+  width: 18px;
+
+  height: 18px;
+
+  border-radius: 3px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+
+}
+
+
+
+.cloak-card-name {
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+
+}
+
+.cloak-card-url {
+
+  font-size: 0.6rem;
+
+  opacity: 0.45;
+
+  font-family: monospace;
+
+  margin-top: 1px;
+
+}
+
+
+
+.settings-footer {
+
+  position: relative;
+
+  z-index: 1;
+
+  padding: 14px 28px;
+
+  border-top: 1px solid rgba(230,21,135,0.12);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: rgba(0,0,0,0.2);
+
+}
+
+.settings-footer-text {
+
+  font-family: 'Space Grotesk', monospace;
+
+  font-size: 0.6rem;
+
+  color: rgba(255,255,255,0.2);
+
+  letter-spacing: 1.5px;
+
+  text-transform: uppercase;
+
+}
+
+.settings-footer-dot {
+
+  width: 6px; height: 6px;
+
+  border-radius: 50%;
+
+  background: #e61587;
+
+  box-shadow: 0 0 8px rgba(230,21,135,0.8);
+
+  animation: pulseDot 2s ease-in-out infinite;
+
+}
+
+@keyframes pulseDot {
+
+  0%, 100% { opacity: 1; transform: scale(1); }
+
+  50% { opacity: 0.4; transform: scale(0.7); }
+
+}
+
+
+
+   </style>
+
+   <body>
+
+		<div id="preloader">
+
+      		<div id="load">
+
+        	  <div>G</div>
+
+       		  <div>N</div>
+
+        	  <div>I</div>
+
+       		  <div>D</div>
+
+       		  <div>A</div>
+
+       		  <div>O</div>
+
+       		  <div>L</div>
+
       </div>
 
-      <div id="reg-view" class="auth-form hidden">
-        <h2>Create an account</h2>
-        <p>Make sure to save your details somewhere!</p>
-        <div class="input-group">
-          <label>Username</label>
-          <input type="text" id="reg-user">
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="reg-pass">
-        </div>
-        <label style="display:block; text-align:left; font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-dim); margin-bottom:12px;">Profile Color</label>
-        <div class="color-grid" id="reg-color-grid"></div>
-        <button class="btn-primary" onclick="tryRegister()">Continue</button>
-        <div class="auth-toggle">Already have an account? <span onclick="toggleAuth(true)">Log In</span></div>
-      </div>
-    </div>
-  </div>
+   </div>
 
-  <div id="chat-screen" class="hidden">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <span>CHORDE</span>
-        <div class="logo-dot"></div>
-      </div>
-      
-      <div class="channels-list">
-        <div class="section-label">
-          <span>Text Channels</span>
-          <span class="add-btn" onclick="openCreateChannel()">+</span>
-        </div>
-        <div id="channels-container"></div>
-      </div>
+    <canvas id="particle-canvas"></canvas>
 
-      <div class="user-bar">
-        <div id="my-avatar" class="u-avatar"></div>
-        <div class="u-info">
-          <div id="my-name" class="u-name"></div>
-          <div class="u-status">Online</div>
-        </div>
-        <div class="add-btn" style="opacity:0.5" onclick="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></div>
-      </div>
-    </aside>
+      <header>
 
-    <main class="chat-container">
-      <header class="chat-header">
-        <span class="ch-hash">#</span>
-        <span id="active-ch-title" class="ch-title">Select a channel</span>
+         <div style="display: flex; align-items: center; gap: 15px;">
+
+            <img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
+
+            <div style="display: flex; flex-direction: column;">
+
+               <div class="glitch-title" data-text="x3e unblocked games">x3e unblocked games</div>
+
+            </div>
+
+         </div>
+
+         <div class="game-count">Game Count: 257</div>
+
+         <nav>
+
+            <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
+
+            <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
+
+            <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
+
+            <a href="#" onclick="openSettings(); return false;">Settings</a>
+
+         </nav>
+
+         <div class="search-wrapper">
+
+            <div class="search-bar">
+
+               <div class="search-icon">
+
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+
+                     <circle cx="11" cy="11" r="8"></circle>
+
+                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+
+                  </svg>
+
+               </div>
+
+               <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
+
+            </div>
+
+         </div>
+
       </header>
 
-      <div class="messages-wrap" id="messages-container"></div>
+      <div class="hero">
 
-      <div id="rules-gate" class="hidden"></div>
-      <div id="rules-readonly" class="rules-readonly hidden">This is a read-only rules channel. Scroll to the bottom to unlock all channels.</div>
-      <div class="typing-indicator" id="typing-box"></div>
-      
-      <div class="input-area">
-        <div class="input-box">
-          <input type="text" id="chat-input" placeholder="Message..." onkeydown="handleChatKey(event)" oninput="applyCensorInput(); handleTypingInput()">
-        </div>
+         <div class="content-box">
+
+            <div class="herotext">
+
+               <h1>Share with Friends!! Tell them to go to tinyurl.com/x3e-at-school</h1>
+
+               <p><strong>Make sure to refresh the tab every day for new games!</strong></p>
+
+               <p><strong>For Ruffle games, right-click the screen for a fullscreen option.</strong></p>
+
+               <p><strong>Double click whatever game's main menu when it loads, to make sure the controls are focused. If you don't you will end up reloading the page instead of playing it</strong></p>
+
+               <p><strong>Stars next to games mean the following: * = Little Laggy, ** = Probably Playable, *** = Won't run on chromebooks.</strong></p>
+
+               <p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
+
+            </div>
+
+         </div>
+
       </div>
-    </main>
 
-    <aside class="member-list">
-      <div class="member-list-header">
-        <div class="online-pip"></div>
-        <span id="online-count">0</span>&nbsp;Online
+      <div class="section">
+
+         <h2>10 Most Recent Games:</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/machinegg/')">The MachinEGG</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/innoveryourhead/')">Inn Over Your Head*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/yomihustle/')">Your Only Move is Hustle</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
+
+            <button onclick="playGame('https://minhhua.com/space_marine_painter_3d/')">Space Marine Painter 3D</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
+
+			<button onclick="playChorde('https://gamebackup.github.io/standalone_games_3/chord/')">🔒Chorde - Early Access (broken atm)🔒</button>
+
+         </div>
+
       </div>
-      <div class="members-scroll" id="members-container"></div>
-    </aside>
-  </div>
 
-  <div id="modal-channel" class="modal-overlay hidden">
-    <div class="modal">
-      <h3>Create Channel</h3>
-      <div class="input-group">
-        <label>Channel Name</label>
-        <input type="text" id="new-ch-name" placeholder="new-channel">
+      <div class="section">
+
+         <h2>Action & Adventure</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/burritobisonLL/')">Burrito Bison</button> 
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/bbrevenge/')">Burrito Bison: Revenge</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/superhotlinemiami/')">SUPERHOTLine Miami</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy/')">Cactus Mccoy</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy2/')">Cactus Mccoy 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/johnnyupgrade/')">Johnny Upgrade</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/diggy/')">Diggy</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/retro bowl/')">Retro Bowl</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/pico8_games/justoneboss/web/')">Just One Boss</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/re-run/')">RE:RUN</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie/')">Earn to Die</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie2/')">Earn to Die 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/superhot/')">SUPERHOT*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/supercold/')">SUPERCOLD</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/undertale/')">UNDERTALE</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/deltarune/')">DELTARUNE</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/slimerancher/')">Slime Rancher - MOUSE REQUIRED!*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/oneshot/')">Oneshot</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/halflife/')">Half Life - Just press "Launch Xash!" ignore the options</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/')">Hollow Knight*</button>
+
+         </div>
+
       </div>
-      <div class="modal-btns">
-        <button class="btn-ghost" onclick="closeModals()">Cancel</button>
-        <button class="btn-action" onclick="createChannel()">Create Channel</button>
+
+      <div class="section">
+
+         <h2>Arcade & Classic</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/worldshardestgame/')">World's Hardest Game</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/pacman/')">Pacman</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/2048/')">2048</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/9007/')">90071992547409</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/tinyfishing/')">Tiny Fishing</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/hauntthehouse/')">Haunt the House</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/wordleunlimited/')">Wordle</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/qwop/')">QWOP</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/doodlejump/')">Doodle Jump</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/bounce/')">Bounce</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/paperio2/')">Paper.io 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/flappybird/')">Flappy Bird</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/googlesnake/')">Google Snake</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/donkeykong/')">Donkey Kong</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/soccerphysics/')">Soccer Physics</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/minesweeper/')">Minesweeper</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/supermariokart/')">Super Mario Kart</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/sm64/')">Super Mario 64</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/pong/')">Pong</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste/')">Celeste - Pico-8</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste2/')">Celeste 2: Lani's Trek - Pico-8</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/flyinggorilla/')">Flying Gorilla</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
+
+         </div>
+
       </div>
-    </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, set, onChildAdded, onChildRemoved, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+      <div class="section">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCwtdcAJtYC6pPUaC6pdEC4Kr9IUX8wifo",
-      authDomain: "chord-91afa.firebaseapp.com",
-      projectId: "chord-91afa",
-      storageBucket: "chord-91afa.firebasestorage.app",
-      messagingSenderId: "21786013225",
-      appId: "1:21786013225:web:773c34b9d4346460c4f638",
-      measurementId: "G-909HM59DQ5"
-    };
+         <h2>Experiments & Tools</h2>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+         <div class="button-grid">
 
-    window.db = db;
-    window.auth = auth;
-    window.fbRef = ref;
-    window.fbPush = push;
-    window.fbOnValue = onValue;
-    window.fbSet = set;
-    window.fbOnChildAdded = onChildAdded;
-    window.fbOnChildRemoved = onChildRemoved;
-    window.fbSignOut = signOut;
-    window.fbCreateUser = createUserWithEmailAndPassword;
-    window.fbSignIn = signInWithEmailAndPassword;
-    window.fbOnDisconnect = onDisconnect;
-  </script>
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/antcolony/')">Ant Colony Simulator</button>
 
-  <script>
-    // ── CENSOR LIST LOADER ──────────────────────────────────────────────────
-    // Fetches censor-list.js from jsDelivr (reliable CORS + CDN).
-    // To use: push censor-list.js to your GitHub repo, then set the URL below.
-    //   Format: https://cdn.jsdelivr.net/gh/YOUR_USERNAME/YOUR_REPO@main/censor-list.js
-    // Works in W3Schools TryIt, GitHub Pages, local servers — anywhere.
-    (async function loadCensorList() {
-      const CENSOR_URL = 'https://raw.githubusercontent.com/gamebackup/standalone_games_3/refs/heads/main/chord/censor-list.js';
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/ailearning/')">AI Evolution</button>
 
-      try {
-        const res = await fetch(CENSOR_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/adjfireworks/')">Adjustable Fireworks</button>
 
-        // Pull the array literal out of the JS file and parse it as JSON.
-        // The file uses double-quoted strings so JSON.parse handles it cleanly.
-        const match = text.match(/\[([\s\S]*)\]/);
-        if (!match) throw new Error('Could not find word array in censor list');
-        const words = JSON.parse('[' + match[1] + ']');
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/fluidsim/')">Fluid Simulation</button>
 
-        // Sort longest-first so longer variants ("a s shole") are matched
-        // before shorter overlapping ones ("a s s").
-        const sorted = [...words].sort((a, b) => b.length - a.length);
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/urres/')">Your Resolution</button>
 
-        const parts = sorted.map(word => {
-          if (word.includes('*')) {
-            // Glob-style wildcards in the list (e.g. "*fuck*", "b*tch"):
-            // escape each segment individually, then join with \w* so they
-            // match any word characters in place of the asterisk.
-            return word
-              .split('*')
-              .map(seg => seg.replace(/[.+?^${}()|[\]\\]/g, '\\$&'))
-              .join('\\w*');
-          }
-          // Regular entry — escape special chars, then add \b word boundaries
-          // only where the word starts/ends with a word character (so entries
-          // like "@$$" don't get a boundary that would never match).
-          const esc = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const lb = /^\w/.test(word) ? '\\b' : '';
-          const rb = /\w$/.test(word)  ? '\\b' : '';
-          return lb + esc + rb;
-        });
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
 
-        window.censorRegex = new RegExp(parts.join('|'), 'gi');
-        console.log(`Chorde: censor list loaded (${words.length} entries)`);
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/asciicam/')">Ascii Camera*</button>
 
-      } catch (err) {
-        console.warn('Chorde: censor list failed to load —', err.message);
-      }
-    })();
-  </script>
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/gameoflife/')">Conway's Game of Life</button>
 
-  <script>
-    const AVATAR_COLORS = ['#ff5c5c','#3ddc84','#7c6af7','#f5f543','#ff9f43','#00d2ff','#ff78cb','#a29bfe'];
-    
-    // Your specific UID set as Admin
-    const ADMIN_UID = "pvc9bzXd4BOhXu45zFg8SUpj5zl1"; // dogeloaf
-    const ADMIN_AVATAR = "data:image/jpeg;base64,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"; 
-    
-    // Returns the inner HTML for any avatar element.
-    // Admin gets the photo; everyone else gets their initial on their color.
-    function avatarInner(uid, initial, color) {
-      if (uid === ADMIN_UID) {
-        return `<img src="${ADMIN_AVATAR}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="admin">`;
-      }
-      return initial;
-    }
-    function avatarStyle(uid, color) {
-      return uid === ADMIN_UID ? 'background:#2b2d3a' : `background:${color}`;
-    }
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/ripples/')">Ripples</button>
 
-    let currentUser = null;
-    let currentChannelId = null;
-    let selectedRegColor = 0;
-    let typingTimer = null;
-    let typingUnsubscribe = null;
-    let rulesAccepted = false;
-    let rulesChannelId = null;
-    let rulesScrollListener = null;
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/fishies/')">FISHIES</button>
 
-    // ═══════════════════════════════════════════════════════
-    //  AUTH LOGIC
-    // ═══════════════════════════════════════════════════════
-    function toggleAuth(isLogin) {
-      document.getElementById('login-view').classList.toggle('hidden', !isLogin);
-      document.getElementById('reg-view').classList.toggle('hidden', isLogin);
-    }
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/bitsrain/')">Raining Bits</button>
 
-    async function tryRegister() {
-      const user = document.getElementById('reg-user').value.trim();
-      const pass = document.getElementById('reg-pass').value.trim();
-      if(!user || pass.length < 6) return alert("Username required and password min 6 chars.");
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/urip/')">Your IP</button>
 
-      const email = `${user.toLowerCase()}@chorde.com`;
-      try {
-        const cred = await window.fbCreateUser(window.auth, email, pass);
-        const userData = {
-          uid: cred.user.uid,
-          username: user,
-          colorIdx: selectedRegColor
-        };
-        await window.fbSet(window.fbRef(window.db, 'users/' + cred.user.uid), userData);
-        setupApp(userData);
-      } catch (e) { alert(e.message); }
-    }
+            <button onclick="playGame('https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing')">Chat Room</button>
 
-    async function tryLogin() {
-      const user = document.getElementById('login-user').value.trim();
-      const pass = document.getElementById('login-pass').value.trim();
-      if(!user || !pass) return;
+            <button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
 
-      try {
-        const cred = await window.fbSignIn(window.auth, `${user.toLowerCase()}@chorde.com`, pass);
-        window.fbOnValue(window.fbRef(window.db, 'users/' + cred.user.uid), (snap) => {
-          setupApp(snap.val());
-        }, { onlyOnce: true });
-      } catch (e) { alert("Login failed. Check credentials."); }
-    }
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
 
-    function logout() {
-      window.fbSignOut(window.auth).then(() => location.reload());
-    }
+            <button onclick="playGame('https://minhhua.com/space_marine_painter_3d/')">Space Marine Painter 3D</button>
 
-    function setupApp(userData) {
-      currentUser = userData;
-      document.getElementById('auth-screen').classList.add('hidden');
-      document.getElementById('chat-screen').classList.remove('hidden');
-      
-      document.getElementById('my-name').innerText = userData.username;
-      const av = document.getElementById('my-avatar');
-      av.innerHTML = avatarInner(userData.uid, userData.username[0].toUpperCase(), AVATAR_COLORS[userData.colorIdx]);
-      av.style.cssText += avatarStyle(userData.uid, AVATAR_COLORS[userData.colorIdx]);
+         </div>
 
-      initChannels();
-      setupPresence(userData);
-      initMemberList();
-      checkRulesStatus();
-    }
+      </div>
 
-    // ═══════════════════════════════════════════════════════
-    //  CHANNELS
-    // ═══════════════════════════════════════════════════════
-    function initChannels() {
-      const chRef = window.fbRef(window.db, 'channels');
-      window.fbOnValue(chRef, (snap) => {
-        const list = document.getElementById('channels-container');
-        list.innerHTML = '';
-        const data = snap.val() || {};
+      <div class="section">
 
-        // Ensure a rules channel always exists; create it (and general) if empty
-        if (Object.keys(data).length === 0) {
-          if (currentUser.uid === ADMIN_UID) {
-            createChannelRaw('rules');
-            createChannelRaw('general');
-          }
-          return;
+         <h2>Fighting & Combat</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar/')">Age of War</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar2/')">Age of War 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/armyofages/')">Army of Ages</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/laststandunioncity/')">The Last Stand: Union City</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/nzp/')">NZ:P**</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash/')">Super Smash Flash</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash2/')">Super Smash Flash 2*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/quake3/')">Quake III Arena</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/hotline-miami/')">Hotline Miami*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/cuphead/')">Cuphead***</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/crazycattle3d/')">Crazy Cattle 3D</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/crazykitty3d/')">Crazy Kitty 3D</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/crazychicken3d/')">Crazy Chicken 3D</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_3/yomihustle/')">Your Only Move is Hustle</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Horror & Spooks</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/buckshotroulette/')">Buckshot Roulette*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/irnlng/')">Iron Lung</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/granny/')">Granny**</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Idle & Incremental</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/idledice/')">Idle Dice</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/dogeminer1/')">Dogeminer 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/innoveryourhead/')">Inn Over Your Head*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/machinegg/')">The MachinEGG</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
+
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Platformers & Runners</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/subwaysurfersny/')">Subway Surfers</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/run2/')">Run 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/balz/')">Run 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/jetpackjoyride/')">Jetpack Joyride</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/templerun2/')">Temple Run 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyroad/')">Crossy Road</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyspace/')">Crossy Road: Space</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/sonicultimate/')">Sonic: Ultimate</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/stumbleguys/')">Stumble Guys</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/happywheels/')">Happy Wheels</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/chromedino/')">Chrome Dino Game</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/totm/')">Tomb of the Mask</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers1/')">Money Movers 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers3/')">Money Movers 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/celeste/')">Celeste***</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/vaportrails/')">Vapor Trails*</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Probablity & Gambling</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/horseracer/')">Horse Racing</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/13bones/')">13 Bones</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Puzzle & Skill</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/blockblast/')">Block Blast</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/badpiggies/')">Bad Piggies</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz/')">The Impossible Quiz</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz2/')">The Impossible Quiz 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/angrybirdsrio/')">Angry Birds: Rio</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/stacking/')">Stacking</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/tether/')">Tether</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline/')">Snowline</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline2/')">Snowline 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/portal2d/')">Portal 2D</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/cutrope/')">Cut the Rope</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/gameinagame/')">Game Inside a Game</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/bloxors/')">Bloxorz</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/cannonbasketball2/')">Cannon Basketball 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/passwordcracker/')">Password Cracker</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/thereisnogame/')">There is No Game</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/8ballpool/')">8 Ball Pool</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/bobtherobber/')">Bob the Robber</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/tetris/')">Tetris</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/sandtris/')">Sand Tetris</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hextris/')">Hextris</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/stratagemhero/')">Stratagem Trainer</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hangman/')">Hangman</button>      
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Racing & Driving</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hexgl/')">HexGL</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomecars/')">Awesome Cars</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/jellytruck/')">Jellytruck</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/slope/')">Slope</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/snowrider3d/')">Snowrider 3D</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/polytrack/')">Polytrack - Legacy</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/0.5.2/')">Polytrack</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/tanukisunset/')">Tanuki Sunset</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/highontrack/html/11779646/html5/')">High on Track</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/bergentruck201x/')">Bergentruck 201X</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/aztecride/')">Aztec Ride</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/forgetthebrakes/')">Forget the Brakes</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/rocketsoccer/')">Rocket Soccer</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Rhythym & Music</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/fnf/')">Friday Night Funkin'</button>
+
+            <button onclick="playGame('https://webosumania.com/')">Osu!Mania</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Roguelike & Roleplaying</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/feedthevoid/')">Feed the Void</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/tboi/')">The Binding of Isaac</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/blacksmithlab/')">Blacksmith Lab</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/therightmix/')">Bartender - The Right Mix</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/webfishing/')">Webfishing*</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/gk/')">Gun Knight</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/10tilldawn/')">10 Minutes Till Dawn</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/wrangleranch/')">Wrangle Ranch</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/balatro/')">Balatro - Takes a while to load</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/pkrogue/')">PokéRogue*</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Shooting & Defense</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/spaceinvaders/')">Space Invaders</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/galaga/')">Galaga</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars/')">Raft Wars</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars2/')">Raft Wars 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/bullethell/')">Bullet Hell</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/stormthehouse2/')">Storm the House 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks/')">Awesome Tanks</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks2/')">Awesome Tanks 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomeplanes/')">Awesome Planes</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/endoparasitic/')">Endoparasitic</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Strategy & Simulation</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/adarkroom/')">A Dark Room</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/finalearth2/')">The Final Earth 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/jacksmith/')">Jacksmith</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/sandboxels/')">Sandboxels</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/openttd/')">OpenTTD</button>      
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/sortthecourt/')">Sort the Court</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/civclicker/')">Civ Clicker</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/waterworks/')">Waterworks</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/cellmachine/')">Cell Machine</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/basketballstars/')">Basketball Stars</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/freshwaterfishing/')">Freshwater Fishing Simulator</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/rccreator/')">Roller Coaster Creator</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hardwaretycoon/')">Hardware Tycoon</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/captchaware/')">Captchaware</button>   
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/mondays/')">Mondays: A Sisyphean Typing Simulator</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/itchio_games/mysterydigger/')">Mystery Digger</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games_2/amongus/')">Among Us - Singleplayer</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <center>
+
+            <h2 style="color: #e61587;">⇓ Game Series are below ⇓</h2>
+
+         </center>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Bloons Tower Defense Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd1/')">Bloons Tower Defense 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd2/')">Bloons Tower Defense 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd3/')">Bloons Tower Defense 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd4/')">Bloons Tower Defense 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd5/')">Bloons Tower Defense 5</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Duck Life Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl1/')">Duck Life 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl2/')">Duck Life 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl3/')">Duck Life 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl4/')">Duck Life 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/dl4rm/index.html')">Duck Life 4 - Remaster</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl5/')">Duck Life 5*</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Fancy Pants Adventure Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants1/')">Fancy Pants Adventures 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants2/')">Fancy Pants Adventures 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants3/')">Fancy Pants Adventures 3</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Henry Stickmin Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/btb/')">Breaking the Bank</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/etp/')">Escaping the Prison</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/sthed/')">Stealing the Diamond</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/ita/')">Infiltrating the Airship</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/ftc/')">Fleeing the Complex</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Learn to Fly Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly1/')">Learn to Fly 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly2/')">Learn to Fly 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly3/')">Learn to Fly 3</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Minecraft Versions</h2>
+
+         <div class="button-grid">
+
+			<button onclick="playGame('https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing')">Video Settings Instructions</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/eagle1.12/')">Minecraft 1.12 - Only Singleplayer</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Moto X3M</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m/')">Moto X3M 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m2/')">Moto X3M 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mpool/')">Moto X3M: Pool Party</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mspooky/')">Moto X3M: Spooky Land</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mwinter/')">Moto X3M: Winter</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Papa's Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wpa/')">Papa Louie 1: When Pizzas Attack!</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wba/')">Papa Louie 2: When Burgers Attack!</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wsa/')">Papa Louie 3: When Sundaes Attack!</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/scooperia/')">Papa's Scooperia</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/pastaria/')">Papa's Pastaria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/freezeria/')">Papa's Freezeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/burgeria/')">Papa's Burgeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/pancakeria/')">Papa's PanCakeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wingeria/')">Papa's Wingeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/donuteria/')">Papa's Donuteria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/bakeria/')">Papa's Bakeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/pizzeria/')">Papa's Pizzeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/tacomia/')">Papa's Taco Mia</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/cupcakeria/')">Papa's Cupcakeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/hotdoggeria/')">Papa's Hotdoggeria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/sushiria/')">Papa's Sushiria</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/cheeseria/')">Papa's Cheeseria</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Pinball Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/hellspinball/')">Hell's Pinball</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/spacecadet/')">Space Cadet Pinball</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/pepsipinball/')">Pepsi Pinball</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Pokémon Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonruby/')">Pokémon: Ruby</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonsapphire/')">Pokémon: Sapphire</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonemerald/')">Pokémon: Emerald</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonfirered/')">Pokémon: Fire Red</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonleafgreen/')">Pokémon: Leaf Green</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Red Ball Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball2/')">Red Ball 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball3/')">Red Ball 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball4/')">Red Ball 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball5/')">Red Ball 5</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Snail Bob Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob1/')">Snail Bob 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob2/')">Snail Bob 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob3/')">Snail Bob 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob4/')">Snail Bob 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob5/')">Snail Bob 5</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob6/')">Snail Bob 6</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob7/')">Snail Bob 7</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob8/')">Snail Bob 8</button>
+
+         </div>
+
+      </div>
+
+	   <div class="section">
+
+         <h2>Sonic Games</h2>
+
+         <div class="button-grid">
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Vex Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex1/')">Vex 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex2/')">Vex 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex3/')">Vex 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/vex4/')">Vex 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/vex5/')">Vex 5</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/standalone_games/vex6/')">Vex 6</button>
+
+         </div>
+
+      </div>
+
+      <div class="section">
+
+         <h2>Wheely Games</h2>
+
+         <div class="button-grid">
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely1/')">Wheely 1</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely2/')">Wheely 2</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely3/')">Wheely 3</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely4/')">Wheely 4</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely5/')">Wheely 5</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely6/')">Wheely 6</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely7/')">Wheely 7</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely8/')">Wheely 8</button>
+
+            <button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely9/')">Wheely 9</button>
+
+         </div>
+
+      </div>
+
+      <div style="height: 10px;"></div>
+
+      <div style="text-align: center; padding: 5px; font-size: 14px; color: #888;">
+
+         © COMPOUND//CREATIONS 2025  <br>
+
+      </div>
+
+      <div class="dmca-footer" style="text-align: center;font-size: 10px; color: #666">
+
+         All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
+
+      </div>
+
+      <script>
+
+(function() {
+
+    const min = 3000;
+
+    const max = 7000;
+
+    const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    console.log("Loading for: " + displayTime + "ms");
+
+    setTimeout(function() {
+
+        const loader = document.getElementById('preloader');
+
+        if (loader) {
+
+            loader.style.opacity = '0'; 
+
+            setTimeout(function() { loader.style.display = 'none'; }, 1000); 
+
         }
 
-        // Find and track the rules channel id
-        rulesChannelId = null;
-        Object.keys(data).forEach(id => {
-          if (data[id].name === 'rules') rulesChannelId = id;
-        });
+    }, displayTime);
 
-        // Sort: rules first, then alphabetical
-        const sorted = Object.keys(data).sort((a, b) => {
-          if (data[a].name === 'rules') return -1;
-          if (data[b].name === 'rules') return 1;
-          return data[a].name.localeCompare(data[b].name);
-        });
+})();
 
-        sorted.forEach(id => {
-          const name = data[id].name;
-          const isRules = (name === 'rules');
-          const isLocked = !rulesAccepted && !isRules && currentUser.uid !== ADMIN_UID;
-          const isActive = (id === currentChannelId);
 
-          const div = document.createElement('div');
-          div.className = 'channel-item'
-            + (isActive  ? ' active'    : '')
-            + (isRules   ? ' ch-rules'  : '')
-            + (isLocked  ? ' ch-locked' : '');
-          div.innerText = name;
 
-          if (!isLocked) {
-            div.onclick = () => switchChannel(id, name);
-          }
+/* ============ PARTICLE SYSTEM ============ */
 
-          // Admin gets a delete button on every non-rules channel
-          if (currentUser.uid === ADMIN_UID && !isRules) {
-            const btn = document.createElement('span');
-            btn.className = 'del-ch';
-            btn.title = 'Delete channel';
-            btn.innerHTML = '&#x2715;';
-            btn.onclick = (e) => deleteChannel(id, name, e);
-            div.appendChild(btn);
-          }
+const canvas = document.getElementById('particle-canvas');
 
-          list.appendChild(div);
-        });
+const ctx = canvas.getContext('2d');
 
-        // Auto-navigate: if no channel selected yet, go to rules (or first)
-        if (!currentChannelId) {
-          if (rulesChannelId && currentUser.uid !== ADMIN_UID && !rulesAccepted) {
-            switchChannel(rulesChannelId, 'rules');
-          } else {
-            const first = sorted[0];
-            switchChannel(first, data[first].name);
-          }
-        }
-      });
-    }
+let particles = [];
 
-    function openCreateChannel() { document.getElementById('modal-channel').classList.remove('hidden'); }
-    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden')); }
 
-    async function deleteChannel(channelId, channelName, e) {
-      e.stopPropagation();
-      if (!confirm(`Delete #${channelName} and all its messages? This cannot be undone.`)) return;
-      try {
-        // Delete channel record and all its messages
-        await window.fbSet(window.fbRef(window.db, `channels/${channelId}`), null);
-        await window.fbSet(window.fbRef(window.db, `messages/${channelId}`), null);
-        // If we were viewing it, clear the view
-        if (currentChannelId === channelId) {
-          currentChannelId = null;
-          document.getElementById('active-ch-title').innerText = 'Select a channel';
-          document.getElementById('messages-container').innerHTML = '';
-        }
-      } catch(err) {
-        console.error('Delete channel failed:', err);
-        alert('Could not delete channel. Check Firebase rules.');
-      }
-    }
 
-    function createChannel() {
-      const nameInp = document.getElementById('new-ch-name');
-      const rawName = nameInp.value.trim().toLowerCase().replace(/\s+/g, '-');
-      if (!rawName) return;
-      createChannelRaw(rawName);
-      nameInp.value = '';
-      closeModals();
-    }
+function resizeCanvas() {
 
-    function createChannelRaw(name) {
-      const newRef = window.fbPush(window.fbRef(window.db, 'channels'));
-      window.fbSet(newRef, { name: name });
-    }
+  canvas.width = window.innerWidth;
 
-    function switchChannel(id, name) {
-      currentChannelId = id;
-      document.getElementById('active-ch-title').innerText = name;
-      document.getElementById('messages-container').innerHTML = '';
-      
-      document.querySelectorAll('.channel-item').forEach(el => {
-        el.classList.toggle('active', el.innerText === name);
-      });
+  canvas.height = window.innerHeight;
 
-      const msgRef = window.fbRef(window.db, `messages/${id}`);
-      
-      // Listen for New Messages
-      window.fbOnChildAdded(msgRef, (snap) => {
-        renderMessage(snap.val(), snap.key);
-      });
+}
 
-      // Listen for Deleted Messages
-      window.fbOnChildRemoved(msgRef, (snap) => {
-        const el = document.getElementById(`msg-${snap.key}`);
-        if (el) el.remove();
-      });
+resizeCanvas();
 
-      // Typing indicators — unsubscribe old channel first
-      subscribeTyping(id);
+window.addEventListener('resize', resizeCanvas);
 
-      // Rules channel gate & read-only input
-      updateRulesUI(id);
-    }
 
-    // ═══════════════════════════════════════════════════════
-    //  RULES GATE
-    // ═══════════════════════════════════════════════════════
-    function checkRulesStatus() {
-      if (currentUser.uid === ADMIN_UID) { rulesAccepted = true; return; }
-      window.fbOnValue(
-        window.fbRef(window.db, `users/${currentUser.uid}/rulesRead`),
-        (snap) => {
-          rulesAccepted = snap.val() === true;
-          // Refresh channel list lock states whenever this changes
-          const list = document.getElementById('channels-container');
-          list.querySelectorAll('.channel-item').forEach(el => {
-            const isRules = el.classList.contains('ch-rules');
-            if (!isRules) {
-              el.classList.toggle('ch-locked', !rulesAccepted);
-              if (!rulesAccepted) {
-                el.onclick = null;
-              } else {
-                // Re-attach click (text content = channel name; find id from data)
-              }
-            }
-          });
-          // If we're in rules channel already, refresh gate UI
-          if (currentChannelId === rulesChannelId) updateRulesUI(currentChannelId);
-        },
-        { onlyOnce: false }
-      );
-    }
 
-    function updateRulesUI(channelId) {
-      const gate      = document.getElementById('rules-gate');
-      const readonly  = document.getElementById('rules-readonly');
-      const inputArea = document.querySelector('.input-area');
-      const isRules   = (channelId === rulesChannelId);
-      const isAdmin   = currentUser.uid === ADMIN_UID;
+class Particle {
 
-      // Clean up old scroll listener
-      const container = document.getElementById('messages-container');
-      if (rulesScrollListener) {
-        container.removeEventListener('scroll', rulesScrollListener);
-        rulesScrollListener = null;
-      }
+  constructor() { this.reset(); }
 
-      if (isRules && !isAdmin && !rulesAccepted) {
-        // Show read-only notice, hide input
-        inputArea.classList.add('hidden');
-        readonly.classList.remove('hidden');
-        // Show gate bar
-        gate.className = 'gate-scroll';
-        gate.innerHTML = '📜 <strong>Read to the bottom to unlock all channels</strong><br>Scroll down through the rules ↓';
-        // Attach scroll watcher
-        rulesScrollListener = function() {
-          const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 60;
-          if (atBottom) {
-            gate.className = 'gate-accept';
-            gate.innerHTML = '✅ <strong>You've reached the bottom!</strong><br><button class="btn-accept-rules" onclick="acceptRules()">Accept Rules & Unlock Channels</button>';
-          } else {
-            gate.className = 'gate-scroll';
-            gate.innerHTML = '📜 <strong>Read to the bottom to unlock all channels</strong><br>Scroll down through the rules ↓';
-          }
-        };
-        container.addEventListener('scroll', rulesScrollListener);
-        // Check immediately in case messages are short
-        setTimeout(() => rulesScrollListener && rulesScrollListener(), 600);
-      } else {
-        // Normal channel — hide gate, show input
-        gate.className = 'hidden';
-        gate.innerHTML = '';
-        readonly.classList.add('hiddean');
-        inputArea.classList.remove('hidden');
-      }
-    }
+  reset() {
 
-    async function acceptRules() {
-      try {
-        await window.fbSet(
-          window.fbRef(window.db, `users/${currentUser.uid}/rulesRead`), true
-        );
-        rulesAccepted = true;
-        updateRulesUI(currentChannelId);
-        // Switch to general or first non-rules channel
-        const list = document.getElementById('channels-container');
-        list.querySelectorAll('.channel-item').forEach(el => {
-          el.classList.remove('ch-locked');
-        });
-      } catch(err) {
-        console.error('Could not save rules acceptance:', err);
-      }
-    }
+    this.x = Math.random() * canvas.width;
 
-    // ═══════════════════════════════════════════════════════
-    //  MARKDOWN
-    // ═══════════════════════════════════════════════════════
-    // Applied AFTER escHtml so user input is already safe.
-    // Process longest/greedy patterns first (code blocks before inline code,
-    // bold+italic before bold-only, etc.)
-    function parseMarkdown(html) {
-      // Code blocks  ```...```
-      html = html.replace(/```([\s\S]*?)```/g, (_, c) =>
-        `<pre><code>${c.trim()}</code></pre>`);
-      // Inline code  `...`
-      html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
-      // Bold + italic  ***...***
-      html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
-      // Bold  **...**
-      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      // Italic  *...*
-      html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-      // Underline  __...__
-      html = html.replace(/__([^_\n]+)__/g, '<u>$1</u>');
-      // Strikethrough  ~~...~~
-      html = html.replace(/~~([^~\n]+)~~/g, '<del>$1</del>');
-      // Blockquote  > ...  (escHtml turns > into &gt;)
-      html = html.replace(/^&gt;\s?(.+)$/gm, '<blockquote>$1</blockquote>');
-      return html;
-    }
+    this.y = Math.random() * canvas.height;
 
-    // ═══════════════════════════════════════════════════════
-    //  PRESENCE  (who is online)
-    // ═══════════════════════════════════════════════════════
-    function setupPresence(userData) {
-      // Firebase's .info/connected is true while the socket is open.
-      // We use onDisconnect() to auto-remove the presence record the
-      // moment the browser tab closes or the connection drops.
-      const connRef = window.fbRef(window.db, '.info/connected');
-      window.fbOnValue(connRef, (snap) => {
-        if (snap.val() !== true) return;
-        const presRef = window.fbRef(window.db, `presence/${userData.uid}`);
-        window.fbOnDisconnect(presRef).remove();
-        window.fbSet(presRef, {
-          uid:      userData.uid,
-          username: userData.username,
-          color:    AVATAR_COLORS[userData.colorIdx]
-        });
-      });
-    }
+    this.size = Math.random() * 1.5 + 0.3;
 
-    function initMemberList() {
-      const presRef = window.fbRef(window.db, 'presence');
-      window.fbOnValue(presRef, (snap) => {
-        const data = snap.val() || {};
-        const members = Object.values(data).sort((a, b) => {
-          // Current user always floats to top
-          if (a.uid === currentUser.uid) return -1;
-          if (b.uid === currentUser.uid) return 1;
-          return a.username.localeCompare(b.username);
-        });
+    this.speedX = (Math.random() - 0.5) * 0.4;
 
-        document.getElementById('online-count').innerText = members.length;
+    this.speedY = -Math.random() * 0.6 - 0.1;
 
-        const container = document.getElementById('members-container');
-        container.innerHTML = '';
-        members.forEach(m => {
-          const div = document.createElement('div');
-          div.className = 'member-item';
-          const youTag = m.uid === currentUser.uid ? ' <span class="you-tag">(you)</span>' : '';
-          const isAdmin = m.uid === ADMIN_UID;
-          div.innerHTML = `
-            <div class="member-avatar" style="${isAdmin ? 'background:#2b2d3a' : 'background:'+m.color}">${isAdmin ? '<img src="'+ADMIN_AVATAR+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="admin">' : escHtml(m.username[0].toUpperCase())}</div>
-            <span class="member-name">${escHtml(m.username)}${youTag}</span>
-          `;
-          container.appendChild(div);
-        });
-      });
-    }
+    this.life = 1;
 
-    // ═══════════════════════════════════════════════════════
-    //  TYPING INDICATORS
-    // ═══════════════════════════════════════════════════════
-    function handleTypingInput() {
-      if (!currentChannelId || !currentUser) return;
-      // Write / refresh our typing record
-      window.fbSet(
-        window.fbRef(window.db, `typing/${currentChannelId}/${currentUser.uid}`),
-        { username: currentUser.username, color: AVATAR_COLORS[currentUser.colorIdx], ts: Date.now() }
-      );
-      // Auto-clear after 3 s of no keypresses
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(clearTyping, 3000);
-    }
+    this.decay = Math.random() * 0.003 + 0.001;
 
-    function clearTyping() {
-      clearTimeout(typingTimer);
-      if (!currentChannelId || !currentUser) return;
-      window.fbSet(
-        window.fbRef(window.db, `typing/${currentChannelId}/${currentUser.uid}`),
-        null
-      );
-    }
+    this.hue = Math.random() < 0.7 ? 320 : 185;
 
-    function subscribeTyping(channelId) {
-      if (typingUnsubscribe) typingUnsubscribe();   // detach previous listener
-      const ref = window.fbRef(window.db, `typing/${channelId}`);
-      typingUnsubscribe = window.fbOnValue(ref, (snap) => {
-        const data   = snap.val() || {};
-        const others = Object.values(data).filter(t => t.uid !== currentUser?.uid);
-        const box    = document.getElementById('typing-box');
-        const dots   = `<span class="typing-dots"><span></span><span></span><span></span></span>`;
+  }
 
-        if (others.length === 0) {
-          box.innerHTML = '';
-        } else if (others.length === 1) {
-          box.innerHTML = `${dots} <strong>${escHtml(others[0].username)}</strong> is typing…`;
-        } else if (others.length === 2) {
-          box.innerHTML = `${dots} <strong>${escHtml(others[0].username)}</strong> and <strong>${escHtml(others[1].username)}</strong> are typing…`;
-        } else {
-          box.innerHTML = `${dots} <strong>Several people</strong> are typing…`;
-        }
-      });
-    }
+  update() {
 
-    // ═══════════════════════════════════════════════════════
-    //  CENSORING
-    // ═══════════════════════════════════════════════════════
+    this.x += this.speedX;
 
-    // Full censor pass — always runs regardless of what was just typed.
-    // Called by sendMessage() so nothing slips through on submit.
-    function censorFull() {
-      if (!window.censorRegex) return;
-      const input = document.getElementById('chat-input');
-      const pos = input.selectionStart;
-      window.censorRegex.lastIndex = 0;
-      const censored = input.value.replace(window.censorRegex, m => '*'.repeat(m.length));
-      if (censored !== input.value) {
-        input.value = censored;
-        input.setSelectionRange(pos, pos);
-      }
-    }
+    this.y += this.speedY;
 
-    // Live censor — only fires after a word is FINISHED (space, punctuation,
-    // emoji, etc.). If the cursor is still inside a word (last char is \w)
-    // we do nothing, so letters never get replaced mid-typing.
-    function applyCensorInput() {
-      if (!window.censorRegex) return;
-      const input = document.getElementById('chat-input');
-      const lastChar = input.value[input.selectionStart - 1];
-      // Still mid-word — skip until the user finishes it
-      if (lastChar && /\w/.test(lastChar)) return;
-      censorFull();
-    }
+    this.life -= this.decay;
 
-    // ═══════════════════════════════════════════════════════
-    //  MESSAGES
-    // ═══════════════════════════════════════════════════════
-    function handleChatKey(e) {
-      if (e.key === 'Enter') sendMessage();
-    }
+    if (this.life <= 0) this.reset();
 
-    function sendMessage() {
-      const input = document.getElementById('chat-input');
-      // Safety-net pass: always do a full censor before sending,
-      // catches anything typed without a trailing space (e.g. word right
-      // before hitting Enter) and pasted text.
-      censorFull();
-      const text = input.value.trim();
-      if (!text || !currentChannelId) return;
+  }
 
-      const msgData = {
-        text: text,
-        sender: currentUser.username,
-        senderUid: currentUser.uid, // Storing UID to verify deletion rights
-        color: AVATAR_COLORS[currentUser.colorIdx],
-        ts: Date.now()
-      };
+  draw() {
 
-      window.fbPush(window.fbRef(window.db, `messages/${currentChannelId}`), msgData);
-      input.value = '';
-      clearTyping();
-    }
+    ctx.save();
 
-    function renderMessage(m, id) {
-      const container = document.getElementById('messages-container');
-      const div = document.createElement('div');
-      div.className = 'message';
-      div.id = `msg-${id}`;
-      
-      const time = new Date(m.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      
-      // Verification: User is the sender OR user is the Admin
-      const canDelete = (m.senderUid === currentUser.uid || currentUser.uid === ADMIN_UID);
-      const delBtn = canDelete ? `<div class="del-msg" onclick="deleteMessage('${id}')" title="Delete Message">×</div>` : '';
+    ctx.globalAlpha = this.life * 0.8;
 
-      div.innerHTML = `
-        <div class="msg-avatar" style="${m.senderUid === ADMIN_UID ? 'background:#2b2d3a' : 'background:'+m.color}">${m.senderUid === ADMIN_UID ? '<img src="'+ADMIN_AVATAR+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="admin">' : m.sender[0].toUpperCase()}</div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-user" style="color:${m.color}">${escHtml(m.sender)}</span>
-            <span class="msg-time">${time}</span>
+    ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
+
+    ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
+
+    ctx.shadowBlur = 6;
+
+    ctx.beginPath();
+
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
+    ctx.fill();
+
+    ctx.restore();
+
+  }
+
+}
+
+
+
+for (let i = 0; i < 200; i++) {
+
+  const p = new Particle();
+
+  p.life = Math.random(); 
+
+  particles.push(p);
+
+}
+
+
+
+function animateParticles() {
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => { p.update(); p.draw(); });
+
+  requestAnimationFrame(animateParticles);
+
+}
+
+animateParticles();
+
+
+
+/* ============ SEARCH ============ */
+
+function searchGames() {
+
+  let input = document.getElementById('gameSearch').value.toLowerCase();
+
+  let buttons = document.querySelectorAll('.button-grid button');
+
+  let sections = document.querySelectorAll('.section');
+
+  buttons.forEach(button => {
+
+    let gameName = button.innerText.toLowerCase();
+
+    button.style.display = gameName.includes(input) ? "" : "none";
+
+  });
+
+  sections.forEach(section => {
+
+    let visibleButtons = section.querySelectorAll('.button-grid button:not([style*="display: none"])');
+
+    section.style.display = (visibleButtons.length === 0 && input !== "") ? "none" : "block";
+
+  });
+
+}
+
+
+
+function playGame(gameUrl) {
+
+  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
+
+  document.getElementById('game-overlay').style.display = 'block';
+
+  document.getElementById('game-frame').src = gameUrl;
+
+}
+
+
+
+function closeGame() {
+
+  document.getElementById('game-overlay').style.display = 'none';
+
+  document.getElementById('game-frame').src = '';
+
+}
+
+
+
+
+const cloakPresets = {
+
+
+  "x3e unblocked games": { title: "x3e unblocked games", 		    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",  	label: "x3e Games", 			url: "x3e" },
+
+
+  "Google":   			 { title: "Google",                    	 	icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        		label: "Google",            	url: "google.com" },
+
+
+  "YouTube": 			 { title: "YouTube",                   	 	icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                		label: "YouTube",           	url: "youtube.com" },
+
+
+  "Canvas":   			 { title: "Dashboard",                 	 	icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                      		label: "Canvas",            	url: "instructure.com" },
+
+
+  "Khan":     			 { title: "Khan Academy",              	 	icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     		label: "Khan Academy",      	url: "khanacademy.org" },
+
+
+  "Docs":     			 { title: "Google Docs",               	 	icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  		label: "Google Docs",       	url: "docs.google.com" },
+
+
+  "Desmos":   			 { title: "Desmos | Graphing Calculator",   icon: "https://www.desmos.com/favicon.ico",                                                           	 		label: "Desmos",            	url: "desmos.com" },
+
+
+  "Drive":    			 { title: "My Drive - Google Drive",        icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        		label: "Google Drive",      	url: "drive.google.com" },
+
+
+  "Google Classroom": 	 { title: "Home - Classroom",       		icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg",                           		 		label: "Google Classroom",  	url: "classroom.google.com"},
+
+
+  "Accelerated Reader":  { title: "Accelerated Reader",             icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/idSPu9bV3s_1776472587103.jpeg",  label: "Accelerated Reader",    url: "renaissance.com"}
+
+};
+
+
+
+let currentCloakKey = "x3e unblocked games";
+
+
+
+function applyCloak(presetKey) {
+
+  if (!cloakPresets[presetKey]) return;
+
+  currentCloakKey = presetKey;
+
+  const preset = cloakPresets[presetKey];
+
+  document.title = preset.title;
+
+  let link = document.querySelector("link[rel~='icon']");
+
+  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+
+  link.href = preset.icon;
+
+  localStorage.setItem("userCloak", presetKey);
+
+  document.querySelectorAll('.cloak-card').forEach(card => {
+
+    card.classList.toggle('active', card.dataset.key === presetKey);
+
+  });
+
+}
+
+
+
+function buildCloakCards() {
+
+  const grid = document.getElementById('cloak-grid');
+
+  grid.innerHTML = '';
+
+  Object.entries(cloakPresets).forEach(([key, preset]) => {
+
+    const card = document.createElement('div');
+
+    card.className = 'cloak-card' + (key === currentCloakKey ? ' active' : '');
+
+    card.dataset.key = key;
+
+    card.onclick = () => applyCloak(key);
+
+    card.innerHTML = `
+
+      <img src="${preset.icon}" alt="${preset.label}" onerror="this.style.display='none'">
+
+      <div>
+
+        <div class="cloak-card-name">${preset.label}</div>
+
+        <div class="cloak-card-url">${preset.url}</div>
+
+      </div>
+
+    `;
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+
+
+window.onload = function() {
+
+  const savedCloak = localStorage.getItem("userCloak") || "Google";
+
+  currentCloakKey = savedCloak;
+
+  applyCloak(savedCloak);
+
+};
+
+
+
+function openSettings() {
+
+  buildCloakCards();
+
+  const modal = document.getElementById('settings-modal');
+
+  modal.style.display = 'flex';
+
+  void modal.offsetWidth;
+
+}
+
+
+
+function closeSettings() {
+
+  document.getElementById('settings-modal').style.display = 'none';
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  document.getElementById('settings-modal').addEventListener('click', function(e) {
+
+    if (e.target === this) closeSettings();
+
+  });
+
+});
+
+function playChorde(gameUrl) {
+
+  const accessCode = prompt("Please enter Early Access key:");
+
+
+
+  if (accessCode === "x3e-beta-2026") {
+
+    playGame(gameUrl);
+
+  } else if (accessCode !== null) {
+
+    alert("Incorrect password. Access denied.");
+
+  }
+
+}
+
+      </script>
+
+
+
+      <div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
+
+         <button onclick="closeGame()" class="back-btn">← Back to x3e</button>
+
+         <iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
+
+      </div>
+
+
+
+      <!-- ============ SETTINGS MODAL — REDESIGNED ============ -->
+
+      <div id="settings-modal" style="display: none;">
+
+        <div class="settings-content">
+
+
+
+          <!-- Animated rainbow top bar -->
+
+          <div class="settings-topbar"></div>
+
+
+
+          <!-- Header -->
+
+          <div class="settings-header">
+
+            <div class="settings-header-left">
+
+              <!-- Spinning gear SVG -->
+
+              <svg class="settings-gear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+
+                <circle cx="12" cy="12" r="3"></circle>
+
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+
+              </svg>
+
+              <div class="settings-title-text">
+
+                <h2>Settings</h2>
+
+                <span class="settings-sub">x3e // COMPOUND CREATIONS</span>
+
+              </div>
+
+            </div>
+
+            <span class="close-settings" onclick="closeSettings()">[✕]</span>
+
           </div>
-          <div class="msg-text">${parseMarkdown(escHtml(m.text))}</div>
+
+          <div class="settings-body">
+
+            <div class="setting-section-label">Tab Cloaking</div>
+
+            <p class="setting-description">Changes tab name and icon instantly. You can request more pages in the game request form.</p>
+
+            <div class="cloak-grid" id="cloak-grid">
+
+            </div>
+
+          </div>
+
         </div>
-        ${delBtn}
-      `;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    }
 
-    async function deleteMessage(msgId) {
-      if (!confirm("Are you sure you want to delete this message?")) return;
-      try {
-        const msgRef = window.fbRef(window.db, `messages/${currentChannelId}/${msgId}`);
-        await window.fbSet(msgRef, null); // Deletes from Firebase
-      } catch (e) {
-        console.error("Delete failed:", e);
-      }
-    }
+      </div>
 
-    function escHtml(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
+   </body>
 
-    // ═══════════════════════════════════════════════════════
-    //  INIT
-    // ═══════════════════════════════════════════════════════
-    function buildColorGrid() {
-      const grid = document.getElementById('reg-color-grid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      AVATAR_COLORS.forEach((c, i) => {
-        const s = document.createElement('div');
-        s.className = 'color-swatch' + (i === 0 ? ' selected' : '');
-        s.style.background = c;
-        s.onclick = () => {
-          document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('selected'));
-          s.classList.add('selected');
-          selectedRegColor = i;
-        };
-        grid.appendChild(s);
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      buildColorGrid();
-      setTimeout(() => {
-        if (window.auth) {
-          window.auth.onAuthStateChanged((user) => {
-            if (user) {
-              window.fbOnValue(window.fbRef(window.db, 'users/' + user.uid), (snap) => {
-                if (snap.exists()) setupApp(snap.val());
-              }, { onlyOnce: true });
-            }
-          });
-        }
-      }, 1000);
-    });
-  </script>
-</body>
 </html>
