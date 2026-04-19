@@ -756,365 +756,164 @@
 		</div>
 		<script>
 			(function() {
-			
 			    const min = 3000;
-			
 			    const max = 7000;
-			
 			    const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
-			
 			    console.log("Loading for: " + displayTime + "ms");
-			
 			    setTimeout(function() {
-			
 			        const loader = document.getElementById('preloader');
-			
 			        if (loader) {
-			
 			            loader.style.opacity = '0'; 
-			
 			            setTimeout(function() { loader.style.display = 'none'; }, 1000); 
-			
 			        }
-			
 			    }, displayTime);
-			
 			})();
-			
-			
-			
 			/* ============ PARTICLE SYSTEM ============ */
-			
 			const canvas = document.getElementById('particle-canvas');
-			
 			const ctx = canvas.getContext('2d');
-			
 			let particles = [];
-			
-			
-			
 			function resizeCanvas() {
-			
 			  canvas.width = window.innerWidth;
-			
 			  canvas.height = window.innerHeight;
-			
 			}
-			
 			resizeCanvas();
-			
 			window.addEventListener('resize', resizeCanvas);
-			
-			
-			
 			class Particle {
-			
 			  constructor() { this.reset(); }
-			
 			  reset() {
-			
 			    this.x = Math.random() * canvas.width;
-			
 			    this.y = Math.random() * canvas.height;
-			
-			    this.size = Math.random() * 1.5 + 0.3;
-			
+				this.size = Math.random() * 1.5 + 0.3;
 			    this.speedX = (Math.random() - 0.5) * 0.4;
-			
 			    this.speedY = -Math.random() * 0.6 - 0.1;
-			
 			    this.life = 1;
-			
 			    this.decay = Math.random() * 0.003 + 0.001;
-			
 			    this.hue = Math.random() < 0.7 ? 320 : 185;
-			
 			  }
-			
 			  update() {
-			
 			    this.x += this.speedX;
-			
 			    this.y += this.speedY;
-			
 			    this.life -= this.decay;
-			
 			    if (this.life <= 0) this.reset();
-			
 			  }
-			
 			  draw() {
-			
 			    ctx.save();
-			
 			    ctx.globalAlpha = this.life * 0.8;
-			
 			    ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
-			
-			    ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
-			
+				ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
 			    ctx.shadowBlur = 6;
-			
 			    ctx.beginPath();
-			
 			    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-			
 			    ctx.fill();
-			
 			    ctx.restore();
-			
+
 			  }
-			
 			}
-			
-			
-			
 			for (let i = 0; i < 200; i++) {
-			
 			  const p = new Particle();
-			
 			  p.life = Math.random(); 
-			
 			  particles.push(p);
-			
 			}
-			
-			
-			
 			function animateParticles() {
-			
 			  ctx.clearRect(0, 0, canvas.width, canvas.height);
-			
 			  particles.forEach(p => { p.update(); p.draw(); });
-			
 			  requestAnimationFrame(animateParticles);
-			
 			}
-			
 			animateParticles();
-			
-			
-			
 			/* ============ SEARCH ============ */
-			
 			function searchGames() {
-			
 			  let input = document.getElementById('gameSearch').value.toLowerCase();
-			
 			  let buttons = document.querySelectorAll('.button-grid button');
-			
 			  let sections = document.querySelectorAll('.section');
-			
 			  buttons.forEach(button => {
-			
 			    let gameName = button.innerText.toLowerCase();
-			
 			    button.style.display = gameName.includes(input) ? "" : "none";
-			
 			  });
-			
 			  sections.forEach(section => {
-			
 			    let visibleButtons = section.querySelectorAll('.button-grid button:not([style*="display: none"])');
-			
 			    section.style.display = (visibleButtons.length === 0 && input !== "") ? "none" : "block";
-			
 			  });
-			
 			}
-			
-			
-			
 			function playGame(gameUrl) {
-			
 			  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
-			
 			  document.getElementById('game-overlay').style.display = 'block';
-			
 			  document.getElementById('game-frame').src = gameUrl;
-			
 			}
-			
-			
-			
 			function closeGame() {
-			
 			  document.getElementById('game-overlay').style.display = 'none';
-			
 			  document.getElementById('game-frame').src = '';
-			
 			}
-			
-			
-			
-			
 			const cloakPresets = {
-			
-			
 			  "x3e unblocked games": { title: "x3e unblocked games", 		    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",  	label: "x3e Games", 			url: "x3e" },
-			
-			
 			  "Google":   			 { title: "Google",                    	 	icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        		label: "Google",            	url: "google.com" },
-			
-			
 			  "YouTube": 			 { title: "YouTube",                   	 	icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                		label: "YouTube",           	url: "youtube.com" },
-			
-			
 			  "Canvas":   			 { title: "Dashboard",                 	 	icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                      		label: "Canvas",            	url: "instructure.com" },
-			
-			
 			  "Khan":     			 { title: "Khan Academy",              	 	icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     		label: "Khan Academy",      	url: "khanacademy.org" },
-			
-			
 			  "Docs":     			 { title: "Google Docs",               	 	icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  		label: "Google Docs",       	url: "docs.google.com" },
-			
-			
 			  "Desmos":   			 { title: "Desmos | Graphing Calculator",   icon: "https://www.desmos.com/favicon.ico",                                                           	 		label: "Desmos",            	url: "desmos.com" },
-			
-			
 			  "Drive":    			 { title: "My Drive - Google Drive",        icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        		label: "Google Drive",      	url: "drive.google.com" },
-			
-			
 			  "Google Classroom": 	 { title: "Home - Classroom",       		icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg",                           		 		label: "Google Classroom",  	url: "classroom.google.com"},
-			
-			
 			  "Accelerated Reader":  { title: "Accelerated Reader",             icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/idSPu9bV3s_1776472587103.jpeg",  label: "Accelerated Reader",    url: "renaissance.com"}
-			
 			};
-			
-			
-			
 			let currentCloakKey = "x3e unblocked games";
-			
-			
-			
 			function applyCloak(presetKey) {
-			
 			  if (!cloakPresets[presetKey]) return;
-			
 			  currentCloakKey = presetKey;
-			
 			  const preset = cloakPresets[presetKey];
-			
 			  document.title = preset.title;
-			
 			  let link = document.querySelector("link[rel~='icon']");
-			
 			  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
-			
 			  link.href = preset.icon;
-			
 			  localStorage.setItem("userCloak", presetKey);
-			
 			  document.querySelectorAll('.cloak-card').forEach(card => {
-			
 			    card.classList.toggle('active', card.dataset.key === presetKey);
-			
 			  });
-			
 			}
-			
-			
-			
 			function buildCloakCards() {
-			
 			  const grid = document.getElementById('cloak-grid');
-			
 			  grid.innerHTML = '';
-			
 			  Object.entries(cloakPresets).forEach(([key, preset]) => {
-			
 			    const card = document.createElement('div');
-			
 			    card.className = 'cloak-card' + (key === currentCloakKey ? ' active' : '');
-			
 			    card.dataset.key = key;
-			
 			    card.onclick = () => applyCloak(key);
-			
 			    card.innerHTML = `
-			
 			      <img src="${preset.icon}" alt="${preset.label}" onerror="this.style.display='none'">
-			
 			      <div>
-			
 			        <div class="cloak-card-name">${preset.label}</div>
-			
 			        <div class="cloak-card-url">${preset.url}</div>
-			
 			      </div>
-			
 			    `;
-			
 			    grid.appendChild(card);
-			
 			  });
-			
 			}
-			
-			
-			
 			window.onload = function() {
-			
 			  const savedCloak = localStorage.getItem("userCloak") || "Google";
-			
 			  currentCloakKey = savedCloak;
-			
 			  applyCloak(savedCloak);
-			
 			};
-			
-			
-			
 			function openSettings() {
-			
 			  buildCloakCards();
-			
 			  const modal = document.getElementById('settings-modal');
-			
 			  modal.style.display = 'flex';
-			
 			  void modal.offsetWidth;
-			
 			}
-			
-			
-			
 			function closeSettings() {
-			
 			  document.getElementById('settings-modal').style.display = 'none';
-			
 			}
-			
 			document.addEventListener('DOMContentLoaded', () => {
-			
 			  document.getElementById('settings-modal').addEventListener('click', function(e) {
-			
 			    if (e.target === this) closeSettings();
-			
 			  });
-			
 			});
-			
 			function playChorde(gameUrl) {
-			
 			  const accessCode = prompt("Please enter Early Access key:");
-			
-			
-			
 			  if (accessCode === "x3e-beta-2026") {
-			
 			    playGame(gameUrl);
-			
 			  } else if (accessCode !== null) {
-			
 			    alert("Incorrect password. Access denied.");
-			
 			  }
-			
 			}
-			
-			      
 		</script>
 		<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
 			<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
