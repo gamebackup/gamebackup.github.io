@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/04/27-15">
+    <meta name="x3e-version" content="2026/04/27-16">
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -1874,7 +1874,6 @@ const NON_CACHEABLE_GAMES = [
   'https://gamebackup.github.io/standalone_games/hk/hollow knight.html',
   'https://wikispeedruns.com/',
   'https://www.gutenberg.org/',
-  'https://gamebackup.github.io/chord/',
   'https://gamebackup.github.io/standalone_games/slimerancher/',
   'https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing',
   'https://gamebackup.github.io/standalone_games/celeste/',
@@ -1887,7 +1886,19 @@ function isGameCacheable(url) {
   if (NON_CACHEABLE_GAMES.includes(url)) return false;
   return true;
 }
+// Clean out any cached games that are now forbidden
+cachedGamesList = cachedGamesList.filter(url => !NON_CACHEABLE_GAMES.includes(url));
+localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
 
+// Also tell the Service Worker to wipe those game files from the cache
+if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+  NON_CACHEABLE_GAMES.forEach(url => {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'CLEAR_GAME',
+      prefix: url
+    });
+  });
+}
 		function getAllGameEntries() {
 		  const seen = new Set(), out = [];
 		  document.querySelectorAll('.button-grid button').forEach(btn => {
@@ -1923,32 +1934,38 @@ function isGameCacheable(url) {
 		}
 
 		function buildPickerList(filter) {
-		  const list = document.getElementById('picker-game-list');
-		  list.innerHTML = '';
-		  const f = filter.toLowerCase();
-		  getAllGameEntries()
-		    .filter(g => !f || g.name.toLowerCase().includes(f))
-		    .forEach(g => {
-		      const isSelected = selectedGames.some(s => s.url === g.url);
-		      const isCached   = cachedGamesList.includes(g.url);
-		      const div = document.createElement('div');
-		      div.className = 'picker-game-card'
-		        + (isSelected   ? ' selected'    : '')
-		        + (!g.cacheable ? ' uncacheable' : '')
-		        + (isCached     ? ' is-cached'   : '');
-		      if (g.cacheable) div.onclick = () => toggleGame(g);
-		      div.innerHTML = `
-		        <div class="pgc-check ${isSelected ? 'on' : ''}">${isSelected ? '✓' : ''}</div>
-		        <div class="pgc-info">
-		          <div class="pgc-name">${g.name}</div>
-		          ${isCached      ? '<div class="pgc-sub cached-tag">💾 Already cached</div>'              : ''}
-		          ${!g.cacheable  ? '<div class="pgc-sub external-tag">🌐 External — cannot cache</div>'  : ''}
-		        </div>`;
-		      list.appendChild(div);
-		    });
-		}
+  const list = document.getElementById('picker-game-list');
+  list.innerHTML = '';
+  const f = filter.toLowerCase();
+  getAllGameEntries()
+    .filter(g => !f || g.name.toLowerCase().includes(f))
+    .forEach(g => {
+      const isSelected = selectedGames.some(s => s.url === g.url);
+      const isCached   = cachedGamesList.includes(g.url);
+      const div = document.createElement('div');
+      div.className = 'picker-game-card'
+        + (isSelected   ? ' selected'    : '')
+        + (!g.cacheable ? ' uncacheable' : '')
+        + (isCached     ? ' is-cached'   : '');   // already cached – will be greyed out + unclickable
+
+      // Only allow toggling if the game is cacheable AND not already cached
+      if (g.cacheable && !isCached) {
+        div.onclick = () => toggleGame(g);
+      }
+
+      div.innerHTML = `
+        <div class="pgc-check ${isSelected ? 'on' : ''}">${isSelected ? '✓' : ''}</div>
+        <div class="pgc-info">
+          <div class="pgc-name">${g.name}</div>
+          ${isCached      ? '<div class="pgc-sub cached-tag">💾 Already cached</div>'              : ''}
+          ${!g.cacheable  ? '<div class="pgc-sub external-tag">🌐 External — cannot cache</div>'  : ''}
+        </div>`;
+      list.appendChild(div);
+    });
+}
 
 		function toggleGame(g) {
+		  if (!g.cacheable || cachedGamesList.includes(g.url)) return;
 		  const idx = selectedGames.findIndex(s => s.url === g.url);
 		  if (idx > -1) { selectedGames.splice(idx, 1); }
 		  else {
