@@ -1,9 +1,3 @@
-// ================================================================
-//  x3e unblocked games — Service Worker
-//  Caches gamebackup.github.io resources for offline play.
-//  Place this file at the ROOT of your repo: /sw.js
-// ================================================================
-
 const CACHE_NAME = 'x3e-offline-v1';
 
 // ── Lifecycle ────────────────────────────────────────────────────
@@ -50,17 +44,21 @@ self.addEventListener('message', e => {
         })
       );
   }
-
-  // Main page asking: "delete everything for this game path"
-  if (e.data.type === 'CLEAR_GAME' && e.data.prefix) {
+if (e.data.type === 'CLEAR_GAME' && e.data.prefix) {
+  const prefix = e.data.prefix;
+  // Only purge if the prefix is a game sub‑path, not the root of the site
+  if (prefix.startsWith('https://gamebackup.github.io/') && prefix !== 'https://gamebackup.github.io/') {
     caches.open(CACHE_NAME).then(c =>
       c.keys().then(keys =>
         Promise.all(
           keys
-            .filter(r => r.url.startsWith(e.data.prefix))
+            .filter(r => r.url.startsWith(prefix))
             .map(r => c.delete(r))
         )
       )
     );
+  } else {
+    console.warn('[SW] Ignoring unsafe CLEAR_GAME prefix:', prefix);
   }
+}
 });
