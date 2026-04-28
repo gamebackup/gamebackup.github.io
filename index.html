@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/04/27-16">
+    <meta name="x3e-version" content="2026/04/28-17">
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -1854,21 +1854,18 @@
 		    setTimeout(() => checkForUpdate(), 2000);
 		})();
 	</script>
-
 	<script>
-		/* ============ OFFLINE PRELOADER ============ */
-		const CACHEABLE_BASE = 'https://gamebackup.github.io';
-		const MAX_SELECT     = 5;
-		const CACHE_WAIT_MS  = 3500;
-		const CACHE_MAX_MS   = 15000;
+const CACHEABLE_BASE = 'https://gamebackup.github.io';
+const MAX_SELECT     = 5;
+const CACHE_WAIT_MS  = 12000;   // 12 seconds – enough time for heavy games
+const CACHE_MAX_MS   = 25000;   // 25 seconds fallback
 
-		let selectedGames   = [];
-		let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]');
-		let cacheQueue      = [];
-		let cacheIndex      = 0;
-		let cacheIframe     = null;
+let selectedGames   = [];
+let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]');
+let cacheQueue      = [];
+let cacheIndex      = 0;
+let cacheIframe     = null;
 
-		// ── GAMES THAT SHOULD NEVER BE CACHED ─────────────────────
 const NON_CACHEABLE_GAMES = [
   'https://gamebackup.github.io/chord/',
   'https://gamebackup.github.io/standalone_games/hk/hollow knight.html',
@@ -1886,6 +1883,7 @@ function isGameCacheable(url) {
   if (NON_CACHEABLE_GAMES.includes(url)) return false;
   return true;
 }
+
 // Clean out any cached games that are now forbidden
 cachedGamesList = cachedGamesList.filter(url => !NON_CACHEABLE_GAMES.includes(url));
 localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
@@ -1899,41 +1897,48 @@ if (navigator.serviceWorker && navigator.serviceWorker.controller) {
     });
   });
 }
-		function getAllGameEntries() {
-		  const seen = new Set(), out = [];
-		  document.querySelectorAll('.button-grid button').forEach(btn => {
-		    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
-		    if (!m) return;
-		    const url = m[1];
-		    if (seen.has(url)) return;
-		    seen.add(url);
-		    out.push({ name: btn.innerText.trim(), url, cacheable: isGameCacheable(url) });
-		  });
-		  return out;
-		}
 
-		function openGamePicker() {
-		  selectedGames = [];
-		  document.getElementById('game-picker-overlay').classList.add('open');
-		  document.getElementById('picker-view').style.display   = 'flex';
-		  document.getElementById('progress-view').style.display = 'none';
-		  document.getElementById('picker-search').value = '';
-		  buildPickerList('');
-		  updateCounter();
-		}
+function swPost(msg) {
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage(msg);
+  }
+}
 
-		function closeGamePicker() {
-		  document.getElementById('game-picker-overlay').classList.remove('open');
-		  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
-		}
+function getAllGameEntries() {
+  const seen = new Set(), out = [];
+  document.querySelectorAll('.button-grid button').forEach(btn => {
+    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+    if (!m) return;
+    const url = m[1];
+    if (seen.has(url)) return;
+    seen.add(url);
+    out.push({ name: btn.innerText.trim(), url, cacheable: isGameCacheable(url) });
+  });
+  return out;
+}
 
-		function closeGamePickerAndReset() {
-		  closeGamePicker();
-		  updateOfflineBadge();
-		  markCachedButtons();
-		}
+function openGamePicker() {
+  selectedGames = [];
+  document.getElementById('game-picker-overlay').classList.add('open');
+  document.getElementById('picker-view').style.display   = 'flex';
+  document.getElementById('progress-view').style.display = 'none';
+  document.getElementById('picker-search').value = '';
+  buildPickerList('');
+  updateCounter();
+}
 
-		function buildPickerList(filter) {
+function closeGamePicker() {
+  document.getElementById('game-picker-overlay').classList.remove('open');
+  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
+}
+
+function closeGamePickerAndReset() {
+  closeGamePicker();
+  updateOfflineBadge();
+  markCachedButtons();
+}
+
+function buildPickerList(filter) {
   const list = document.getElementById('picker-game-list');
   list.innerHTML = '';
   const f = filter.toLowerCase();
@@ -1946,9 +1951,8 @@ if (navigator.serviceWorker && navigator.serviceWorker.controller) {
       div.className = 'picker-game-card'
         + (isSelected   ? ' selected'    : '')
         + (!g.cacheable ? ' uncacheable' : '')
-        + (isCached     ? ' is-cached'   : '');   // already cached – will be greyed out + unclickable
+        + (isCached     ? ' is-cached'   : '');
 
-      // Only allow toggling if the game is cacheable AND not already cached
       if (g.cacheable && !isCached) {
         div.onclick = () => toggleGame(g);
       }
@@ -1964,116 +1968,128 @@ if (navigator.serviceWorker && navigator.serviceWorker.controller) {
     });
 }
 
-		function toggleGame(g) {
-		  if (!g.cacheable || cachedGamesList.includes(g.url)) return;
-		  const idx = selectedGames.findIndex(s => s.url === g.url);
-		  if (idx > -1) { selectedGames.splice(idx, 1); }
-		  else {
-		    if (selectedGames.length >= MAX_SELECT) { flashCounter(); return; }
-		    selectedGames.push(g);
-		  }
-		  buildPickerList(document.getElementById('picker-search').value);
-		  updateCounter();
-		}
+function toggleGame(g) {
+  if (!g.cacheable || cachedGamesList.includes(g.url)) return;
+  const idx = selectedGames.findIndex(s => s.url === g.url);
+  if (idx > -1) { selectedGames.splice(idx, 1); }
+  else {
+    if (selectedGames.length >= MAX_SELECT) { flashCounter(); return; }
+    selectedGames.push(g);
+  }
+  buildPickerList(document.getElementById('picker-search').value);
+  updateCounter();
+}
 
-		function updateCounter() {
-		  document.getElementById('selection-counter').textContent = `${selectedGames.length} / ${MAX_SELECT} selected`;
-		  document.getElementById('load-games-btn').disabled = selectedGames.length === 0;
-		}
+function updateCounter() {
+  document.getElementById('selection-counter').textContent = `${selectedGames.length} / ${MAX_SELECT} selected`;
+  document.getElementById('load-games-btn').disabled = selectedGames.length === 0;
+}
 
-		function flashCounter() {
-		  const el = document.getElementById('selection-counter');
-		  el.classList.add('flash-red');
-		  setTimeout(() => el.classList.remove('flash-red'), 600);
-		}
+function flashCounter() {
+  const el = document.getElementById('selection-counter');
+  el.classList.add('flash-red');
+  setTimeout(() => el.classList.remove('flash-red'), 600);
+}
 
-		function startCaching() {
-		  if (!selectedGames.length) return;
-		  cacheQueue = [...selectedGames];
-		  cacheIndex = 0;
+// ── SESSION‑BASED CACHING ─────────────────────────────────────
 
-		  document.getElementById('picker-view').style.display   = 'none';
-		  document.getElementById('progress-view').style.display = 'flex';
+function startCaching() {
+  if (!selectedGames.length) return;
 
-		  const pl = document.getElementById('progress-game-list');
-		  pl.innerHTML = '';
-		  cacheQueue.forEach((g, i) => {
-		    const div = document.createElement('div');
-		    div.className = 'prog-item';
-		    div.id = `prog-item-${i}`;
-		    div.innerHTML = `<span class="prog-icon" id="prog-icon-${i}">⏳</span><span class="prog-name">${g.name}</span>`;
-		    pl.appendChild(div);
-		  });
+  swPost({ type: 'START_SESSION' });
 
-		  document.getElementById('prog-done-msg').style.display  = 'none';
-		  document.getElementById('prog-close-btn').style.display = 'none';
-		  document.getElementById('prog-bar-fill').style.width    = '0%';
+  cacheQueue = [...selectedGames];
+  cacheIndex = 0;
 
-		  cacheNextGame();
-		}
+  document.getElementById('picker-view').style.display   = 'none';
+  document.getElementById('progress-view').style.display = 'flex';
 
-		function cacheNextGame() {
-		  if (cacheIndex >= cacheQueue.length) { finishCaching(); return; }
-		  const g = cacheQueue[cacheIndex], n = cacheQueue.length;
+  const pl = document.getElementById('progress-game-list');
+  pl.innerHTML = '';
+  cacheQueue.forEach((g, i) => {
+    const div = document.createElement('div');
+    div.className = 'prog-item';
+    div.id = `prog-item-${i}`;
+    div.innerHTML = `<span class="prog-icon" id="prog-icon-${i}">⏳</span><span class="prog-name">${g.name}</span>`;
+    pl.appendChild(div);
+  });
 
-		  document.getElementById('prog-status').textContent = `Caching "${g.name}"… (${cacheIndex + 1} of ${n})`;
-		  document.getElementById('prog-bar-fill').style.width = `${(cacheIndex / n) * 100}%`;
+  document.getElementById('prog-done-msg').style.display  = 'none';
+  document.getElementById('prog-close-btn').style.display = 'none';
+  document.getElementById('prog-bar-fill').style.width    = '0%';
 
-		  const icon = document.getElementById(`prog-icon-${cacheIndex}`);
-		  const item = document.getElementById(`prog-item-${cacheIndex}`);
-		  if (icon) icon.textContent = '🔄';
-		  if (item) item.classList.add('loading');
+  cacheNextGame();
+}
 
-		  if (cacheIframe) cacheIframe.remove();
-		  cacheIframe = document.createElement('iframe');
-		  Object.assign(cacheIframe.style, {
-		    position: 'fixed', top: '-9999px', left: '-9999px',
-		    width: '1px', height: '1px', opacity: '0', pointerEvents: 'none', border: 'none'
-		  });
-		  cacheIframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';
-		  document.body.appendChild(cacheIframe);
+function cacheNextGame() {
+  if (cacheIndex >= cacheQueue.length) { finishCaching(); return; }
+  const g = cacheQueue[cacheIndex], n = cacheQueue.length;
 
-		  let done = false;
-		  const markDone = () => {
-		    if (done) return;
-		    done = true;
-		    if (icon) icon.textContent = '✅';
-		    if (item) { item.classList.remove('loading'); item.classList.add('done'); }
-		    if (!cachedGamesList.includes(g.url)) {
-		      cachedGamesList.push(g.url);
-		      localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
-		    }
-		    cacheIndex++;
-		    setTimeout(cacheNextGame, 700);
-		  };
+  document.getElementById('prog-status').textContent = `Caching "${g.name}"… (${cacheIndex + 1} of ${n})`;
+  document.getElementById('prog-bar-fill').style.width = `${(cacheIndex / n) * 100}%`;
 
-		  cacheIframe.onload  = () => setTimeout(markDone, CACHE_WAIT_MS);
-		  cacheIframe.onerror = () => markDone();
-		  setTimeout(markDone, CACHE_MAX_MS);
-		  cacheIframe.src = g.url;
-		}
+  const icon = document.getElementById(`prog-icon-${cacheIndex}`);
+  const item = document.getElementById(`prog-item-${cacheIndex}`);
+  if (icon) icon.textContent = '🔄';
+  if (item) item.classList.add('loading');
 
-		function finishCaching() {
-		  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
-		  document.getElementById('prog-bar-fill').style.width = '100%';
-		  const n = cacheQueue.length;
-		  document.getElementById('prog-status').textContent = `✅ ${n} game${n !== 1 ? 's' : ''} preloaded for offline play!`;
-		  const msg = document.getElementById('prog-done-msg');
-		  msg.textContent = `${n} game${n !== 1 ? 's' : ''} are now available offline. Enjoy playing even without internet!`;
-		  msg.style.display = 'block';
-		  document.getElementById('prog-close-btn').style.display = 'block';
-		  selectedGames = [];
-		  updateOfflineBadge();
-		  markCachedButtons();
-		}
+  if (cacheIframe) cacheIframe.remove();
+  cacheIframe = document.createElement('iframe');
+  Object.assign(cacheIframe.style, {
+    position: 'fixed', top: '-9999px', left: '-9999px',
+    width: '1px', height: '1px', opacity: '0', pointerEvents: 'none', border: 'none'
+  });
+  // No sandbox → game can fetch everything
+  document.body.appendChild(cacheIframe);
 
-		function updateOfflineBadge() {
-		  const badge = document.getElementById('offline-badge');
-		  const count = document.getElementById('offline-badge-count');
-		  const n = cachedGamesList.length;
-		  badge.style.display = n > 0 ? 'inline-flex' : 'none';
-		  count.textContent = n;
-		}
+  let done = false;
+  const markDone = () => {
+    if (done) return;
+    done = true;
+    if (icon) icon.textContent = '✅';
+    if (item) { item.classList.remove('loading'); item.classList.add('done'); }
+    if (!cachedGamesList.includes(g.url)) {
+      cachedGamesList.push(g.url);
+      localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+    }
+    cacheIndex++;
+    setTimeout(cacheNextGame, 800);
+  };
+
+  cacheIframe.onload  = () => setTimeout(markDone, CACHE_WAIT_MS);
+  cacheIframe.onerror = () => markDone();
+  setTimeout(markDone, CACHE_MAX_MS);
+  cacheIframe.src = g.url;
+}
+
+function finishCaching() {
+  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
+
+  swPost({ type: 'STOP_SESSION' });
+
+  document.getElementById('prog-bar-fill').style.width = '100%';
+  const n = cacheQueue.length;
+  document.getElementById('prog-status').textContent = `✅ ${n} game${n !== 1 ? 's' : ''} preloaded for offline play!`;
+  const msg = document.getElementById('prog-done-msg');
+  msg.textContent = `${n} game${n !== 1 ? 's' : ''} are now available offline. Enjoy playing even without internet!`;
+  msg.style.display = 'block';
+  document.getElementById('prog-close-btn').style.display = 'block';
+  selectedGames = [];
+  updateOfflineBadge();
+  markCachedButtons();
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────
+
+function updateOfflineBadge() {
+  const badge = document.getElementById('offline-badge');
+  const count = document.getElementById('offline-badge-count');
+  const purgeBtn = document.getElementById('purge-cache-btn');
+  const n = cachedGamesList.length;
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  count.textContent = n;
+  if (purgeBtn) purgeBtn.disabled = n === 0;
+}
 
 function purgeAllGameCaches() {
   if (cachedGamesList.length === 0) {
@@ -2082,7 +2098,6 @@ function purgeAllGameCaches() {
   }
   if (!confirm(`Unload all ${cachedGamesList.length} cached game(s)? This won't affect the main site.`)) return;
 
-  // Send a clear message to the Service Worker for each game prefix
   const sendClear = (prefix) => new Promise(resolve => {
     if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
       resolve();
@@ -2094,82 +2109,70 @@ function purgeAllGameCaches() {
       { type: 'CLEAR_GAME', prefix },
       [channel.port2]
     );
-    // Fallback timeout in case SW doesn't respond
     setTimeout(resolve, 2000);
   });
 
-  // Build an array of unique prefixes from the cached game URLs
   const prefixes = [...new Set(cachedGamesList.map(url => url.endsWith('/') ? url : url + '/'))];
-  
+
   Promise.all(prefixes.map(sendClear)).then(() => {
-    // Clear the list from memory and localStorage
     cachedGamesList = [];
     localStorage.setItem('x3e-cachedGames', JSON.stringify([]));
-    
-    // Update UI
     updateOfflineBadge();
     markCachedButtons();
     alert('All cached game data has been removed.');
+    location.reload();   
   });
 }
 
-		function updateOfflineBadge() {
-  const badge = document.getElementById('offline-badge');
-  const count = document.getElementById('offline-badge-count');
-  const purgeBtn = document.getElementById('purge-cache-btn');
-  const n = cachedGamesList.length;
-  badge.style.display = n > 0 ? 'inline-flex' : 'none';
-  count.textContent = n;
-  if (purgeBtn) purgeBtn.disabled = n === 0;
+function markCachedButtons() {
+  document.querySelectorAll('.button-grid button').forEach(btn => {
+    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+    if (m && cachedGamesList.includes(m[1]) && !btn.querySelector('.cache-dot')) {
+      const dot = document.createElement('span');
+      dot.className = 'cache-dot';
+      dot.textContent = ' 💾';
+      dot.style.cssText = 'font-size:.72em; opacity:.75;';
+      dot.title = 'Available offline';
+      btn.appendChild(dot);
+    }
+  });
 }
-		
-		function markCachedButtons() {
-		  document.querySelectorAll('.button-grid button').forEach(btn => {
-		    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
-		    if (m && cachedGamesList.includes(m[1]) && !btn.querySelector('.cache-dot')) {
-		      const dot = document.createElement('span');
-		      dot.className = 'cache-dot';
-		      dot.textContent = ' 💾';
-		      dot.style.cssText = 'font-size:.72em; opacity:.75;';
-		      dot.title = 'Available offline';
-		      btn.appendChild(dot);
-		    }
-		  });
-		}
 
-		function handleCachedUrlsResponse(urls) {
+function handleCachedUrlsResponse(urls) {
   cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
   localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
   updateOfflineBadge();
   markCachedButtons();
 }
 
-		document.addEventListener('DOMContentLoaded', () => {
-		  if ('serviceWorker' in navigator) {
-		    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-		      .then(reg => {
-		        console.log('[x3e] SW registered:', reg.scope);
-		        navigator.serviceWorker.ready.then(r => {
-		          if (r.active) r.active.postMessage({ type: 'GET_CACHED_URLS' });
-		        });
-		      })
-		      .catch(err => console.warn('[x3e] SW failed:', err));
-		    navigator.serviceWorker.addEventListener('message', e => {
-		      if (e.data?.type === 'CACHED_URLS') handleCachedUrlsResponse(e.data.urls);
-		    });
-		  }
-		  updateOfflineBadge();
-		  markCachedButtons();
-		  document.getElementById('game-picker-overlay')
-		    .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay') closeGamePicker(); });
-		});
-	</script>
+// ── INIT ───────────────────────────────────────────────────────
 
+document.addEventListener('DOMContentLoaded', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(reg => {
+        console.log('[x3e] SW registered:', reg.scope);
+        navigator.serviceWorker.ready.then(r => {
+          if (r.active) r.active.postMessage({ type: 'GET_CACHED_URLS' });
+        });
+      })
+      .catch(err => console.warn('[x3e] SW failed:', err));
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.type === 'CACHED_URLS') handleCachedUrlsResponse(e.data.urls);
+    });
+  }
+  updateOfflineBadge();
+  markCachedButtons();
+  document.getElementById('game-picker-overlay')
+    .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay') closeGamePicker(); });
+});
+</script>
 	<!-- ============ GAME OVERLAY ============ -->
 	<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
 		<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
-		<iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
-	</div>
+<iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock">
+</iframe>	</div>
 
 	<!-- ============ SETTINGS MODAL ============ -->
 	<div id="settings-modal" style="display: none;">
@@ -2219,11 +2222,11 @@ function purgeAllGameCaches() {
     🗑️ Unload Loaded Games
   </button>
   <span style="font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk', sans-serif;">
-    Removes preloaded game files.
+    Refreshes page and removes preloaded game files.
   </span>
 </div>
 <div style="margin-top: 8px; font-size: 0.65rem; color: rgba(255,255,255,0.35);">
-  ⚠️ Preloading lots of games can slow your browser. Unload preloaded games regularly.
+  ⚠️ Keeping lots of games loaded can slow your browser. Unload preloaded games regularly.
 </div>
 			</div>
 		</div>
