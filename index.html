@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/04/27-13">
+    <meta name="x3e-version" content="2026/04/27-15">
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -1214,7 +1214,7 @@
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games/slimerancher/')">Slime Rancher - MOUSE REQUIRED!*</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games/oneshot/')">Oneshot</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games/halflife/')">Half Life* - Just press "Launch Xash!" ignore the options</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight** - Dreamer Fix</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight**</button>
 		</div>
 	</div>
 
@@ -1868,9 +1868,25 @@
 		let cacheIndex      = 0;
 		let cacheIframe     = null;
 
-		function isGameCacheable(url) {
-		  return typeof url === 'string' && url.startsWith(CACHEABLE_BASE);
-		}
+		// ── GAMES THAT SHOULD NEVER BE CACHED ─────────────────────
+const NON_CACHEABLE_GAMES = [
+  'https://gamebackup.github.io/chord/',
+  'https://gamebackup.github.io/standalone_games/hk/hollow knight.html',
+  'https://wikispeedruns.com/',
+  'https://www.gutenberg.org/',
+  'https://gamebackup.github.io/chord/',
+  'https://gamebackup.github.io/standalone_games/slimerancher/',
+  'https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing',
+  'https://gamebackup.github.io/standalone_games/celeste/',
+  'https://webosumania.com/',
+  'https://gamebackup.github.io/standalone_games/pkrogue/'
+];
+
+function isGameCacheable(url) {
+  if (typeof url !== 'string' || !url.startsWith(CACHEABLE_BASE)) return false;
+  if (NON_CACHEABLE_GAMES.includes(url)) return false;
+  return true;
+}
 
 		function getAllGameEntries() {
 		  const seen = new Set(), out = [];
@@ -2042,6 +2058,54 @@
 		  count.textContent = n;
 		}
 
+function purgeAllGameCaches() {
+  if (cachedGamesList.length === 0) {
+    alert('No cached games to unload.');
+    return;
+  }
+  if (!confirm(`Unload all ${cachedGamesList.length} cached game(s)? This won't affect the main site.`)) return;
+
+  // Send a clear message to the Service Worker for each game prefix
+  const sendClear = (prefix) => new Promise(resolve => {
+    if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+      resolve();
+      return;
+    }
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => resolve();
+    navigator.serviceWorker.controller.postMessage(
+      { type: 'CLEAR_GAME', prefix },
+      [channel.port2]
+    );
+    // Fallback timeout in case SW doesn't respond
+    setTimeout(resolve, 2000);
+  });
+
+  // Build an array of unique prefixes from the cached game URLs
+  const prefixes = [...new Set(cachedGamesList.map(url => url.endsWith('/') ? url : url + '/'))];
+  
+  Promise.all(prefixes.map(sendClear)).then(() => {
+    // Clear the list from memory and localStorage
+    cachedGamesList = [];
+    localStorage.setItem('x3e-cachedGames', JSON.stringify([]));
+    
+    // Update UI
+    updateOfflineBadge();
+    markCachedButtons();
+    alert('All cached game data has been removed.');
+  });
+}
+
+		function updateOfflineBadge() {
+  const badge = document.getElementById('offline-badge');
+  const count = document.getElementById('offline-badge-count');
+  const purgeBtn = document.getElementById('purge-cache-btn');
+  const n = cachedGamesList.length;
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  count.textContent = n;
+  if (purgeBtn) purgeBtn.disabled = n === 0;
+}
+		
 		function markCachedButtons() {
 		  document.querySelectorAll('.button-grid button').forEach(btn => {
 		    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
@@ -2057,11 +2121,11 @@
 		}
 
 		function handleCachedUrlsResponse(urls) {
-		  cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
-		  localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
-		  updateOfflineBadge();
-		  markCachedButtons();
-		}
+  cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
+  localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+  updateOfflineBadge();
+  markCachedButtons();
+}
 
 		document.addEventListener('DOMContentLoaded', () => {
 		  if ('serviceWorker' in navigator) {
@@ -2119,8 +2183,8 @@
 				<div style="margin-top: 24px;">
 					<div class="setting-section-label">Offline Play</div>
 					<p class="setting-description">
-						Preload up to 5 games to play without internet. Only games hosted on
-						gamebackup.github.io can be cached.
+						Preload up to 5 games to play without internet. Some games cannot be cached
+						Hollow Knight, Wikipedia Speedrun, etc.
 					</p>
 					<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
 						<button class="offline-action-btn" onclick="openGamePicker()">
@@ -2131,6 +2195,19 @@
 						</div>
 					</div>
 				</div>
+<!-- after the existing <div id="offline-badge"> section -->
+				<div style="margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+  <button class="offline-action-btn" onclick="purgeAllGameCaches()" id="purge-cache-btn"
+          style="background: rgba(200,40,40,0.2); border-color: rgba(200,40,40,0.4);">
+    🗑️ Unload Loaded Games
+  </button>
+  <span style="font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk', sans-serif;">
+    Removes preloaded game files.
+  </span>
+</div>
+<div style="margin-top: 8px; font-size: 0.65rem; color: rgba(255,255,255,0.35);">
+  ⚠️ Preloading lots of games can slow your browser. Unload preloaded games regularly.
+</div>
 			</div>
 		</div>
 	</div>
@@ -2182,6 +2259,5 @@
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>
