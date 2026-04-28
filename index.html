@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/04/27-12">
+    <meta name="x3e-version" content="2026/04/27-13">
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -23,7 +23,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 20px;
-            position: sticky;      /* changed from relative */
+            position: sticky;
             top: 0;
             z-index: 1000;
             gap: 20px;
@@ -306,41 +306,17 @@
         }
 
         @keyframes glitch1 {
-            0%, 100%, 88% {
-                transform: none;
-                opacity: 0;
-            }
-            89% {
-                transform: translateX(-3px);
-                opacity: 1;
-            }
-            91% {
-                transform: translateX(2px);
-                opacity: 1;
-            }
-            93% {
-                transform: none;
-                opacity: 0;
-            }
+            0%, 100%, 88% { transform: none; opacity: 0; }
+            89% { transform: translateX(-3px); opacity: 1; }
+            91% { transform: translateX(2px); opacity: 1; }
+            93% { transform: none; opacity: 0; }
         }
 
         @keyframes glitch2 {
-            0%, 100%, 91% {
-                transform: none;
-                opacity: 0;
-            }
-            92% {
-                transform: translateX(3px);
-                opacity: 1;
-            }
-            94% {
-                transform: translateX(-1px);
-                opacity: 1;
-            }
-            96% {
-                transform: none;
-                opacity: 0;
-            }
+            0%, 100%, 91% { transform: none; opacity: 0; }
+            92% { transform: translateX(3px); opacity: 1; }
+            94% { transform: translateX(-1px); opacity: 1; }
+            96% { transform: none; opacity: 0; }
         }
 
         /* ========== BACK BUTTON (GAME OVERLAY) ========== */
@@ -382,13 +358,8 @@
             border-color: #fff !important;
         }
 
-        .back-btn:hover::after {
-            left: 140%;
-        }
-
-        .back-btn:active {
-            transform: scale(.95);
-        }
+        .back-btn:hover::after { left: 140%; }
+        .back-btn:active { transform: scale(.95); }
 
         /* ========== ROOT VARIABLES ========== */
         :root {
@@ -400,10 +371,8 @@
         /* ========== PARTICLE CANVAS ========== */
         #particle-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
             opacity: .4;
@@ -412,10 +381,8 @@
         /* ========== PRELOADER ========== */
         #preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: #000;
             z-index: 999999;
             display: flex;
@@ -428,8 +395,7 @@
             position: absolute;
             width: 600px;
             height: 36px;
-            left: 50%;
-            top: 50%;
+            left: 50%; top: 50%;
             margin-left: -300px;
             margin-top: -18px;
             overflow: visible;
@@ -439,8 +405,7 @@
 
         #load div {
             position: absolute;
-            width: 30px;
-            height: 46px;
+            width: 30px; height: 46px;
             opacity: 0;
             font-family: Helvetica, Arial, sans-serif;
             font-weight: bold;
@@ -457,35 +422,18 @@
         #load div:nth-child(7) { animation-delay: 1.2s; }
 
         @keyframes move {
-            0% {
-                left: 0;
-                opacity: 0;
-            }
-            35% {
-                left: 41%;
-                transform: rotate(0deg);
-                opacity: 1;
-            }
-            65% {
-                left: 59%;
-                transform: rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                left: 100%;
-                transform: rotate(-180deg);
-                opacity: 0;
-            }
+            0%   { left: 0; opacity: 0; }
+            35%  { left: 41%; transform: rotate(0deg); opacity: 1; }
+            65%  { left: 59%; transform: rotate(0deg); opacity: 1; }
+            100% { left: 100%; transform: rotate(-180deg); opacity: 0; }
         }
 
         /* ========== SETTINGS MODAL ========== */
         #settings-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
             z-index: 1000000;
             backdrop-filter: blur(8px);
@@ -494,9 +442,7 @@
             align-items: center;
         }
 
-        #settings-modal.open {
-            display: flex;
-        }
+        #settings-modal.open { display: flex; }
 
         .settings-content {
             position: relative;
@@ -505,6 +451,10 @@
             border-radius: 16px;
             width: 90%;
             max-width: 520px;
+            /* FIX: allow the modal to grow and scroll when content is tall */
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
             box-shadow: 0 0 0 1px rgba(230, 21, 135, 0.15),
                         0 0 40px rgba(230, 21, 135, 0.25),
@@ -514,14 +464,8 @@
         }
 
         @keyframes settingsSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.88) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            from { opacity: 0; transform: scale(0.88) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .settings-content::before {
@@ -529,10 +473,8 @@
             position: absolute;
             inset: 0;
             background: repeating-linear-gradient(0deg,
-                rgba(0, 0, 0, 0.08) 0px,
-                rgba(0, 0, 0, 0.08) 1px,
-                transparent 1px,
-                transparent 3px);
+                rgba(0, 0, 0, 0.08) 0px, rgba(0, 0, 0, 0.08) 1px,
+                transparent 1px, transparent 3px);
             pointer-events: none;
             z-index: 0;
             border-radius: 16px;
@@ -542,19 +484,21 @@
             position: relative;
             z-index: 1;
             height: 4px;
+            flex-shrink: 0;
             background: linear-gradient(90deg, #e61587, #00f0ff, #e61587);
             background-size: 200% 100%;
             animation: shiftGradient 3s linear infinite;
         }
 
         @keyframes shiftGradient {
-            0% { background-position: 0% 0%; }
+            0%   { background-position: 0% 0%; }
             100% { background-position: 200% 0%; }
         }
 
         .settings-header {
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -569,8 +513,7 @@
         }
 
         .settings-gear-icon {
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             color: #e61587;
             filter: drop-shadow(0 0 8px rgba(230, 21, 135, 0.7));
             animation: spinGear 8s linear infinite;
@@ -579,7 +522,7 @@
 
         @keyframes spinGear {
             from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            to   { transform: rotate(360deg); }
         }
 
         .settings-title-text {
@@ -631,11 +574,19 @@
             background: rgba(230, 21, 135, 0.1);
         }
 
+        /* FIX: settings-body is now scrollable so the offline section is always reachable */
         .settings-body {
             position: relative;
             z-index: 1;
             padding: 24px 28px 28px;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(230, 21, 135, 0.4) transparent;
         }
+        .settings-body::-webkit-scrollbar { width: 5px; }
+        .settings-body::-webkit-scrollbar-track { background: transparent; }
+        .settings-body::-webkit-scrollbar-thumb { background: rgba(230, 21, 135, 0.4); border-radius: 3px; }
 
         .setting-section-label {
             font-family: 'Space Grotesk', sans-serif;
@@ -693,10 +644,8 @@
         .cloak-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 25%;
-            height: 200%;
+            top: -50%; left: -60%;
+            width: 25%; height: 200%;
             background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0) 100%);
             transform: rotate(35deg);
             transition: left 0.5s cubic-bezier(.4, 0, .2, 1);
@@ -711,9 +660,7 @@
             box-shadow: 0 4px 16px rgba(230, 21, 135, 0.2);
         }
 
-        .cloak-card:hover::before {
-            left: 140%;
-        }
+        .cloak-card:hover::before { left: 140%; }
 
         .cloak-card.active {
             border-color: #e61587;
@@ -725,15 +672,13 @@
         .cloak-card.active::after {
             content: '✓';
             position: absolute;
-            top: 6px;
-            right: 8px;
+            top: 6px; right: 8px;
             font-size: 0.6rem;
             color: #e61587;
             font-weight: 900;
             background: rgba(230, 21, 135, 0.2);
             border-radius: 50%;
-            width: 14px;
-            height: 14px;
+            width: 14px; height: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -742,29 +687,19 @@
         }
 
         .cloak-card img {
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             border-radius: 3px;
             flex-shrink: 0;
             object-fit: contain;
         }
 
-        .cloak-card-name {
-            font-size: 0.78rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .cloak-card-url {
-            font-size: 0.6rem;
-            opacity: 0.45;
-            font-family: monospace;
-            margin-top: 1px;
-        }
+        .cloak-card-name { font-size: 0.78rem; font-weight: 600; line-height: 1.2; }
+        .cloak-card-url  { font-size: 0.6rem; opacity: 0.45; font-family: monospace; margin-top: 1px; }
 
         .settings-footer {
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
             padding: 14px 28px;
             border-top: 1px solid rgba(230, 21, 135, 0.12);
             display: flex;
@@ -782,8 +717,7 @@
         }
 
         .settings-footer-dot {
-            width: 6px;
-            height: 6px;
+            width: 6px; height: 6px;
             border-radius: 50%;
             background: #e61587;
             box-shadow: 0 0 8px rgba(230, 21, 135, 0.8);
@@ -791,21 +725,332 @@
         }
 
         @keyframes pulseDot {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.7);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
         }
+
+        /* ========== OFFLINE ACTION BUTTON (inside settings) ========== */
+        .offline-action-btn {
+            background: rgba(128, 0, 64, 0.3);
+            color: white;
+            border: 1px solid rgba(230, 21, 135, 0.4);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .offline-action-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -60%;
+            width: 25%; height: 200%;
+            background: linear-gradient(to bottom, transparent 0, rgba(255,255,255,.25) 50%, transparent 100%);
+            transform: rotate(35deg);
+            transition: left 0.5s;
+            pointer-events: none;
+        }
+        .offline-action-btn:hover { background: #e61587; box-shadow: 0 6px 18px rgba(230,21,135,.5); transform: translateY(-2px); }
+        .offline-action-btn:hover::after { left: 140%; }
+
+        /* ========== OFFLINE BADGE ========== */
+        #offline-badge {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: rgba(230, 21, 135, 0.9);
+            background: rgba(230, 21, 135, 0.1);
+            border: 1px solid rgba(230, 21, 135, 0.35);
+            border-radius: 20px;
+            padding: 4px 12px;
+        }
+
+        /* ========== GAME PICKER OVERLAY ========== */
+        #game-picker-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 1000002;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #game-picker-overlay.open { display: flex; }
+
+        .picker-content {
+            background: linear-gradient(160deg, rgba(18,5,15,0.98) 0%, rgba(10,10,18,0.98) 100%);
+            border: 1px solid rgba(230, 21, 135, 0.5);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 680px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(230,21,135,.15),
+                0 0 50px rgba(230,21,135,.2),
+                inset 0 1px 0 rgba(255,255,255,.06);
+            animation: settingsSlideIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+            position: relative;
+        }
+        .picker-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg,
+                rgba(0,0,0,.08) 0px, rgba(0,0,0,.08) 1px,
+                transparent 1px, transparent 3px);
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 16px;
+        }
+
+        .picker-header {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 24px 14px;
+            border-bottom: 1px solid rgba(230,21,135,.2);
+            flex-shrink: 0;
+        }
+        .picker-header-left { display: flex; align-items: center; gap: 12px; }
+        .picker-big-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 10px rgba(230,21,135,.8));
+        }
+
+        .picker-search-row {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 24px 8px;
+            flex-shrink: 0;
+        }
+        .picker-search-input {
+            flex: 1;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(230,21,135,.3);
+            border-radius: 8px;
+            color: white;
+            padding: 8px 14px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.82rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .picker-search-input:focus {
+            border-color: #e61587;
+            box-shadow: 0 0 0 2px rgba(230,21,135,.15);
+        }
+        .picker-search-input::placeholder { color: rgba(255,255,255,.3); }
+
+        #selection-counter {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.78rem; font-weight: 700;
+            color: rgba(230,21,135,.9);
+            background: rgba(230,21,135,.12);
+            border: 1px solid rgba(230,21,135,.35);
+            border-radius: 20px;
+            padding: 5px 14px;
+            white-space: nowrap;
+            transition: color 0.25s, border-color 0.25s, background 0.25s;
+        }
+        #selection-counter.flash-red {
+            color: #ff4040; border-color: #ff4040; background: rgba(255,64,64,.15);
+        }
+
+        .picker-game-list {
+            position: relative; z-index: 1;
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 24px 12px;
+            display: flex; flex-direction: column; gap: 5px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(230,21,135,.4) transparent;
+        }
+        .picker-game-list::-webkit-scrollbar { width: 5px; }
+        .picker-game-list::-webkit-scrollbar-track { background: transparent; }
+        .picker-game-list::-webkit-scrollbar-thumb { background: rgba(230,21,135,.4); border-radius: 3px; }
+
+        .picker-game-card {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,.05);
+            background: rgba(255,255,255,.02);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .picker-game-card:hover:not(.uncacheable) {
+            border-color: rgba(230,21,135,.4);
+            background: rgba(230,21,135,.08);
+        }
+        .picker-game-card.selected {
+            border-color: #e61587;
+            background: rgba(230,21,135,.14);
+            box-shadow: 0 0 0 1px rgba(230,21,135,.2);
+        }
+        .picker-game-card.uncacheable { opacity: 0.3; cursor: not-allowed; }
+
+        .pgc-check {
+            width: 18px; height: 18px;
+            border-radius: 4px;
+            border: 1.5px solid rgba(230,21,135,.5);
+            background: transparent;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.62rem; font-weight: 900;
+            color: #e61587;
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .pgc-check.on { background: rgba(230,21,135,.25); border-color: #e61587; }
+
+        .pgc-info { flex: 1; min-width: 0; }
+        .pgc-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8rem; font-weight: 500;
+            color: rgba(255,255,255,.85);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .pgc-sub {
+            font-size: 0.62rem;
+            font-family: 'Space Grotesk', monospace;
+            margin-top: 2px; font-weight: 600;
+        }
+        .pgc-sub.cached-tag   { color: rgba(0,240,120,.75); }
+        .pgc-sub.external-tag { color: rgba(255,255,255,.3); }
+
+        .picker-footer {
+            position: relative; z-index: 1;
+            padding: 12px 24px;
+            border-top: 1px solid rgba(230,21,135,.15);
+            background: rgba(0,0,0,.2);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+        .picker-footer-hint {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,.25);
+            letter-spacing: 0.5px;
+        }
+
+        .load-btn {
+            background: rgba(230,21,135,.2);
+            color: white;
+            border: 1px solid rgba(230,21,135,.6);
+            padding: 10px 26px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; font-size: 0.82rem;
+            letter-spacing: 1px; text-transform: uppercase;
+            transition: all 0.25s;
+        }
+        .load-btn:hover:not(:disabled) {
+            background: #e61587;
+            box-shadow: 0 4px 18px rgba(230,21,135,.5);
+            transform: translateY(-2px);
+        }
+        .load-btn:disabled { opacity: 0.32; cursor: not-allowed; }
+
+        /* ========== PROGRESS VIEW ========== */
+        #progress-view { flex-direction: column; }
+        .progress-inner {
+            position: relative; z-index: 1;
+            padding: 22px 24px;
+            display: flex; flex-direction: column; gap: 14px;
+            flex: 1; overflow-y: auto;
+        }
+
+        #prog-status {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem; font-weight: 600;
+            color: rgba(255,255,255,.8); letter-spacing: 0.3px;
+        }
+
+        .prog-bar-track {
+            height: 7px;
+            background: rgba(255,255,255,.07);
+            border-radius: 4px; overflow: hidden;
+        }
+        #prog-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e61587, #00f0ff);
+            border-radius: 4px;
+            transition: width 0.55s ease;
+            width: 0%;
+            box-shadow: 0 0 8px rgba(230,21,135,.4);
+        }
+
+        .progress-game-list { display: flex; flex-direction: column; gap: 6px; }
+
+        .prog-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,.02);
+            border: 1px solid rgba(255,255,255,.05);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,.6);
+            transition: all 0.3s;
+        }
+        .prog-item.loading {
+            border-color: rgba(230,21,135,.45);
+            background: rgba(230,21,135,.07);
+            color: white;
+            animation: progPulse 1.6s ease-in-out infinite;
+        }
+        .prog-item.done {
+            border-color: rgba(0,210,100,.25);
+            background: rgba(0,210,100,.04);
+            color: rgba(255,255,255,.55);
+        }
+        @keyframes progPulse {
+            0%, 100% { box-shadow: none; }
+            50%       { box-shadow: 0 0 14px rgba(230,21,135,.3); }
+        }
+        .prog-icon { font-size: 1rem; flex-shrink: 0; }
+        .prog-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        #prog-done-msg {
+            display: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.86rem; font-weight: 600;
+            color: rgba(0,240,120,.85);
+            background: rgba(0,240,120,.06);
+            border: 1px solid rgba(0,240,120,.22);
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .prog-footer {
+            position: relative; z-index: 1;
+            padding: 12px 24px;
+            border-top: 1px solid rgba(230,21,135,.12);
+            background: rgba(0,0,0,.2);
+            display: flex; justify-content: flex-end;
+            flex-shrink: 0;
+        }
+        #prog-close-btn { display: none; }
 
         /* ========== UPDATE NOTIFICATION BAR ========== */
         #update-notification {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 20px; left: 20px;
             background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
             border-left: 5px solid #e61587;
             border-radius: 12px;
@@ -828,33 +1073,11 @@
             pointer-events: none;
         }
 
-        .update-icon {
-            font-size: 28px;
-            line-height: 1;
-            filter: drop-shadow(0 0 8px #e61587);
-        }
-
-        .update-content {
-            flex: 1;
-        }
-
-        .update-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #fff;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-
-        .update-message {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .update-actions {
-            display: flex;
-            gap: 8px;
-        }
+        .update-icon { font-size: 28px; line-height: 1; filter: drop-shadow(0 0 8px #e61587); }
+        .update-content { flex: 1; }
+        .update-title { font-weight: 700; font-size: 0.9rem; color: #fff; letter-spacing: 0.5px; margin-bottom: 3px; }
+        .update-message { font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); }
+        .update-actions { display: flex; gap: 8px; }
 
         .update-btn {
             background: rgba(230, 21, 135, 0.2);
@@ -862,20 +1085,14 @@
             color: white;
             padding: 6px 12px;
             border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.75rem; font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
-        .update-btn:hover {
-            background: #e61587;
-            border-color: #e61587;
-            box-shadow: 0 0 12px rgba(230, 21, 135, 0.5);
-        }
+        .update-btn:hover { background: #e61587; border-color: #e61587; box-shadow: 0 0 12px rgba(230, 21, 135, 0.5); }
 
         .update-dismiss {
             background: transparent;
@@ -887,819 +1104,1084 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .update-dismiss:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
+        .update-dismiss:hover { background: rgba(255, 255, 255, 0.05); color: white; border-color: rgba(255, 255, 255, 0.3); }
 
         @media (max-width: 500px) {
-            #update-notification {
-                left: 10px;
-                right: 10px;
-                max-width: none;
-                bottom: 10px;
-            }
+            #update-notification { left: 10px; right: 10px; max-width: none; bottom: 10px; }
         }
     </style>
+</head>
 <body>
-		<div id="preloader">
-			<div id="load">
-				<div>G</div>
-				<div>N</div>
-				<div>I</div>
-				<div>D</div>
-				<div>A</div>
-				<div>O</div>
-				<div>L</div>
+	<div id="preloader">
+		<div id="load">
+			<div>G</div>
+			<div>N</div>
+			<div>I</div>
+			<div>D</div>
+			<div>A</div>
+			<div>O</div>
+			<div>L</div>
+		</div>
+	</div>
+	<canvas id="particle-canvas"></canvas>
+	<header>
+		<div style="display: flex; align-items: center; gap: 15px;">
+			<img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
+			<div style="display: flex; flex-direction: column;">
+				<div class="glitch-title" data-text="x3e unblocked games">x3e unblocked games</div>
 			</div>
 		</div>
-		<canvas id="particle-canvas"></canvas>
-		<header>
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
-				<div style="display: flex; flex-direction: column;">
-					<div class="glitch-title" data-text="x3e unblocked games">x3e unblocked games</div>
+		<div class="game-count">Game Count: 264</div>
+		<nav>
+			<a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
+			<a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
+			<a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
+			<a href="#" onclick="openSettings(); return false;">Settings</a>
+		</nav>
+		<div class="search-wrapper">
+			<div class="search-bar">
+				<div class="search-icon">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
 				</div>
+				<input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
 			</div>
-			<div class="game-count">Game Count: 264</div>
-			<nav>
-				<a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
-				<a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
-				<a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
-				<a href="#" onclick="openSettings(); return false;">Settings</a>
-			</nav>
-			<div class="search-wrapper">
-				<div class="search-bar">
-					<div class="search-icon">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-							<circle cx="11" cy="11" r="8"></circle>
-							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-						</svg>
+		</div>
+	</header>
+
+	<div id="update-notification" class="hidden">
+		<div class="update-icon">🔄</div>
+		<div class="update-content">
+			<div class="update-title">New Update Available!</div>
+			<div class="update-message">A new version of x3e is ready.</div>
+		</div>
+		<div class="update-actions">
+			<button class="update-btn" onclick="applyUpdate()">Update</button>
+			<button class="update-dismiss" onclick="dismissUpdate()">✕</button>
+		</div>
+	</div>
+
+	<div class="hero">
+		<div class="content-box">
+			<div class="herotext">
+				<h1>Share with Friends!! Tell them to go to tinyurl.com/x3e-at-school</h1>
+				<p><strong>Make sure to refresh the tab every day for new games!</strong></p>
+				<p><strong>For Ruffle games, right-click the screen for a fullscreen option.</strong></p>
+				<p><strong>Double click whatever game's main menu when it loads, to make sure the controls are focused. If you don't you will end up reloading the page instead of playing it</strong></p>
+				<p><strong>Stars next to games mean the following: * = Little Laggy, ** = Probably Playable, *** = Won't run on chromebooks.</strong></p>
+				<p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>10 Most Recent Games:</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/chord/')">📌 Chorde - Public Release</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bottleflip/')">Bottle Flip 3D*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/brawlstars/')">Brawlstars**</button>
+			<button onclick="playGame('https://wikispeedruns.com/')">Wikipedia Speedrun</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2 - Dont press crtl gand w at same time</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/webdash/')">Geometry Dash*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight** - Dreamer Fix</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Action & Adventure</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/burritobisonLL/')">Burrito Bison</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bbrevenge/')">Burrito Bison: Revenge</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/superhotlinemiami/')">SUPERHOTLine Miami</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy/')">Cactus Mccoy</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy2/')">Cactus Mccoy 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/johnnyupgrade/')">Johnny Upgrade</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/diggy/')">Diggy</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/retro bowl/')">Retro Bowl</button>
+			<button onclick="playGame('https://gamebackup.github.io/pico8_games/justoneboss/web/')">Just One Boss</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/re-run/')">RE:RUN</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie/')">Earn to Die</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie2/')">Earn to Die 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/superhot/')">SUPERHOT*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/supercold/')">SUPERCOLD</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/undertale/')">UNDERTALE</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/deltarune/')">DELTARUNE</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/slimerancher/')">Slime Rancher - MOUSE REQUIRED!*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/oneshot/')">Oneshot</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/halflife/')">Half Life* - Just press "Launch Xash!" ignore the options</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight** - Dreamer Fix</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Arcade & Classic</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/worldshardestgame/')">World's Hardest Game</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/pacman/')">Pacman</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/2048/')">2048</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/9007/')">90071992547409</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/tinyfishing/')">Tiny Fishing</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hauntthehouse/')">Haunt the House</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/wordleunlimited/')">Wordle</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/qwop/')">QWOP</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/doodlejump/')">Doodle Jump</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/bounce/')">Bounce</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/paperio2/')">Paper.io 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/flappybird/')">Flappy Bird</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/googlesnake/')">Google Snake</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/donkeykong/')">Donkey Kong</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/soccerphysics/')">Soccer Physics</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/minesweeper/')">Minesweeper</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pong/')">Pong</button>
+			<button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste/')">Celeste - Pico-8</button>
+			<button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste2/')">Celeste 2: Lani's Trek - Pico-8</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/flyinggorilla/')">Flying Gorilla</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bottleflip/')">Bottle Flip 3D</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Experiments & Tools</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/antcolony/')">Ant Colony Simulator</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/ailearning/')">AI Evolution</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/adjfireworks/')">Adjustable Fireworks</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/fluidsim/')">Fluid Simulation</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/urres/')">Your Resolution</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/asciicam/')">Ascii Camera*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/gameoflife/')">Conway's Game of Life</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/ripples/')">Ripples</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/fishies/')">FISHIES</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/bitsrain/')">Raining Bits</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/urip/')">Your IP</button>
+			<button onclick="playGame('https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing')">Chat Room</button>
+			<button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
+			<button onclick="playGame('https://minhhua.com/space_marine_painter_3d/')">Space Marine Painter 3D</button>
+			<button onclick="playGame('https://gamebackup.github.io/chord/')">Chorde - Public Release</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Fighting & Combat</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar/')">Age of War</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar2/')">Age of War 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/armyofages/')">Army of Ages</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/laststandunioncity/')">The Last Stand: Union City</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/nzp/')">NZ:P**</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash/')">Super Smash Flash</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash2/')">Super Smash Flash 2*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/quake3/')">Quake III Arena</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/hotline-miami/')">Hotline Miami*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/cuphead/')">Cuphead***</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazycattle3d/')">Crazy Cattle 3D</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazykitty3d/')">Crazy Kitty 3D</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazychicken3d/')">Crazy Chicken 3D</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/yomihustle/')">Your Only Move is Hustle</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/brawlstars/')">Brawlstars</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Horror & Spooks</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/buckshotroulette/')">Buckshot Roulette*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/irnlng/')">Iron Lung</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/granny/')">Granny**</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Idle & Incremental</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/idledice/')">Idle Dice</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/dogeminer1/')">Dogeminer 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/innoveryourhead/')">Inn Over Your Head*</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/machinegg/')">The MachinEGG</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Platformers & Runners</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/subwaysurfersny/')">Subway Surfers</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/run2/')">Run 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/balz/')">Run 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/jetpackjoyride/')">Jetpack Joyride</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/templerun2/')">Temple Run 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyroad/')">Crossy Road</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyspace/')">Crossy Road: Space</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/stumbleguys/')">Stumble Guys</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/happywheels/')">Happy Wheels</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/chromedino/')">Chrome Dino Game</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/totm/')">Tomb of the Mask</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers1/')">Money Movers 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers3/')">Money Movers 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/celeste/')">Celeste***</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/vaportrails/')">Vapor Trails*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/webdash/')">Geometry Dash*</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Probablity & Gambling</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/horseracer/')">Horse Racing</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/13bones/')">13 Bones</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Puzzle & Skill</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/blockblast/')">Block Blast</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/badpiggies/')">Bad Piggies</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz/')">The Impossible Quiz</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz2/')">The Impossible Quiz 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/angrybirdsrio/')">Angry Birds: Rio</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/stacking/')">Stacking</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/tether/')">Tether</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline/')">Snowline</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline2/')">Snowline 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/portal2d/')">Portal 2D</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/cutrope/')">Cut the Rope</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/gameinagame/')">Game Inside a Game</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bloxors/')">Bloxorz</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cannonbasketball2/')">Cannon Basketball 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/passwordcracker/')">Password Cracker</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/thereisnogame/')">There is No Game</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/8ballpool/')">8 Ball Pool</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bobtherobber/')">Bob the Robber</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/tetris/')">Tetris</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/sandtris/')">Sand Tetris</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hextris/')">Hextris</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/stratagemhero/')">Stratagem Trainer</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hangman/')">Hangman</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Racing & Driving</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hexgl/')">HexGL</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomecars/')">Awesome Cars</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/jellytruck/')">Jellytruck</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/slope/')">Slope</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/snowrider3d/')">Snowrider 3D</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/polytrack/')">Polytrack - Legacy</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/0.5.2/')">Polytrack</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/tanukisunset/')">Tanuki Sunset</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/highontrack/html/11779646/html5/')">High on Track</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/bergentruck201x/')">Bergentruck 201X</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/aztecride/')">Aztec Ride</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/forgetthebrakes/')">Forget the Brakes</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/rocketsoccer/')">Rocket Soccer</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Rhythym & Music</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/fnf/')">Friday Night Funkin'</button>
+			<button onclick="playGame('https://webosumania.com/')">Osu!Mania</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Roguelike & Roleplaying</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/feedthevoid/')">Feed the Void</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/tboi/')">The Binding of Isaac</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/blacksmithlab/')">Blacksmith Lab</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/therightmix/')">Bartender - The Right Mix</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/webfishing/')">Webfishing*</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/gk/')">Gun Knight</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/10tilldawn/')">10 Minutes Till Dawn</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/wrangleranch/')">Wrangle Ranch</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/balatro/')">Balatro - Takes a while to load</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/pkrogue/')">PokéRogue*</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Shooting & Defense</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/spaceinvaders/')">Space Invaders</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/galaga/')">Galaga</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars/')">Raft Wars</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars2/')">Raft Wars 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/bullethell/')">Bullet Hell</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/stormthehouse2/')">Storm the House 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks/')">Awesome Tanks</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks2/')">Awesome Tanks 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomeplanes/')">Awesome Planes</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/endoparasitic/')">Endoparasitic</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Strategy & Simulation</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/adarkroom/')">A Dark Room</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/finalearth2/')">The Final Earth 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/jacksmith/')">Jacksmith</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/sandboxels/')">Sandboxels</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/openttd/')">OpenTTD</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/sortthecourt/')">Sort the Court</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/civclicker/')">Civ Clicker</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/waterworks/')">Waterworks</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/cellmachine/')">Cell Machine</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/basketballstars/')">Basketball Stars</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/freshwaterfishing/')">Freshwater Fishing Simulator</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/rccreator/')">Roller Coaster Creator</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hardwaretycoon/')">Hardware Tycoon</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/captchaware/')">Captchaware</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/mondays/')">Mondays: A Sisyphean Typing Simulator</button>
+			<button onclick="playGame('https://gamebackup.github.io/itchio_games/mysterydigger/')">Mystery Digger</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/amongus/')">Among Us - Singleplayer</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<center><h2 style="color: #e61587;">⇓ Game Series are below ⇓</h2></center>
+	</div>
+
+	<div class="section">
+		<h2>Bloons Tower Defense Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd1/')">Bloons Tower Defense 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd2/')">Bloons Tower Defense 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd3/')">Bloons Tower Defense 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd4/')">Bloons Tower Defense 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd5/')">Bloons Tower Defense 5</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Duck Life Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl1/')">Duck Life 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl2/')">Duck Life 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl3/')">Duck Life 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl4/')">Duck Life 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/dl4rm/index.html')">Duck Life 4 - Remaster</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl5/')">Duck Life 5*</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Fancy Pants Adventure Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants1/')">Fancy Pants Adventures 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants2/')">Fancy Pants Adventures 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants3/')">Fancy Pants Adventures 3</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Henry Stickmin Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btb/')">Breaking the Bank</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/etp/')">Escaping the Prison</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sthed/')">Stealing the Diamond</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ita/')">Infiltrating the Airship</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ftc/')">Fleeing the Complex</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Hobo Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo1/')">Hobo 1 - Brawl</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo2/')">Hobo 2 - Prison Brawl</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo3/')">Hobo 3 - Wanted</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo4/')">Hobo 4 - Total War</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo5/')">Hobo 5 - Space Brawls</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo6/')">Hobo 6 - Hell</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo7/')">Hobo 7 - Heaven</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Learn to Fly Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly1/')">Learn to Fly 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly2/')">Learn to Fly 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly3/')">Learn to Fly 3</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Mario Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/supermariokart/')">Super Mario Kart</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/sm64/')">Super Mario 64</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Minecraft Versions</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing')">Video Settings Instructions</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/eagle1.12/')">Minecraft 1.12 - Only Singleplayer</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Moto X3M</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m/')">Moto X3M 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m2/')">Moto X3M 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mpool/')">Moto X3M: Pool Party</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mspooky/')">Moto X3M: Spooky Land</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mwinter/')">Moto X3M: Winter</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Papa's Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wpa/')">Papa Louie 1: When Pizzas Attack!</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wba/')">Papa Louie 2: When Burgers Attack!</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wsa/')">Papa Louie 3: When Sundaes Attack!</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/scooperia/')">Papa's Scooperia</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pastaria/')">Papa's Pastaria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/freezeria/')">Papa's Freezeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/burgeria/')">Papa's Burgeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pancakeria/')">Papa's PanCakeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wingeria/')">Papa's Wingeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/donuteria/')">Papa's Donuteria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bakeria/')">Papa's Bakeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pizzeria/')">Papa's Pizzeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/tacomia/')">Papa's Taco Mia</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cupcakeria/')">Papa's Cupcakeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hotdoggeria/')">Papa's Hotdoggeria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sushiria/')">Papa's Sushiria</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cheeseria/')">Papa's Cheeseria</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Pinball Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/hellspinball/')">Hell's Pinball</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/spacecadet/')">Space Cadet Pinball</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pepsipinball/')">Pepsi Pinball</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Pokémon Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonruby/')">Pokémon: Ruby</button>
+			<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonsapphire/')">Pokémon: Sapphire</button>
+			<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonemerald/')">Pokémon: Emerald</button>
+			<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonfirered/')">Pokémon: Fire Red</button>
+			<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonleafgreen/')">Pokémon: Leaf Green</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Red Ball Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball2/')">Red Ball 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball3/')">Red Ball 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball4/')">Red Ball 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball5/')">Red Ball 5</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Snail Bob Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob1/')">Snail Bob 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob2/')">Snail Bob 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob3/')">Snail Bob 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob4/')">Snail Bob 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob5/')">Snail Bob 5</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob6/')">Snail Bob 6</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob7/')">Snail Bob 7</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob8/')">Snail Bob 8</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Sonic Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sonicultimate/')">Sonic: Ultimate</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2 - Dont press crtl and w at same time</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Vex Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex1/')">Vex 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex2/')">Vex 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex3/')">Vex 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex4/')">Vex 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex5/')">Vex 5</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex6/')">Vex 6</button>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Wheely Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely1/')">Wheely 1</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely2/')">Wheely 2</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely3/')">Wheely 3</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely4/')">Wheely 4</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely5/')">Wheely 5</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely6/')">Wheely 6</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely7/')">Wheely 7</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely8/')">Wheely 8</button>
+			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely9/')">Wheely 9</button>
+		</div>
+	</div>
+
+	<div style="height: 10px;"></div>
+	<div style="text-align: center; padding: 5px; font-size: 14px; color: #888;">
+		© COMPOUND//CREATIONS 2025<br>
+	</div>
+
+	<div class="dmca-footer" style="text-align: center; font-size: 10px; color: #666">
+		All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
+	</div>
+
+	<script>
+		(function() {
+		    const min = 3000, max = 7000;
+		    const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
+		    console.log("Loading for: " + displayTime + "ms");
+		    setTimeout(function() {
+		        const loader = document.getElementById('preloader');
+		        if (loader) {
+		            loader.style.opacity = '0';
+		            setTimeout(function() { loader.style.display = 'none'; }, 1000);
+		        }
+		    }, displayTime);
+		})();
+
+		/* ============ PARTICLE SYSTEM ============ */
+		const canvas = document.getElementById('particle-canvas');
+		const ctx = canvas.getContext('2d');
+		let particles = [];
+		function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+		resizeCanvas();
+		window.addEventListener('resize', resizeCanvas);
+		class Particle {
+		  constructor() { this.reset(); }
+		  reset() {
+		    this.x = Math.random() * canvas.width;
+		    this.y = Math.random() * canvas.height;
+		    this.size = Math.random() * 1.5 + 0.3;
+		    this.speedX = (Math.random() - 0.5) * 0.4;
+		    this.speedY = -Math.random() * 0.6 - 0.1;
+		    this.life = 1;
+		    this.decay = Math.random() * 0.003 + 0.001;
+		    this.hue = Math.random() < 0.7 ? 320 : 185;
+		  }
+		  update() {
+		    this.x += this.speedX; this.y += this.speedY; this.life -= this.decay;
+		    if (this.life <= 0) this.reset();
+		  }
+		  draw() {
+		    ctx.save();
+		    ctx.globalAlpha = this.life * 0.8;
+		    ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
+		    ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
+		    ctx.shadowBlur = 6;
+		    ctx.beginPath();
+		    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+		    ctx.fill();
+		    ctx.restore();
+		  }
+		}
+		for (let i = 0; i < 200; i++) { const p = new Particle(); p.life = Math.random(); particles.push(p); }
+		function animateParticles() {
+		  ctx.clearRect(0, 0, canvas.width, canvas.height);
+		  particles.forEach(p => { p.update(); p.draw(); });
+		  requestAnimationFrame(animateParticles);
+		}
+		animateParticles();
+
+		/* ============ SEARCH ============ */
+		function searchGames() {
+		  let input = document.getElementById('gameSearch').value.toLowerCase();
+		  let buttons = document.querySelectorAll('.button-grid button');
+		  let sections = document.querySelectorAll('.section');
+		  buttons.forEach(button => {
+		    let gameName = button.innerText.toLowerCase();
+		    button.style.display = gameName.includes(input) ? "" : "none";
+		  });
+		  sections.forEach(section => {
+		    let visibleButtons = section.querySelectorAll('.button-grid button:not([style*="display: none"])');
+		    section.style.display = (visibleButtons.length === 0 && input !== "") ? "none" : "block";
+		  });
+		}
+
+		function playGame(gameUrl) {
+		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
+		  document.getElementById('game-overlay').style.display = 'block';
+		  document.getElementById('game-frame').src = gameUrl;
+		}
+		function closeGame() {
+		  document.getElementById('game-overlay').style.display = 'none';
+		  document.getElementById('game-frame').src = '';
+		}
+
+		const cloakPresets = {
+		  "x3e unblocked games": { title: "x3e unblocked games",           icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games",          url: "x3e" },
+		  "Google":               { title: "Google",                        icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",           label: "Google",             url: "google.com" },
+		  "YouTube":              { title: "YouTube",                       icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                   label: "YouTube",            url: "youtube.com" },
+		  "Canvas":               { title: "Dashboard",                     icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                         label: "Canvas",             url: "instructure.com" },
+		  "Khan":                 { title: "Khan Academy",                  icon: "https://cdn.kastatic.org/images/favicon.ico",                                                        label: "Khan Academy",       url: "khanacademy.org" },
+		  "Docs":                 { title: "Google Docs",                   icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                     label: "Google Docs",        url: "docs.google.com" },
+		  "Desmos":               { title: "Desmos | Graphing Calculator",  icon: "https://www.desmos.com/favicon.ico",                                                                 label: "Desmos",             url: "desmos.com" },
+		  "Drive":                { title: "My Drive - Google Drive",       icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                          label: "Google Drive",       url: "drive.google.com" },
+		  "Google Classroom":     { title: "Home - Classroom",              icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg",                                       label: "Google Classroom",   url: "classroom.google.com" },
+		  "XtraMath":             { title: "XtraMath",                      icon: "https://cdn.prod.website-files.com/62db0786ca1a5127000f16e6/68f393b6311816a40a8da3c6_XM-FAVICON.png", label: "XtraMath",         url: "xtramath.org" }
+		};
+		let currentCloakKey = "x3e unblocked games";
+		function applyCloak(presetKey) {
+		  if (!cloakPresets[presetKey]) return;
+		  currentCloakKey = presetKey;
+		  const preset = cloakPresets[presetKey];
+		  document.title = preset.title;
+		  let link = document.querySelector("link[rel~='icon']");
+		  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+		  link.href = preset.icon;
+		  localStorage.setItem("userCloak", presetKey);
+		  document.querySelectorAll('.cloak-card').forEach(card => {
+		    card.classList.toggle('active', card.dataset.key === presetKey);
+		  });
+		}
+		function buildCloakCards() {
+		  const grid = document.getElementById('cloak-grid');
+		  grid.innerHTML = '';
+		  Object.entries(cloakPresets).forEach(([key, preset]) => {
+		    const card = document.createElement('div');
+		    card.className = 'cloak-card' + (key === currentCloakKey ? ' active' : '');
+		    card.dataset.key = key;
+		    card.onclick = () => applyCloak(key);
+		    card.innerHTML = `
+		      <img src="${preset.icon}" alt="${preset.label}" onerror="this.style.display='none'">
+		      <div>
+		        <div class="cloak-card-name">${preset.label}</div>
+		        <div class="cloak-card-url">${preset.url}</div>
+		      </div>`;
+		    grid.appendChild(card);
+		  });
+		}
+		window.onload = function() {
+		  const savedCloak = localStorage.getItem("userCloak") || "Google";
+		  currentCloakKey = savedCloak;
+		  applyCloak(savedCloak);
+		};
+		function openSettings() {
+		  buildCloakCards();
+		  const modal = document.getElementById('settings-modal');
+		  modal.style.display = 'flex';
+		  void modal.offsetWidth;
+		}
+		function closeSettings() {
+		  document.getElementById('settings-modal').style.display = 'none';
+		}
+		document.addEventListener('DOMContentLoaded', () => {
+		  document.getElementById('settings-modal').addEventListener('click', function(e) {
+		    if (e.target === this) closeSettings();
+		  });
+		});
+		function playChorde(gameUrl) {
+		  const accessCode = prompt("Please enter New Early Access key:");
+		  if (accessCode === "testing-x3e") {
+		    playGame(gameUrl);
+		  } else if (accessCode !== null) {
+		    alert("Incorrect password. Access denied.");
+		  }
+		}
+	</script>
+
+	<script>
+		/* ============ UPDATE CHECKER ============ */
+		(function() {
+		    const CHECK_INTERVAL = 30 * 60 * 1000;
+		    const RAW_URL = "https://raw.githubusercontent.com/gamebackup/gamebackup.github.io/refs/heads/main/index.html";
+		    const notificationBar = document.getElementById('update-notification');
+		    let updateAvailable = false;
+
+		    function getCurrentVersion() {
+		        const meta = document.querySelector('meta[name="x3e-version"]');
+		        return meta ? meta.content : null;
+		    }
+
+		    async function checkForUpdate() {
+		        try {
+		            const response = await fetch(RAW_URL + "?t=" + Date.now());
+		            const html = await response.text();
+		            const parser = new DOMParser();
+		            const doc = parser.parseFromString(html, "text/html");
+		            const remoteMeta = doc.querySelector('meta[name="x3e-version"]');
+		            const remoteVersion = remoteMeta ? remoteMeta.content : null;
+		            const currentVersion = getCurrentVersion();
+		            if (remoteVersion && currentVersion && remoteVersion !== currentVersion) {
+		                updateAvailable = true;
+		                notificationBar.classList.remove('hidden');
+		            } else {
+		                if (!updateAvailable) notificationBar.classList.add('hidden');
+		            }
+		        } catch (err) {
+		            console.warn("Update check failed:", err);
+		        }
+		    }
+
+		    window.applyUpdate  = () => location.reload();
+		    window.dismissUpdate = () => notificationBar.classList.add('hidden');
+
+		    setInterval(checkForUpdate, CHECK_INTERVAL);
+		    setTimeout(() => checkForUpdate(), 2000);
+		})();
+	</script>
+
+	<script>
+		/* ============ OFFLINE PRELOADER ============ */
+		const CACHEABLE_BASE = 'https://gamebackup.github.io';
+		const MAX_SELECT     = 5;
+		const CACHE_WAIT_MS  = 3500;
+		const CACHE_MAX_MS   = 15000;
+
+		let selectedGames   = [];
+		let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]');
+		let cacheQueue      = [];
+		let cacheIndex      = 0;
+		let cacheIframe     = null;
+
+		function isGameCacheable(url) {
+		  return typeof url === 'string' && url.startsWith(CACHEABLE_BASE);
+		}
+
+		function getAllGameEntries() {
+		  const seen = new Set(), out = [];
+		  document.querySelectorAll('.button-grid button').forEach(btn => {
+		    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+		    if (!m) return;
+		    const url = m[1];
+		    if (seen.has(url)) return;
+		    seen.add(url);
+		    out.push({ name: btn.innerText.trim(), url, cacheable: isGameCacheable(url) });
+		  });
+		  return out;
+		}
+
+		function openGamePicker() {
+		  selectedGames = [];
+		  document.getElementById('game-picker-overlay').classList.add('open');
+		  document.getElementById('picker-view').style.display   = 'flex';
+		  document.getElementById('progress-view').style.display = 'none';
+		  document.getElementById('picker-search').value = '';
+		  buildPickerList('');
+		  updateCounter();
+		}
+
+		function closeGamePicker() {
+		  document.getElementById('game-picker-overlay').classList.remove('open');
+		  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
+		}
+
+		function closeGamePickerAndReset() {
+		  closeGamePicker();
+		  updateOfflineBadge();
+		  markCachedButtons();
+		}
+
+		function buildPickerList(filter) {
+		  const list = document.getElementById('picker-game-list');
+		  list.innerHTML = '';
+		  const f = filter.toLowerCase();
+		  getAllGameEntries()
+		    .filter(g => !f || g.name.toLowerCase().includes(f))
+		    .forEach(g => {
+		      const isSelected = selectedGames.some(s => s.url === g.url);
+		      const isCached   = cachedGamesList.includes(g.url);
+		      const div = document.createElement('div');
+		      div.className = 'picker-game-card'
+		        + (isSelected   ? ' selected'    : '')
+		        + (!g.cacheable ? ' uncacheable' : '')
+		        + (isCached     ? ' is-cached'   : '');
+		      if (g.cacheable) div.onclick = () => toggleGame(g);
+		      div.innerHTML = `
+		        <div class="pgc-check ${isSelected ? 'on' : ''}">${isSelected ? '✓' : ''}</div>
+		        <div class="pgc-info">
+		          <div class="pgc-name">${g.name}</div>
+		          ${isCached      ? '<div class="pgc-sub cached-tag">💾 Already cached</div>'              : ''}
+		          ${!g.cacheable  ? '<div class="pgc-sub external-tag">🌐 External — cannot cache</div>'  : ''}
+		        </div>`;
+		      list.appendChild(div);
+		    });
+		}
+
+		function toggleGame(g) {
+		  const idx = selectedGames.findIndex(s => s.url === g.url);
+		  if (idx > -1) { selectedGames.splice(idx, 1); }
+		  else {
+		    if (selectedGames.length >= MAX_SELECT) { flashCounter(); return; }
+		    selectedGames.push(g);
+		  }
+		  buildPickerList(document.getElementById('picker-search').value);
+		  updateCounter();
+		}
+
+		function updateCounter() {
+		  document.getElementById('selection-counter').textContent = `${selectedGames.length} / ${MAX_SELECT} selected`;
+		  document.getElementById('load-games-btn').disabled = selectedGames.length === 0;
+		}
+
+		function flashCounter() {
+		  const el = document.getElementById('selection-counter');
+		  el.classList.add('flash-red');
+		  setTimeout(() => el.classList.remove('flash-red'), 600);
+		}
+
+		function startCaching() {
+		  if (!selectedGames.length) return;
+		  cacheQueue = [...selectedGames];
+		  cacheIndex = 0;
+
+		  document.getElementById('picker-view').style.display   = 'none';
+		  document.getElementById('progress-view').style.display = 'flex';
+
+		  const pl = document.getElementById('progress-game-list');
+		  pl.innerHTML = '';
+		  cacheQueue.forEach((g, i) => {
+		    const div = document.createElement('div');
+		    div.className = 'prog-item';
+		    div.id = `prog-item-${i}`;
+		    div.innerHTML = `<span class="prog-icon" id="prog-icon-${i}">⏳</span><span class="prog-name">${g.name}</span>`;
+		    pl.appendChild(div);
+		  });
+
+		  document.getElementById('prog-done-msg').style.display  = 'none';
+		  document.getElementById('prog-close-btn').style.display = 'none';
+		  document.getElementById('prog-bar-fill').style.width    = '0%';
+
+		  cacheNextGame();
+		}
+
+		function cacheNextGame() {
+		  if (cacheIndex >= cacheQueue.length) { finishCaching(); return; }
+		  const g = cacheQueue[cacheIndex], n = cacheQueue.length;
+
+		  document.getElementById('prog-status').textContent = `Caching "${g.name}"… (${cacheIndex + 1} of ${n})`;
+		  document.getElementById('prog-bar-fill').style.width = `${(cacheIndex / n) * 100}%`;
+
+		  const icon = document.getElementById(`prog-icon-${cacheIndex}`);
+		  const item = document.getElementById(`prog-item-${cacheIndex}`);
+		  if (icon) icon.textContent = '🔄';
+		  if (item) item.classList.add('loading');
+
+		  if (cacheIframe) cacheIframe.remove();
+		  cacheIframe = document.createElement('iframe');
+		  Object.assign(cacheIframe.style, {
+		    position: 'fixed', top: '-9999px', left: '-9999px',
+		    width: '1px', height: '1px', opacity: '0', pointerEvents: 'none', border: 'none'
+		  });
+		  cacheIframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';
+		  document.body.appendChild(cacheIframe);
+
+		  let done = false;
+		  const markDone = () => {
+		    if (done) return;
+		    done = true;
+		    if (icon) icon.textContent = '✅';
+		    if (item) { item.classList.remove('loading'); item.classList.add('done'); }
+		    if (!cachedGamesList.includes(g.url)) {
+		      cachedGamesList.push(g.url);
+		      localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+		    }
+		    cacheIndex++;
+		    setTimeout(cacheNextGame, 700);
+		  };
+
+		  cacheIframe.onload  = () => setTimeout(markDone, CACHE_WAIT_MS);
+		  cacheIframe.onerror = () => markDone();
+		  setTimeout(markDone, CACHE_MAX_MS);
+		  cacheIframe.src = g.url;
+		}
+
+		function finishCaching() {
+		  if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
+		  document.getElementById('prog-bar-fill').style.width = '100%';
+		  const n = cacheQueue.length;
+		  document.getElementById('prog-status').textContent = `✅ ${n} game${n !== 1 ? 's' : ''} preloaded for offline play!`;
+		  const msg = document.getElementById('prog-done-msg');
+		  msg.textContent = `${n} game${n !== 1 ? 's' : ''} are now available offline. Enjoy playing even without internet!`;
+		  msg.style.display = 'block';
+		  document.getElementById('prog-close-btn').style.display = 'block';
+		  selectedGames = [];
+		  updateOfflineBadge();
+		  markCachedButtons();
+		}
+
+		function updateOfflineBadge() {
+		  const badge = document.getElementById('offline-badge');
+		  const count = document.getElementById('offline-badge-count');
+		  const n = cachedGamesList.length;
+		  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+		  count.textContent = n;
+		}
+
+		function markCachedButtons() {
+		  document.querySelectorAll('.button-grid button').forEach(btn => {
+		    const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+		    if (m && cachedGamesList.includes(m[1]) && !btn.querySelector('.cache-dot')) {
+		      const dot = document.createElement('span');
+		      dot.className = 'cache-dot';
+		      dot.textContent = ' 💾';
+		      dot.style.cssText = 'font-size:.72em; opacity:.75;';
+		      dot.title = 'Available offline';
+		      btn.appendChild(dot);
+		    }
+		  });
+		}
+
+		function handleCachedUrlsResponse(urls) {
+		  cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
+		  localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+		  updateOfflineBadge();
+		  markCachedButtons();
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+		  if ('serviceWorker' in navigator) {
+		    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+		      .then(reg => {
+		        console.log('[x3e] SW registered:', reg.scope);
+		        navigator.serviceWorker.ready.then(r => {
+		          if (r.active) r.active.postMessage({ type: 'GET_CACHED_URLS' });
+		        });
+		      })
+		      .catch(err => console.warn('[x3e] SW failed:', err));
+		    navigator.serviceWorker.addEventListener('message', e => {
+		      if (e.data?.type === 'CACHED_URLS') handleCachedUrlsResponse(e.data.urls);
+		    });
+		  }
+		  updateOfflineBadge();
+		  markCachedButtons();
+		  document.getElementById('game-picker-overlay')
+		    .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay') closeGamePicker(); });
+		});
+	</script>
+
+	<!-- ============ GAME OVERLAY ============ -->
+	<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
+		<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
+		<iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
+	</div>
+
+	<!-- ============ SETTINGS MODAL ============ -->
+	<div id="settings-modal" style="display: none;">
+		<div class="settings-content">
+			<div class="settings-topbar"></div>
+			<div class="settings-header">
+				<div class="settings-header-left">
+					<svg class="settings-gear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="3"></circle>
+						<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+					</svg>
+					<div class="settings-title-text">
+						<h2>Settings</h2>
+						<span class="settings-sub">x3e // COMPOUND CREATIONS</span>
 					</div>
-					<input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
 				</div>
+				<span class="close-settings" onclick="closeSettings()">[✕]</span>
 			</div>
-		</header>
-<div id="update-notification" class="hidden">
-    <div class="update-icon">🔄</div>
-    <div class="update-content">
-        <div class="update-title">New Update Available!</div>
-        <div class="update-message">A new version of x3e is ready.</div>
-    </div>
-    <div class="update-actions">
-        <button class="update-btn" onclick="applyUpdate()">Update</button>
-        <button class="update-dismiss" onclick="dismissUpdate()">✕</button>
-    </div>
-</div>
-		<div class="hero">
-			<div class="content-box">
-				<div class="herotext">
-					<h1>Share with Friends!! Tell them to go to tinyurl.com/x3e-at-school</h1>
-					<p><strong>Make sure to refresh the tab every day for new games!</strong></p>
-					<p><strong>For Ruffle games, right-click the screen for a fullscreen option.</strong></p>
-					<p><strong>Double click whatever game's main menu when it loads, to make sure the controls are focused. If you don't you will end up reloading the page instead of playing it</strong></p>
-					<p><strong>Stars next to games mean the following: * = Little Laggy, ** = Probably Playable, *** = Won't run on chromebooks.</strong></p>
-					<p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
-				</div>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>10 Most Recent Games:</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/chord/')">📌 Chorde - Public Release</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bottleflip/')">Bottle Flip 3D*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/brawlstars/')">Brawlstars**</button>
-				<button onclick="playGame('https://wikispeedruns.com/')">Wikipedia Speedrun</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2 - Dont press crtl gand w at same time</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/webdash/')">Geometry Dash*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight** - Dreamer Fix</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Action & Adventure</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/burritobisonLL/')">Burrito Bison</button> 
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bbrevenge/')">Burrito Bison: Revenge</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/superhotlinemiami/')">SUPERHOTLine Miami</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy/')">Cactus Mccoy</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cactusmccoy2/')">Cactus Mccoy 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/johnnyupgrade/')">Johnny Upgrade</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/diggy/')">Diggy</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/retro bowl/')">Retro Bowl</button>
-				<button onclick="playGame('https://gamebackup.github.io/pico8_games/justoneboss/web/')">Just One Boss</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/re-run/')">RE:RUN</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie/')">Earn to Die</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/earntodie2/')">Earn to Die 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/superhot/')">SUPERHOT*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/supercold/')">SUPERCOLD</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/undertale/')">UNDERTALE</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/deltarune/')">DELTARUNE</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/slimerancher/')">Slime Rancher - MOUSE REQUIRED!*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/oneshot/')">Oneshot</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/halflife/')">Half Life* - Just press "Launch Xash!" ignore the options</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hk/hollow knight.html')">Hollow Knight** - Dreamer Fix</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Arcade & Classic</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/worldshardestgame/')">World's Hardest Game</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/pacman/')">Pacman</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/2048/')">2048</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/9007/')">90071992547409</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/tinyfishing/')">Tiny Fishing</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hauntthehouse/')">Haunt the House</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/wordleunlimited/')">Wordle</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/qwop/')">QWOP</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/doodlejump/')">Doodle Jump</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/bounce/')">Bounce</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/paperio2/')">Paper.io 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/flappybird/')">Flappy Bird</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/googlesnake/')">Google Snake</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/donkeykong/')">Donkey Kong</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/soccerphysics/')">Soccer Physics</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/minesweeper/')">Minesweeper</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pong/')">Pong</button>
-				<button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste/')">Celeste - Pico-8</button>
-				<button onclick="playGame('https://gamebackup.github.io/pico8_games/celeste2/')">Celeste 2: Lani's Trek - Pico-8</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/flyinggorilla/')">Flying Gorilla</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bouncemasters/')">Bouncemasters</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/bottleflip/')">Bottle Flip 3D</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Experiments & Tools</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/antcolony/')">Ant Colony Simulator</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/ailearning/')">AI Evolution</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/adjfireworks/')">Adjustable Fireworks</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/fluidsim/')">Fluid Simulation</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/urres/')">Your Resolution</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/asciicam/')">Ascii Camera*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/gameoflife/')">Conway's Game of Life</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/ripples/')">Ripples</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/fishies/')">FISHIES</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/bitsrain/')">Raining Bits</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/urip/')">Your IP</button>
-				<button onclick="playGame('https://docs.google.com/document/d/1jzSbG6A-Kh1sx0ze3pT1ijICN4DpRJps2ZfJXWb28-Q/edit?usp=sharing')">Chat Room</button>
-				<button onclick="playGame('https://www.gutenberg.org/')">Gutenberg.org - Free Digital Library</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/mathsolver/')">x3e Math Helper</button>
-				<button onclick="playGame('https://minhhua.com/space_marine_painter_3d/')">Space Marine Painter 3D</button>
-				<button onclick="playGame('https://gamebackup.github.io/chord/')">Chorde - Public Release</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Fighting & Combat</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar/')">Age of War</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ageofwar2/')">Age of War 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/armyofages/')">Army of Ages</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/laststandunioncity/')">The Last Stand: Union City</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/nzp/')">NZ:P**</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash/')">Super Smash Flash</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/supersmashflash2/')">Super Smash Flash 2*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/quake3/')">Quake III Arena</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/hotline-miami/')">Hotline Miami*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/cuphead/')">Cuphead***</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazycattle3d/')">Crazy Cattle 3D</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazykitty3d/')">Crazy Kitty 3D</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/crazychicken3d/')">Crazy Chicken 3D</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/yomihustle/')">Your Only Move is Hustle</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/brawlstars/')">Brawlstars</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Horror & Spooks</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/buckshotroulette/')">Buckshot Roulette*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/irnlng/')">Iron Lung</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/granny/')">Granny**</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Idle & Incremental</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/idledice/')">Idle Dice</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/dogeminer1/')">Dogeminer 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/innoveryourhead/')">Inn Over Your Head*</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/machinegg/')">The MachinEGG</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/crank/')">Crank - Mouse Recommended</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/gambletable/')">Gamblers Table</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Platformers & Runners</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/subwaysurfersny/')">Subway Surfers</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/run2/')">Run 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/balz/')">Run 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/jetpackjoyride/')">Jetpack Joyride</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/templerun2/')">Temple Run 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyroad/')">Crossy Road</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/crossyspace/')">Crossy Road: Space</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/stumbleguys/')">Stumble Guys</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/happywheels/')">Happy Wheels</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/chromedino/')">Chrome Dino Game</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/totm/')">Tomb of the Mask</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers1/')">Money Movers 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/moneymovers3/')">Money Movers 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/celeste/')">Celeste***</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/vaportrails/')">Vapor Trails*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/webdash/')">Geometry Dash*</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Probablity & Gambling</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/3ddiceroll/')">3D Dice Roller</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/horseracer/')">Horse Racing</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/13bones/')">13 Bones</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Puzzle & Skill</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/blockblast/')">Block Blast</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/badpiggies/')">Bad Piggies</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz/')">The Impossible Quiz</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/impossiblequiz2/')">The Impossible Quiz 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/angrybirdsrio/')">Angry Birds: Rio</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/stacking/')">Stacking</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/tether/')">Tether</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline/')">Snowline</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snowline2/')">Snowline 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/portal2d/')">Portal 2D</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/cutrope/')">Cut the Rope</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/gameinagame/')">Game Inside a Game</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bloxors/')">Bloxorz</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cannonbasketball2/')">Cannon Basketball 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/passwordcracker/')">Password Cracker</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/thereisnogame/')">There is No Game</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/8ballpool/')">8 Ball Pool</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bobtherobber/')">Bob the Robber</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/tetris/')">Tetris</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/sandtris/')">Sand Tetris</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hextris/')">Hextris</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/stratagemhero/')">Stratagem Trainer</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hangman/')">Hangman</button>      
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Racing & Driving</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hexgl/')">HexGL</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomecars/')">Awesome Cars</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/jellytruck/')">Jellytruck</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/slope/')">Slope</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/snowrider3d/')">Snowrider 3D</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/polytrack/')">Polytrack - Legacy</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/0.5.2/')">Polytrack</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/tanukisunset/')">Tanuki Sunset</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/highontrack/html/11779646/html5/')">High on Track</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/bergentruck201x/')">Bergentruck 201X</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/aztecride/')">Aztec Ride</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/forgetthebrakes/')">Forget the Brakes</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/rocketsoccer/')">Rocket Soccer</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Rhythym & Music</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/fnf/')">Friday Night Funkin'</button>
-				<button onclick="playGame('https://webosumania.com/')">Osu!Mania</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Roguelike & Roleplaying</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/feedthevoid/')">Feed the Void</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/tboi/')">The Binding of Isaac</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/blacksmithlab/')">Blacksmith Lab</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/therightmix/')">Bartender - The Right Mix</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/webfishing/')">Webfishing*</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/gk/')">Gun Knight</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/10tilldawn/')">10 Minutes Till Dawn</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/wrangleranch/')">Wrangle Ranch</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/balatro/')">Balatro - Takes a while to load</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/pkrogue/')">PokéRogue*</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Shooting & Defense</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/spaceinvaders/')">Space Invaders</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/galaga/')">Galaga</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars/')">Raft Wars</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/raftwars2/')">Raft Wars 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/bullethell/')">Bullet Hell</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/stormthehouse2/')">Storm the House 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks/')">Awesome Tanks</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesometanks2/')">Awesome Tanks 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/awesomeplanes/')">Awesome Planes</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/endoparasitic/')">Endoparasitic</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Strategy & Simulation</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/adarkroom/')">A Dark Room</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/finalearth2/')">The Final Earth 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/jacksmith/')">Jacksmith</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/sandboxels/')">Sandboxels</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/openttd/')">OpenTTD</button>      
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/sortthecourt/')">Sort the Court</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/civclicker/')">Civ Clicker</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/waterworks/')">Waterworks</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/cellmachine/')">Cell Machine</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/basketballstars/')">Basketball Stars</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/freshwaterfishing/')">Freshwater Fishing Simulator</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/rccreator/')">Roller Coaster Creator</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hardwaretycoon/')">Hardware Tycoon</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/captchaware/')">Captchaware</button>   
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/mondays/')">Mondays: A Sisyphean Typing Simulator</button>
-				<button onclick="playGame('https://gamebackup.github.io/itchio_games/mysterydigger/')">Mystery Digger</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_2/amongus/')">Among Us - Singleplayer</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<center>
-				<h2 style="color: #e61587;">⇓ Game Series are below ⇓</h2>
-			</center>
-		</div>
-		
-		<div class="section">
-			<h2>Bloons Tower Defense Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd1/')">Bloons Tower Defense 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd2/')">Bloons Tower Defense 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd3/')">Bloons Tower Defense 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd4/')">Bloons Tower Defense 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btd5/')">Bloons Tower Defense 5</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Duck Life Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl1/')">Duck Life 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl2/')">Duck Life 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl3/')">Duck Life 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl4/')">Duck Life 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/dl4rm/index.html')">Duck Life 4 - Remaster</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/dl5/')">Duck Life 5*</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Fancy Pants Adventure Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants1/')">Fancy Pants Adventures 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants2/')">Fancy Pants Adventures 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants3/')">Fancy Pants Adventures 3</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Henry Stickmin Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/btb/')">Breaking the Bank</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/etp/')">Escaping the Prison</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sthed/')">Stealing the Diamond</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ita/')">Infiltrating the Airship</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/ftc/')">Fleeing the Complex</button>
-			</div>
-		</div>
 
-		<div class="section">
-			<h2>Hobo Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo1/')">Hobo 1 - Brawl</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo2/')">Hobo 2 - Prison Brawl</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo3/')">Hobo 3 - Wanted</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo4/')">Hobo 4 - Total War</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo5/')">Hobo 5 - Space Brawls</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo6/')">Hobo 6 - Hell</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hobo7/')">Hobo 7 - Heaven</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Learn to Fly Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly1/')">Learn to Fly 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly2/')">Learn to Fly 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/learntofly3/')">Learn to Fly 3</button>
-			</div>
-		</div>
+			<!-- scrollable body -->
+			<div class="settings-body">
+				<!-- Tab Cloaking section -->
+				<div class="setting-section-label">Tab Cloaking</div>
+				<p class="setting-description">Changes tab name and icon instantly.</p>
+				<div class="cloak-grid" id="cloak-grid"></div>
 
-		<div class="section">
-			<h2>Mario Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/supermariokart/')">Super Mario Kart</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/sm64/')">Super Mario 64</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Minecraft Versions</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing')">Video Settings Instructions</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/eagle1.12/')">Minecraft 1.12 - Only Singleplayer</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Moto X3M</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m/')">Moto X3M 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3m2/')">Moto X3M 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mpool/')">Moto X3M: Pool Party</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mspooky/')">Moto X3M: Spooky Land</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/motox3mwinter/')">Moto X3M: Winter</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Papa's Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wpa/')">Papa Louie 1: When Pizzas Attack!</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wba/')">Papa Louie 2: When Burgers Attack!</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wsa/')">Papa Louie 3: When Sundaes Attack!</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/scooperia/')">Papa's Scooperia</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pastaria/')">Papa's Pastaria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/freezeria/')">Papa's Freezeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/burgeria/')">Papa's Burgeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pancakeria/')">Papa's PanCakeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wingeria/')">Papa's Wingeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/donuteria/')">Papa's Donuteria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/bakeria/')">Papa's Bakeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pizzeria/')">Papa's Pizzeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/tacomia/')">Papa's Taco Mia</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cupcakeria/')">Papa's Cupcakeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/hotdoggeria/')">Papa's Hotdoggeria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sushiria/')">Papa's Sushiria</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/cheeseria/')">Papa's Cheeseria</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Pinball Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/hellspinball/')">Hell's Pinball</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/spacecadet/')">Space Cadet Pinball</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/pepsipinball/')">Pepsi Pinball</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Pokémon Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonruby/')">Pokémon: Ruby</button>
-				<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonsapphire/')">Pokémon: Sapphire</button>
-				<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonemerald/')">Pokémon: Emerald</button>
-				<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonfirered/')">Pokémon: Fire Red</button>
-				<button onclick="playGame('https://gamebackup.github.io/gba_games/games/pokemonleafgreen/')">Pokémon: Leaf Green</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Red Ball Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball2/')">Red Ball 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball3/')">Red Ball 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball4/')">Red Ball 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/redball5/')">Red Ball 5</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Snail Bob Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob1/')">Snail Bob 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob2/')">Snail Bob 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob3/')">Snail Bob 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob4/')">Snail Bob 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob5/')">Snail Bob 5</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob6/')">Snail Bob 6</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob7/')">Snail Bob 7</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/snailbob8/')">Snail Bob 8</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Sonic Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sonicultimate/')">Sonic: Ultimate</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2 - Dont press crtl and w at same time</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Vex Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex1/')">Vex 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex2/')">Vex 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/vex3/')">Vex 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex4/')">Vex 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex5/')">Vex 5</button>
-				<button onclick="playGame('https://gamebackup.github.io/standalone_games/vex6/')">Vex 6</button>
-			</div>
-		</div>
-		
-		<div class="section">
-			<h2>Wheely Games</h2>
-			<div class="button-grid">
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely1/')">Wheely 1</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely2/')">Wheely 2</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely3/')">Wheely 3</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely4/')">Wheely 4</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely5/')">Wheely 5</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely6/')">Wheely 6</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely7/')">Wheely 7</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely8/')">Wheely 8</button>
-				<button onclick="playGame('https://gamebackup.github.io/flash_games/games/wheely9/')">Wheely 9</button>
-			</div>
-		</div>
-		
-		<div style="height: 10px;"></div>
-		<div style="text-align: center; padding: 5px; font-size: 14px; color: #888;">
-			© COMPOUND//CREATIONS 2025  <br>
-		</div>
-		
-		<div class="dmca-footer" style="text-align: center;font-size: 10px; color: #666">
-			All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use. If you are a rights holder and wish to have your content removed, please contact us via our <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2hOhnEVCMaJITOgmYvtjMql7U0AJSjFoSDfYErlvsZtSwDQ/viewform?usp=header" target="_blank" style="color: #d200ff;">DMCA</a> Form.
-		</div>
-		
-		<script>
-			(function() {
-			    const min = 3000;
-			    const max = 7000;
-			    const displayTime = Math.floor(Math.random() * (max - min + 1)) + min;
-			    console.log("Loading for: " + displayTime + "ms");
-			    setTimeout(function() {
-			        const loader = document.getElementById('preloader');
-			        if (loader) {
-			            loader.style.opacity = '0'; 
-			            setTimeout(function() { loader.style.display = 'none'; }, 1000); 
-			        }
-			    }, displayTime);
-			})();
-			/* ============ PARTICLE SYSTEM ============ */
-			const canvas = document.getElementById('particle-canvas');
-			const ctx = canvas.getContext('2d');
-			let particles = [];
-			function resizeCanvas() {
-			  canvas.width = window.innerWidth;
-			  canvas.height = window.innerHeight;
-			}
-			resizeCanvas();
-			window.addEventListener('resize', resizeCanvas);
-			class Particle {
-			  constructor() { this.reset(); }
-			  reset() {
-			    this.x = Math.random() * canvas.width;
-			    this.y = Math.random() * canvas.height;
-				this.size = Math.random() * 1.5 + 0.3;
-			    this.speedX = (Math.random() - 0.5) * 0.4;
-			    this.speedY = -Math.random() * 0.6 - 0.1;
-			    this.life = 1;
-			    this.decay = Math.random() * 0.003 + 0.001;
-			    this.hue = Math.random() < 0.7 ? 320 : 185;
-			  }
-			  update() {
-			    this.x += this.speedX;
-			    this.y += this.speedY;
-			    this.life -= this.decay;
-			    if (this.life <= 0) this.reset();
-			  }
-			  draw() {
-			    ctx.save();
-			    ctx.globalAlpha = this.life * 0.8;
-			    ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
-				ctx.shadowColor = `hsl(${this.hue}, 100%, 65%)`;
-			    ctx.shadowBlur = 6;
-			    ctx.beginPath();
-			    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-			    ctx.fill();
-			    ctx.restore();
-
-			  }
-			}
-			for (let i = 0; i < 200; i++) {
-			  const p = new Particle();
-			  p.life = Math.random(); 
-			  particles.push(p);
-			}
-			function animateParticles() {
-			  ctx.clearRect(0, 0, canvas.width, canvas.height);
-			  particles.forEach(p => { p.update(); p.draw(); });
-			  requestAnimationFrame(animateParticles);
-			}
-			animateParticles();
-			/* ============ SEARCH ============ */
-			function searchGames() {
-			  let input = document.getElementById('gameSearch').value.toLowerCase();
-			  let buttons = document.querySelectorAll('.button-grid button');
-			  let sections = document.querySelectorAll('.section');
-			  buttons.forEach(button => {
-			    let gameName = button.innerText.toLowerCase();
-			    button.style.display = gameName.includes(input) ? "" : "none";
-			  });
-			  sections.forEach(section => {
-			    let visibleButtons = section.querySelectorAll('.button-grid button:not([style*="display: none"])');
-			    section.style.display = (visibleButtons.length === 0 && input !== "") ? "none" : "block";
-			  });
-			}
-			function playGame(gameUrl) {
-			  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
-			  document.getElementById('game-overlay').style.display = 'block';
-			  document.getElementById('game-frame').src = gameUrl;
-			}
-			function closeGame() {
-			  document.getElementById('game-overlay').style.display = 'none';
-			  document.getElementById('game-frame').src = '';
-			}
-			const cloakPresets = {
-			  "x3e unblocked games": { title: "x3e unblocked games", 		    icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",  	label: "x3e Games", 			url: "x3e" },
-			  "Google":   			 { title: "Google",                    	 	icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",        		label: "Google",            	url: "google.com" },
-			  "YouTube": 			 { title: "YouTube",                   	 	icon: "https://www.youtube.com/s/desktop/2f549df7/img/favicon_32x32.png",                                		label: "YouTube",           	url: "youtube.com" },
-			  "Canvas":   			 { title: "Dashboard",                 	 	icon: "https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico",                      		label: "Canvas",            	url: "instructure.com" },
-			  "Khan":     			 { title: "Khan Academy",              	 	icon: "https://cdn.kastatic.org/images/favicon.ico",                                                     		label: "Khan Academy",      	url: "khanacademy.org" },
-			  "Docs":     			 { title: "Google Docs",               	 	icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",                                  		label: "Google Docs",       	url: "docs.google.com" },
-			  "Desmos":   			 { title: "Desmos | Graphing Calculator",   icon: "https://www.desmos.com/favicon.ico",                                                           	 		label: "Desmos",            	url: "desmos.com" },
-			  "Drive":    			 { title: "My Drive - Google Drive",        icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",                        		label: "Google Drive",      	url: "drive.google.com" },
-			  "Google Classroom": 	 { title: "Home - Classroom",       		icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg",                           		 		label: "Google Classroom",  	url: "classroom.google.com"},
-			  "XtraMath":            { title: "XtraMath",      			        icon: "https://cdn.prod.website-files.com/62db0786ca1a5127000f16e6/68f393b6311816a40a8da3c6_XM-FAVICON.png",    label: "XtraMath",   		    url: "xtramath.org"}
-			};
-			let currentCloakKey = "x3e unblocked games";
-			function applyCloak(presetKey) {
-			  if (!cloakPresets[presetKey]) return;
-			  currentCloakKey = presetKey;
-			  const preset = cloakPresets[presetKey];
-			  document.title = preset.title;
-			  let link = document.querySelector("link[rel~='icon']");
-			  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
-			  link.href = preset.icon;
-			  localStorage.setItem("userCloak", presetKey);
-			  document.querySelectorAll('.cloak-card').forEach(card => {
-			    card.classList.toggle('active', card.dataset.key === presetKey);
-			  });
-			}
-			function buildCloakCards() {
-			  const grid = document.getElementById('cloak-grid');
-			  grid.innerHTML = '';
-			  Object.entries(cloakPresets).forEach(([key, preset]) => {
-			    const card = document.createElement('div');
-			    card.className = 'cloak-card' + (key === currentCloakKey ? ' active' : '');
-			    card.dataset.key = key;
-			    card.onclick = () => applyCloak(key);
-			    card.innerHTML = `
-			      <img src="${preset.icon}" alt="${preset.label}" onerror="this.style.display='none'">
-			      <div>
-			        <div class="cloak-card-name">${preset.label}</div>
-			        <div class="cloak-card-url">${preset.url}</div>
-			      </div>
-			    `;
-			    grid.appendChild(card);
-			  });
-			}
-			window.onload = function() {
-			  const savedCloak = localStorage.getItem("userCloak") || "Google";
-			  currentCloakKey = savedCloak;
-			  applyCloak(savedCloak);
-			};
-			function openSettings() {
-			  buildCloakCards();
-			  const modal = document.getElementById('settings-modal');
-			  modal.style.display = 'flex';
-			  void modal.offsetWidth;
-			}
-			function closeSettings() {
-			  document.getElementById('settings-modal').style.display = 'none';
-			}
-			document.addEventListener('DOMContentLoaded', () => {
-			  document.getElementById('settings-modal').addEventListener('click', function(e) {
-			    if (e.target === this) closeSettings();
-			  });
-			});
-			function playChorde(gameUrl) {
-			  const accessCode = prompt("Please enter New Early Access key:");
-			  if (accessCode === "testing-x3e") {
-			    playGame(gameUrl);
-			  } else if (accessCode !== null) {
-			    alert("Incorrect password. Access denied.");
-			  }
-			}
-		</script>
-		<script>
-(function() {
-    const CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutes
-    const RAW_URL = "https://raw.githubusercontent.com/gamebackup/gamebackup.github.io/refs/heads/main/index.html";
-    const notificationBar = document.getElementById('update-notification');
-    let updateAvailable = false;
-
-    function getCurrentVersion() {
-        const meta = document.querySelector('meta[name="x3e-version"]');
-        return meta ? meta.content : null;
-    }
-
-    async function checkForUpdate(showOnlyIfNew = true) {
-        try {
-            const response = await fetch(RAW_URL + "?t=" + Date.now());
-            const html = await response.text();
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const remoteMeta = doc.querySelector('meta[name="x3e-version"]');
-            const remoteVersion = remoteMeta ? remoteMeta.content : null;
-
-            const currentVersion = getCurrentVersion();
-
-            if (remoteVersion && currentVersion && remoteVersion !== currentVersion) {
-                console.log(`Update available: ${currentVersion} → ${remoteVersion}`);
-                updateAvailable = true;
-                notificationBar.classList.remove('hidden');
-            } else {
-                // Optionally hide if no update (but don't hide if user dismissed intentionally)
-                if (!updateAvailable) {
-                    notificationBar.classList.add('hidden');
-                }
-            }
-        } catch (err) {
-            console.warn("Update check failed:", err);
-        }
-    }
-
-    // Public functions for the buttons
-    window.applyUpdate = function() {
-        location.reload();
-    };
-
-    window.dismissUpdate = function() {
-        notificationBar.classList.add('hidden');
-        // Keep updateAvailable true so it won't auto-hide on next check,
-        // but will re-show only if version still different.
-    };
-
-    // Start periodic checks
-    setInterval(checkForUpdate, CHECK_INTERVAL);
-    // Run once after page load (with a small delay so everything settles)
-    setTimeout(() => checkForUpdate(), 2000);
-})();
-</script>
-		<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
-			<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
-			<iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
-		</div>
-		<!-- ============ SETTINGS MODAL — REDESIGNED ============ -->
-		<div id="settings-modal" style="display: none;">
-			<div class="settings-content">
-				<!-- Animated rainbow top bar -->
-				<div class="settings-topbar"></div>
-				<!-- Header -->
-				<div class="settings-header">
-					<div class="settings-header-left">
-						<!-- Spinning gear SVG -->
-						<svg class="settings-gear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-							<circle cx="12" cy="12" r="3"></circle>
-							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-						</svg>
-						<div class="settings-title-text">
-							<h2>Settings</h2>
-							<span class="settings-sub">x3e // COMPOUND CREATIONS</span>
+				<!-- ── Offline Play section (correctly placed AFTER cloak-grid) ── -->
+				<div style="margin-top: 24px;">
+					<div class="setting-section-label">Offline Play</div>
+					<p class="setting-description">
+						Preload up to 5 games to play without internet. Only games hosted on
+						gamebackup.github.io can be cached.
+					</p>
+					<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+						<button class="offline-action-btn" onclick="openGamePicker()">
+							💾 Select Games to Cache
+						</button>
+						<div id="offline-badge">
+							💾 <span id="offline-badge-count">0</span> games cached
 						</div>
 					</div>
-					<span class="close-settings" onclick="closeSettings()">[✕]</span>
-				</div>
-				<div class="settings-body">
-					<div class="setting-section-label">Tab Cloaking</div>
-					<p class="setting-description">Changes tab name and icon instantly.</p>
-					<div class="cloak-grid" id="cloak-grid">
-					</div>
 				</div>
 			</div>
 		</div>
-	</body>
+	</div>
+
+	<!-- ============ GAME PICKER OVERLAY ============ -->
+	<div id="game-picker-overlay">
+		<div class="picker-content">
+			<div class="settings-topbar"></div>
+			<div class="picker-header">
+				<div class="picker-header-left">
+					<span class="picker-big-icon">💾</span>
+					<div class="settings-title-text">
+						<h2>Offline Game Preloader</h2>
+						<span class="settings-sub">SELECT UP TO 5 GAMES TO CACHE</span>
+					</div>
+				</div>
+				<span class="close-settings" onclick="closeGamePicker()">[✕]</span>
+			</div>
+
+			<!-- Picker view -->
+			<div id="picker-view" style="display:flex; flex-direction:column; flex:1; overflow:hidden; min-height:0;">
+				<div class="picker-search-row">
+					<input id="picker-search" class="picker-search-input" type="text"
+					       placeholder="🔍 Search games..." oninput="buildPickerList(this.value)">
+					<div id="selection-counter">0 / 5 selected</div>
+				</div>
+				<div id="picker-game-list" class="picker-game-list"></div>
+				<div class="picker-footer">
+					<span class="picker-footer-hint">External / 3rd-party games cannot be cached</span>
+					<button id="load-games-btn" class="load-btn" onclick="startCaching()" disabled>
+						Load Game Files
+					</button>
+				</div>
+			</div>
+
+			<!-- Progress view -->
+			<div id="progress-view" style="display:none; flex-direction:column; flex:1; overflow:hidden; min-height:0;">
+				<div class="progress-inner">
+					<div id="prog-status">Preparing…</div>
+					<div class="prog-bar-track"><div id="prog-bar-fill"></div></div>
+					<div id="progress-game-list" class="progress-game-list"></div>
+					<div id="prog-done-msg"></div>
+				</div>
+				<div class="prog-footer">
+					<button id="prog-close-btn" class="load-btn" onclick="closeGamePickerAndReset()">
+						✓ Done
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
 </html>
