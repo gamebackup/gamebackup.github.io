@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/04/29-19">
+    <meta name="x3e-version" content="2026/04/29-02">
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -1125,30 +1125,28 @@
 	</div>
 	<canvas id="particle-canvas"></canvas>
 	<header>
-		<div style="display: flex; align-items: center; gap: 15px;">
-			<img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
-			<div style="display: flex; flex-direction: column;">
-				<div class="glitch-title" data-text="x3e unblocked games">x3e unblocked games: 272</div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
+        <div style="display: flex; flex-direction: column;">
+            <div class="glitch-title" data-text="x3e unblocked games: 272">
+                x3e unblocked games: <span id="game-count-number">272</span>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 15px; margin-left: auto;">
+        <nav>
+            <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
+            <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
+            <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
+            <a href="#" onclick="openSettings(); return false;">Settings</a>
+        </nav>
+        <div class="search-wrapper">
+            <div class="search-bar">
+   			 <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
 			</div>
-		</div>
-		<nav>
-			<a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Request Form</a>
-			<a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Block/Bug Report</a>
-			<a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
-			<a href="#" onclick="openSettings(); return false;">Settings</a>
-		</nav>
-		<div class="search-wrapper">
-			<div class="search-bar">
-				<div class="search-icon">
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="11" cy="11" r="8"></circle>
-						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-					</svg>
-				</div>
-				<input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
-			</div>
-		</div>
-	</header>
+        </div>
+    </div>
+</header>
 
 	<div id="update-notification" class="hidden">
 		<div class="update-icon">🔄</div>
@@ -2168,6 +2166,22 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('game-picker-overlay')
     .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay') closeGamePicker(); });
 });
+		(function() {
+    // Count all buttons that call playGame()
+    const allButtons = document.querySelectorAll('.button-grid button[onclick^="playGame(\'"]');
+    const total = allButtons.length;
+    const gameCount = total - 10;   // subtract the 10 "Most Recent Games"
+
+    const countSpan = document.getElementById('game-count-number');
+    const titleDiv  = document.querySelector('.glitch-title');
+
+    if (countSpan) {
+        countSpan.textContent = gameCount;
+    }
+    if (titleDiv) {
+        titleDiv.setAttribute('data-text', 'x3e unblocked games: ' + gameCount);
+    }
+})();
 </script>
 	<!-- ============ GAME OVERLAY ============ -->
 	<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
