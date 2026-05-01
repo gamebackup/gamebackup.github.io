@@ -6,7 +6,27 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/05/01-01">
+    <meta name="x3e-version" content="2026/05/01-03">
+	<script>
+(function(){
+    var cloakPresets = {
+        "x3e unblocked games": { title: "x3e unblocked games" },
+        "Google":               { title: "Google" },
+        "YouTube":              { title: "YouTube" },
+        "Canvas":               { title: "Dashboard" },
+        "Khan":                 { title: "Khan Academy" },
+        "Docs":                 { title: "Google Docs" },
+        "Desmos":               { title: "Desmos | Graphing Calculator" },
+        "Drive":                { title: "My Drive - Google Drive" },
+        "Google Classroom":     { title: "Home - Classroom" },
+        "XtraMath":             { title: "XtraMath" }
+    };
+    var savedKey = localStorage.getItem("userCloak");
+    if (savedKey && cloakPresets[savedKey]) {
+        document.title = cloakPresets[savedKey].title;
+    }
+})();
+</script>
     <style>
         /* ========== GLOBAL & RESETS ========== */
         body {
@@ -1140,11 +1160,15 @@
             <a href="https://docs.google.com/document/d/1l68KDopM0GgzX4Ikzb2U-mkUXK-mjEx2AZo_TGB8caQ/edit?usp=sharing" target="_blank">Q&A</a>
             <a href="#" onclick="openSettings(); return false;">Settings</a>
         </nav>
-        <div class="search-wrapper">
-            <div class="search-bar">
-   			 <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
-			</div>
-        </div>
+        <div class="search-bar">
+    <div class="search-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </div>
+    <input type="text" id="gameSearch" onkeyup="searchGames()" placeholder="Search for a game..." class="search-input">
+</div>
     </div>
 </header>
 
@@ -1168,6 +1192,7 @@
 				<p><strong>Double click whatever game's main menu when it loads, to make sure the controls are focused. If you don't you will end up reloading the page instead of playing it</strong></p>
 				<p><strong>Stars next to games mean the following: * = Little Laggy, ** = Probably Playable, *** = Won't run on chromebooks.</strong></p>
 				<p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
+				<p><strong>Pressing CTRL and W at the same time will close your tab</strong></p>
 			</div>
 		</div>
 	</div>
@@ -1176,7 +1201,6 @@
 		<h2>10 Most Recent Games:</h2>
 		<div class="button-grid">
 			<button onclick="playGame('https://gamebackup.github.io/chord/')">📌 Chorde - Public Release</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/fnaf1/')">Five Nights at Freddy's 1*</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/fnaf2/')">Five Nights at Freddy's 2*</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/fnaf3/')">Five Nights at Freddy's 3*</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/fnafworld/')">FNaF World* - Buggy</button>
@@ -1185,6 +1209,7 @@
 			<button onclick="playGame('https://wikispeedruns.com/')">Wikipedia Speedruns</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonic-mania/')">Sonic Mania</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonicCD/')">Sonic CD</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonic1/')">Sonic the Hedgehog</button>
 		</div>
 	</div>
 
@@ -1531,7 +1556,7 @@
 	</div>
 
 	<div class="section">
-		<h2>Minecraft Versions</h2>
+		<h2>Minecraft</h2>
 		<div class="button-grid">
 			<button onclick="playGame('https://docs.google.com/document/d/1WkSeNfptCHMEBLGB50VyjYFk2zu7pMLrYSmBuK1B0w0/edit?usp=sharing')">Video Settings Instructions</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games/eagle1.12/')">Minecraft 1.12 - Only Singleplayer</button>
@@ -1620,9 +1645,10 @@
 		<h2>Sonic Games</h2>
 		<div class="button-grid">
 			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/sonicultimate/')">Sonic: Ultimate</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2 - Dont press crtl and w at same time</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/srb2/')">Sonic Robo Blast 2</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonic-mania/')">Sonic Mania</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonicCD/')">Sonic CD</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/sonic1/')">Sonic the Hedgehog</button>
 		</div>
 	</div>
 
@@ -1787,11 +1813,11 @@
 		    grid.appendChild(card);
 		  });
 		}
-		window.onload = function() {
-		  const savedCloak = localStorage.getItem("userCloak") || "Google";
-		  currentCloakKey = savedCloak;
-		  applyCloak(savedCloak);
-		};
+		document.addEventListener('DOMContentLoaded', function() {
+    const savedCloak = localStorage.getItem("userCloak") || "Google";
+    currentCloakKey = savedCloak;
+    applyCloak(savedCloak);
+});
 		function openSettings() {
 		  buildCloakCards();
 		  const modal = document.getElementById('settings-modal');
