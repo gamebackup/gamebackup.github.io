@@ -702,10 +702,13 @@
 
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
+		  document.activeElement && document.activeElement.blur();
+		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
 		  document.getElementById('game-frame').src = gameUrl;
 		}
 		function closeGame() {
+		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
 		}
