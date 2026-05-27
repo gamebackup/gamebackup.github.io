@@ -21,8 +21,8 @@
         "Google Classroom":     { title: "Home - Classroom",             icon: "https://edu.google.com/images/svg/gsuite-icons/classroom.svg" },
         "XtraMath":             { title: "XtraMath",                     icon: "https://cdn.prod.website-files.com/62db0786ca1a5127000f16e6/68f393b6311816a40a8da3c6_XM-FAVICON.png" }
     };
-    var savedKey = localStorage.getItem("userCloak");
-    if (savedKey && cloakPresets[savedKey]) {
+    var savedKey = localStorage.getItem("userCloak") || "x3e unblocked games";
+    if (cloakPresets[savedKey]) {
         document.title = cloakPresets[savedKey].title;
 		var link = document.querySelector("link[rel~='icon']");
         if (link) {
@@ -31,13 +31,7 @@
     }
 })();
 </script>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-            background-color: #111;
-            color: white;
-        }
+    <link rel="stylesheet" href="style.css">
 
         header {
             background-color: black;
