@@ -1097,3 +1097,31 @@ nav a:hover::after {
 @media (max-width: 500px) {
     #update-notification { left: 10px; right: 10px; max-width: none; bottom: 10px; }
 }
+
+.glitch-title {
+    position: relative;
+    cursor: help;
+}
+.glitch-title::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border: 1px solid rgba(230, 21, 135, 0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 1001;
+}
+.glitch-title:hover::after {
+    opacity: 1;
+}
