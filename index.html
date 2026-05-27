@@ -856,19 +856,22 @@ cachedGamesList = cachedGamesList.filter(url => !NON_CACHEABLE_GAMES.includes(ur
 localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
 
 // Also tell the Service Worker to wipe those game files from the cache
-if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-  NON_CACHEABLE_GAMES.forEach(url => {
-    navigator.serviceWorker.controller.postMessage({
-      type: 'CLEAR_GAME',
-      prefix: url
-    });
-  });
-}
+NON_CACHEABLE_GAMES.forEach(url => swPost({ type: 'CLEAR_GAME', prefix: url }));
 
 function swPost(msg) {
-  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+  if (!navigator.serviceWorker) return;
+  if (navigator.serviceWorker.controller) {
     navigator.serviceWorker.controller.postMessage(msg);
+    return;
   }
+  navigator.serviceWorker.ready.then(r => { if (r.active) r.active.postMessage(msg); }).catch(() => {});
+}
+function swReady() {
+  return new Promise(resolve => {
+    if (!navigator.serviceWorker) { resolve(false); return; }
+    if (navigator.serviceWorker.controller) { resolve(true); return; }
+    navigator.serviceWorker.ready.then(r => resolve(!!r.active)).catch(() => resolve(false));
+  });
 }
 
 function getAllGameEntries() {
@@ -961,8 +964,14 @@ function flashCounter() {
 
 // ── SESSION‑BASED CACHING ─────────────────────────────────────
 
-function startCaching() {
+async function startCaching() {
   if (!selectedGames.length) return;
+
+  const ok = await swReady();
+  if (!ok) {
+    alert('Offline caching requires a Service Worker, which is blocked or unavailable in your browser. Try a different browser or check your network settings.');
+    return;
+  }
 
   swPost({ type: 'START_SESSION' });
 
@@ -1067,16 +1076,14 @@ function purgeAllGameCaches() {
   if (!confirm(`Unload all ${cachedGamesList.length} cached game(s)? This won't affect the main site.`)) return;
 
   const sendClear = (prefix) => new Promise(resolve => {
-    if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
-      resolve();
-      return;
-    }
+    if (!navigator.serviceWorker) { resolve(); return; }
+    const target = navigator.serviceWorker.controller;
+    if (!target) { resolve(); return; }
     const channel = new MessageChannel();
     channel.port1.onmessage = () => resolve();
-    navigator.serviceWorker.controller.postMessage(
-      { type: 'CLEAR_GAME', prefix },
-      [channel.port2]
-    );
+    try {
+      target.postMessage({ type: 'CLEAR_GAME', prefix }, [channel.port2]);
+    } catch(e) { resolve(); return; }
     setTimeout(resolve, 2000);
   });
 
@@ -1119,12 +1126,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
       .then(reg => {
-        console.log('[x3e] SW registered:', reg.scope);
         navigator.serviceWorker.ready.then(r => {
           if (r.active) r.active.postMessage({ type: 'GET_CACHED_URLS' });
         });
       })
-      .catch(err => console.warn('[x3e] SW failed:', err));
+      .catch(() => {});
     navigator.serviceWorker.addEventListener('message', e => {
       if (e.data?.type === 'CACHED_URLS') handleCachedUrlsResponse(e.data.urls);
     });

@@ -14,7 +14,9 @@ self.addEventListener('fetch', e => {
     e.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         fetch(e.request).then(res => {
-          if (res && res.ok) cache.put(e.request, res.clone());
+          if (res && res.ok && res.type === 'basic') {
+            cache.put(e.request, res.clone());
+          }
           return res;
         }).catch(() => caches.match(e.request))
       )
@@ -29,7 +31,7 @@ self.addEventListener('fetch', e => {
     caches.open(CACHE_NAME).then(cache =>
       cache.match(e.request).then(cached => {
         const networkFetch = fetch(e.request).then(res => {
-          if (res && res.ok) cache.put(e.request, res.clone());
+          if (res && res.ok && res.type === 'basic') cache.put(e.request, res.clone());
           return res;
         }).catch(() => null);
         return cached || networkFetch;
@@ -40,7 +42,7 @@ self.addEventListener('fetch', e => {
 
 // ── Message handler ──────────────────────────────────────────────
 self.addEventListener('message', e => {
-  if (!e.data || !e.source) return;
+  if (!e.data) return;
 
   // Enable / disable preload session
   if (e.data.type === 'START_SESSION') {
@@ -55,13 +57,13 @@ self.addEventListener('message', e => {
   }
 
   // Existing commands
-  if (e.data.type === 'GET_CACHED_URLS') {
+  if (e.data.type === 'GET_CACHED_URLS' && e.source) {
     caches.open(CACHE_NAME)
       .then(c => c.keys())
       .then(keys => e.source.postMessage({
         type: 'CACHED_URLS',
         urls: keys.map(r => r.url)
-      }));
+      })).catch(() => {});
   }
 
   if (e.data.type === 'CLEAR_GAME' && e.data.prefix) {
