@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/05/27-11">
+    <meta name="x3e-version" content="2026/05/27-16">
 	<script>
 (function(){
     var cloakPresets = {
@@ -104,15 +104,15 @@
 		<h2>10 Most Recent Games:</h2>
 		<div class="button-grid">
 			<button onclick="playGame('https://gamebackup.github.io/chord/')">📌 Chord - Public Release</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/polybridge/')">Poly Bridge</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/org-trail/')">Oregon Trail</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/badtimesim/')">Bad Time Simlator</button>
-			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/MLsuperstar/')">Mario & Luigi: Superstar Saga</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/superstarsaga/')">Mario & Luigi: Superstar Saga</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/drmario/')">Dr. Mario</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/mario3/')">Super Mario Bros. 3</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/supermarioworld/')">Super Mario World</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/supermario/')">Super Mario Bros.</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/spacewaves/')">Space Waves</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/mariokart64/')">Mario Kart 64</button>
 		</div>
 	</div>
 
@@ -215,7 +215,7 @@
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/badtimesim/')">Bad Time Simlator</button>
 		</div>
 	</div>
-
+	
 	<div class="section">
 		<h2>Horror & Spooks</h2>
 		<div class="button-grid">
@@ -330,7 +330,6 @@
 		<h2>Rhythym & Music</h2>
 		<div class="button-grid">
 			<button onclick="playGame('https://webosumania.com/')">Osu!Mania</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games/fnf/')">Friday Night Funkin'</button>
 		</div>
 	</div>
 
@@ -399,6 +398,17 @@
 		<center><h2 style="color: #e61587;">⇓ Game Series are below ⇓</h2></center>
 	</div>
 
+<div class="section">
+		<h2>Ace Attorney Games</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/aceattorney1/')">Pheonix Wright: Ace Attorney</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/aceattorney2/')">Pheonix Wright: Ace Attorney - Justice For All</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/aceattorney3/')">Pheonix Wright: Ace Attorney - Trials and Tribulations</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/aceattorney3/')">Apollo Justice: Ace Attorney</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/milesedgeworth/')">Ace Attorney Investigations: Miles Edgeworth</button>
+		</div>
+	</div>
+	
 	<div class="section">
 		<h2>Bloons Tower Defense Games</h2>
 		<div class="button-grid">
@@ -430,7 +440,22 @@
 			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/fancypants3/')">Fancy Pants Adventures 3</button>
 		</div>
 	</div>
-
+		
+	<div class="section">
+		<h2>Friday Night Funkin'</h2>
+		<div>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games/fnf/')">Friday Night Funkin'</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/chev/')">Friday Night Funkin' - Chev Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/darkwing/')">Friday Night Funkin' - Darkwing Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/cityfunk/')">Friday Night Funkin' - Cityfunk Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/docad/')">Friday Night Funkin' - Docad Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/moscow/')">Friday Night Funkin' - Moscow Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/qt/')">Friday Night Funkin' - QT Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/sonicdashandspin/')">Friday Night Funkin' - Sonic Dash and Spin Mod</button>
+            <button onclick="playGame('https://gamebackup.github.io/fnf-mods/updog/')">Friday Night Funkin' - Updog Mod</button>
+		</div>
+	</div>
+		
 	<div class="section">
 		<h2>Henry Stickmin Games</h2>
 		<div class="button-grid">
@@ -702,13 +727,10 @@
 
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
-		  document.activeElement && document.activeElement.blur();
-		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
 		  document.getElementById('game-frame').src = gameUrl;
 		}
 		function closeGame() {
-		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
 		}
