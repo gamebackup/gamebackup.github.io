@@ -66,6 +66,9 @@ self.addEventListener('message', e => {
 
   if (e.data.type === 'CLEAR_GAME' && e.data.prefix) {
     const prefix = e.data.prefix;
+    const port = e.ports ? e.ports[0] : null;
+    const respond = () => { if (port) port.postMessage('done'); };
+
     if (prefix.startsWith('https://gamebackup.github.io/') && prefix !== 'https://gamebackup.github.io/') {
       caches.open(CACHE_NAME).then(c =>
         c.keys().then(keys =>
@@ -73,9 +76,10 @@ self.addEventListener('message', e => {
             keys.filter(r => r.url.startsWith(prefix)).map(r => c.delete(r))
           )
         )
-      );
+      ).then(respond).catch(respond);
     } else {
       console.warn('[SW] Ignoring unsafe CLEAR_GAME prefix:', prefix);
+      respond();
     }
   }
 });
