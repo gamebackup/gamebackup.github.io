@@ -882,9 +882,8 @@
 	</script>
 
 	<script>
-		/* ============ UPDATE CHECKER (Range request) ============ */
 		(function() {
-		    const CHECK_INTERVAL = 30 * 60 * 1000;
+		    const CHECK_INTERVAL = 10 * 60 * 1000;
 		    const RAW_URL = "https://raw.githubusercontent.com/gamebackup/gamebackup.github.io/refs/heads/main/index.html";
 		    const notificationBar = document.getElementById('update-notification');
 		    let updateAvailable = false;
@@ -930,8 +929,8 @@
 	<script>
 const CACHEABLE_BASE = 'https://gamebackup.github.io';
 const MAX_SELECT     = 5;
-const CACHE_WAIT_MS  = 12000;   // 12 seconds – enough time for heavy games
-const CACHE_MAX_MS   = 25000;   // 25 seconds fallback
+const CACHE_WAIT_MS  = 12000; 
+const CACHE_MAX_MS   = 25000;   
 
 let selectedGames   = [];
 let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]');
