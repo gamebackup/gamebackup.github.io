@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/05/27-25">
+    <meta name="x3e-version" content="2026/05/27-27">
 	<script>
 (function(){
     var cloakPresets = {
@@ -1050,7 +1050,7 @@ function buildPickerList(filter) {
         <div class="pgc-info">
           <div class="pgc-name">${g.name}</div>
           ${isCached      ? '<div class="pgc-sub cached-tag">💾 Already cached</div>'              : ''}
-          ${!g.cacheable  ? '<div class="pgc-sub external-tag">🌐 External — cannot cache</div>'  : ''}
+          ${!g.cacheable  ? '<div class="pgc-sub external-tag">🔒 Cannot cache</div>'  : ''}
         </div>`;
       list.appendChild(div);
     });
@@ -1328,14 +1328,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				<div style="margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
   <button class="offline-action-btn" onclick="purgeAllGameCaches()" id="purge-cache-btn"
           style="background: rgba(200,40,40,0.2); border-color: rgba(200,40,40,0.4);">
-    🗑️ Unload Loaded Games
+    Unload Loaded Games
   </button>
   <span style="font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: 'Space Grotesk', sans-serif;">
     Refreshes page and removes preloaded game files.
   </span>
 </div>
 <div style="margin-top: 8px; font-size: 0.65rem; color: rgba(255,255,255,0.35);">
-  ⚠️ Keeping lots of games loaded can slow your browser. Unload preloaded games regularly.
+  Keeping lots of games loaded can slow your browser. Unload preloaded games regularly.
 </div>
 			</div>
 		</div>
@@ -1365,7 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				</div>
 				<div id="picker-game-list" class="picker-game-list"></div>
 				<div class="picker-footer">
-					<span class="picker-footer-hint">External / 3rd-party games cannot be cached</span>
+					<span class="picker-footer-hint">Same games cannot be cached</span>
 					<button id="load-games-btn" class="load-btn" onclick="startCaching()" disabled>
 						Load Game Files
 					</button>
