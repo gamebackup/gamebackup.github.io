@@ -1,9 +1,31 @@
-const CACHE_NAME = 'x3e-offline-v1';
+const CACHE_NAME = 'x3e-offline-v2';
 let preloadSession = false;
 
 // ── Lifecycle ────────────────────────────────────────────────────
 self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    Promise.all([
+      clients.claim(),
+      caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      ),
+      caches.open(CACHE_NAME).then(cache =>
+        cache.keys().then(requests =>
+          Promise.all(requests.map(req =>
+            cache.match(req).then(res => {
+              if (!res || res.status === 0) return cache.delete(req);
+            })
+          ))
+        )
+      )
+    ])
+  );
+});
+
+function validCached(res) {
+  return res && res.ok && res.status !== 0 && res.type === 'basic';
+}
 
 // ── Fetch handler ────────────────────────────────────────────────
 self.addEventListener('fetch', e => {
@@ -14,11 +36,9 @@ self.addEventListener('fetch', e => {
     e.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         fetch(e.request).then(res => {
-          if (res && res.ok && res.type === 'basic') {
-            cache.put(e.request, res.clone());
-          }
+          if (validCached(res)) cache.put(e.request, res.clone());
           return res;
-        }).catch(() => caches.match(e.request))
+        }).catch(() => caches.match(e.request).then(r => validCached(r) ? r : null))
       )
     );
     return;
@@ -30,13 +50,17 @@ self.addEventListener('fetch', e => {
   e.respondWith(
     caches.open(CACHE_NAME).then(cache =>
       cache.match(e.request).then(cached => {
+        if (cached && !validCached(cached)) {
+          cache.delete(e.request);
+          cached = null;
+        }
         const networkFetch = fetch(e.request).then(res => {
-          if (res && res.ok && res.type === 'basic') cache.put(e.request, res.clone());
+          if (validCached(res)) cache.put(e.request, res.clone());
           return res;
         }).catch(() => null);
         return cached || networkFetch;
       })
-    ).catch(() => caches.match(e.request))
+    ).catch(() => fetch(e.request))
   );
 });
 

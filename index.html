@@ -732,6 +732,8 @@
 		  if (document.hidden && particlesRAF) { cancelAnimationFrame(particlesRAF); particlesRAF = null; }
 		  else if (!document.hidden && !particlesRAF) animateParticles();
 		});
+		function pauseParticles() { if (particlesRAF) { cancelAnimationFrame(particlesRAF); particlesRAF = null; } }
+		function resumeParticles() { if (!particlesRAF) animateParticles(); }
 
 		/* ============ SEARCH ============ */
 		function sanitizeQuery(s) {
@@ -809,10 +811,13 @@
 
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
+		  document.activeElement && document.activeElement.blur();
+		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
 		  document.getElementById('game-frame').src = gameUrl;
 		}
 		function closeGame() {
+		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
 		}
@@ -866,12 +871,14 @@
     applyCloak(savedCloak);
 });
 		function openSettings() {
+		  pauseParticles();
 		  buildCloakCards();
 		  const modal = document.getElementById('settings-modal');
 		  modal.style.display = 'flex';
 		  void modal.offsetWidth;
 		}
 		function closeSettings() {
+		  resumeParticles();
 		  document.getElementById('settings-modal').style.display = 'none';
 		}
 		document.addEventListener('DOMContentLoaded', () => {
@@ -932,7 +939,8 @@ const MAX_SELECT     = 5;
 const CACHE_WAIT_MS  = 12000; 
 const CACHE_MAX_MS   = 25000;   
 
-let selectedGames   = [];
+let selectedGames = [];
+let cachingLock = false;
 let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]');
 let cacheQueue      = [];
 let cacheIndex      = 0;
@@ -993,6 +1001,8 @@ function getAllGameEntries() {
 }
 
 function openGamePicker() {
+  if (cachingLock) return;
+  pauseParticles();
   selectedGames = [];
   document.getElementById('game-picker-overlay').classList.add('open');
   document.getElementById('picker-view').style.display   = 'flex';
@@ -1003,11 +1013,14 @@ function openGamePicker() {
 }
 
 function closeGamePicker() {
+  if (cachingLock) return;
+  resumeParticles();
   document.getElementById('game-picker-overlay').classList.remove('open');
   if (cacheIframe) { cacheIframe.remove(); cacheIframe = null; }
 }
 
 function closeGamePickerAndReset() {
+  cachingLock = false;
   closeGamePicker();
   updateOfflineBadge();
   markCachedButtons();
@@ -1085,6 +1098,7 @@ async function startCaching() {
 
   document.getElementById('picker-view').style.display   = 'none';
   document.getElementById('progress-view').style.display = 'flex';
+  cachingLock = true;
 
   const pl = document.getElementById('progress-game-list');
   pl.innerHTML = '';
@@ -1243,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateOfflineBadge();
   markCachedButtons();
   document.getElementById('game-picker-overlay')
-    .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay') closeGamePicker(); });
+    .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay' && !cachingLock) closeGamePicker(); });
 });
 		(function() {
     // Count all buttons that call playGame()
