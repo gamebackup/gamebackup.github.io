@@ -919,7 +919,10 @@
 		                updateAvailable = true;
 		                notificationBar.classList.remove('hidden');
 		            } else {
-		                if (!updateAvailable) notificationBar.classList.add('hidden');
+		                if (updateAvailable) {
+		                    updateAvailable = false;
+		                    notificationBar.classList.add('hidden');
+		                }
 		            }
 		        } catch (err) {
 		            console.warn("Update check failed:", err);
