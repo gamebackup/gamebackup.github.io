@@ -732,44 +732,42 @@
 		  var original = 'x3e unblocked games';
 		  var raf = null, frame = 0;
 		  var alpha = 'abcdefghijklmnopqrstuvwxyz';
-
+		  var charData = [];
+		  for (var ci = original.length - 1, pos = 0; ci >= 0; ci--) {
+		    var lc = original[ci].toLowerCase();
+		    if (alpha.indexOf(lc) !== -1) {
+		      charData[ci] = { idx: alpha.indexOf(lc), pow: pos };
+		      pos++;
+		    }
+		  }
+		  var countSpan = title.querySelector('#game-count-number');
 		  function getTextNode() {
 		    for (var i = 0; i < title.childNodes.length; i++) {
 		      if (title.childNodes[i].nodeType === 3) return title.childNodes[i];
 		    }
 		    return null;
 		  }
-
-		  function setVisibleText(t) {
+		  function setText(t) {
 		    var node = getTextNode();
 		    if (node) node.textContent = t + ': ';
-		    title.setAttribute('data-text', t + ': ' + title.getAttribute('data-text').replace(/^.*?:\s*/, ''));
+		    title.setAttribute('data-text', t + ': ' + (countSpan ? countSpan.textContent : '272'));
 		  }
-
 		  function animate() {
 		    frame++;
 		    var chars = original.split('');
-		    for (var i = chars.length - 1; i >= 0; i--) {
-		      var lower = chars[i].toLowerCase();
-		      if (alpha.indexOf(lower) === -1) continue;
-		      var pos = chars.length - 1 - i;
-		      if (frame % (pos + 1) !== 0) continue;
-		      var idx = alpha.indexOf(lower);
-		      var next = alpha[(idx + 1) % 26];
-		      chars[i] = chars[i] === chars[i].toUpperCase() ? next.toUpperCase() : next;
+		    for (var i = 0; i < chars.length; i++) {
+		      var d = charData[i];
+		      if (!d) continue;
+		      chars[i] = alpha[(d.idx + Math.floor(frame / Math.pow(26, d.pow))) % 26];
 		    }
-		    setVisibleText(chars.join(''));
+		    setText(chars.join(''));
 		    raf = requestAnimationFrame(animate);
 		  }
-
 		  function stop() {
 		    if (raf) { cancelAnimationFrame(raf); raf = null; }
 		    frame = 0;
-		    var node = getTextNode();
-		    if (node) node.textContent = original + ': ';
-		    title.setAttribute('data-text', original + ': ' + (title.querySelector('#game-count-number') ? title.querySelector('#game-count-number').textContent : '272'));
+		    setText(original);
 		  }
-
 		  title.addEventListener('mouseenter', function(){ if (!raf) raf = requestAnimationFrame(animate); });
 		  title.addEventListener('mouseleave', stop);
 		})();
