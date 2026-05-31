@@ -823,6 +823,7 @@
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
 		  document.activeElement && document.activeElement.blur();
+		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
 		  document.getElementById('game-frame').src = gameUrl;
@@ -831,7 +832,48 @@
 		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
+		  const saved = sessionStorage.getItem('x3e-scrollY');
+		  if (saved !== null) { window.scrollTo(0, parseInt(saved, 10)); sessionStorage.removeItem('x3e-scrollY'); }
 		}
+
+		/* ── Volume Control ── */
+		let volumeLevel = parseInt(localStorage.getItem('x3e-volume'), 10);
+		if (isNaN(volumeLevel) || volumeLevel < 0 || volumeLevel > 100) volumeLevel = 100;
+		function setVolume(val) {
+		  volumeLevel = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+		  localStorage.setItem('x3e-volume', volumeLevel);
+		  document.getElementById('volume-slider').value = volumeLevel;
+		  document.getElementById('volume-label').textContent = volumeLevel + '%';
+		  document.getElementById('volume-icon').textContent = volumeLevel === 0 ? '🔇' : volumeLevel < 50 ? '🔉' : '🔊';
+		  const f = document.getElementById('game-frame');
+		  if (f.src && f.contentDocument) {
+		    try {
+		      f.contentDocument.querySelectorAll('audio, video').forEach(el => el.volume = volumeLevel / 100);
+		    } catch(e) {}
+		  }
+		}
+		function toggleMute() {
+		  setVolume(volumeLevel === 0 ? 100 : 0);
+		}
+		function applyVolumeToFrame(f) {
+		  if (!f || !f.contentDocument || volumeLevel === 100) return;
+		  try {
+		    f.contentDocument.querySelectorAll('audio, video').forEach(el => el.volume = volumeLevel / 100);
+		  } catch(e) {}
+		}
+
+		/* ── Ctrl+F → Search ── */
+		document.addEventListener('keydown', function(e) {
+		  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+		    e.preventDefault();
+		    const input = document.getElementById('gameSearch');
+		    if (input) { input.focus(); input.select(); }
+		  }
+		});
+
+		document.addEventListener('DOMContentLoaded', function() {
+		  setVolume(volumeLevel);
+		});
 
 		const cloakPresets = {
 		  "x3e unblocked games": { title: "x3e unblocked games",           icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games",          url: "x3e" },
@@ -1290,13 +1332,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })();
 </script>
-<script src="emu_games/console-viewer.js"></script>
 	<!-- ============ GAME OVERLAY ============ -->
 	<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
 		<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
 <iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock">
-</iframe>	</div>
+        sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock"
+        onload="applyVolumeToFrame(this)"></iframe>	</div>
 
 	<!-- ============ SETTINGS MODAL ============ -->
 	<div id="settings-modal" style="display: none;">
@@ -1351,6 +1392,19 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 <div style="margin-top: 8px; font-size: 0.65rem; color: rgba(255,255,255,0.35);">
   Keeping lots of games loaded can slow your browser. Unload preloaded games regularly.
+</div>
+
+<!-- Volume Control -->
+<div style="margin-top: 24px;">
+  <div class="setting-section-label">Volume Control</div>
+  <p class="setting-description">Adjust game audio. May not work for all games.</p>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+    <span id="volume-icon" style="font-size:1.2rem;cursor:pointer;user-select:none;" onclick="toggleMute()">🔊</span>
+    <input type="range" id="volume-slider" min="0" max="100" value="100"
+      style="flex:1;max-width:300px;height:4px;cursor:pointer;accent-color:#d200ff;"
+      oninput="setVolume(this.value)">
+    <span id="volume-label" style="font-size:0.8rem;color:rgba(255,255,255,0.6);min-width:36px;">100%</span>
+  </div>
 </div>
 			</div>
 		</div>
