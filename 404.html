@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 — x3e unblocked games</title>
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111; color: #fff; font-family: 'Space Grotesk', sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; text-align: center; padding: 20px; overflow: hidden;
+    }
+    canvas#particles {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+    }
+    .content-box {
+      position: relative; z-index: 1;
+      background: rgba(30,30,30,0.6); border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 2px 2px 10px rgba(0,0,0,0.5);
+      padding: 40px; max-width: 550px; width: 100%;
+      backdrop-filter: blur(4.5px); -webkit-backdrop-filter: blur(2px);
+    }
+    .error-code {
+      font-family: 'Orbitron', monospace; font-weight: 900;
+      font-size: 6rem; background: linear-gradient(135deg, #fff, #e61587);
+      background-clip: text; -webkit-background-clip: text; color: transparent;
+      line-height: 1; margin-bottom: 10px;
+    }
+    .glitch-title {
+      font-family: 'Orbitron', monospace; font-weight: 800;
+      font-size: 1.4rem; background: linear-gradient(135deg, #fff, #e61587);
+      background-clip: text; -webkit-background-clip: text; color: transparent;
+      position: relative; display: inline-block; margin-bottom: 20px;
+    }
+    .glitch-title::after, .glitch-title::before {
+      content: attr(data-text); position: absolute; top: 0; left: 0;
+      width: 100%; overflow: hidden;
+      background: linear-gradient(135deg, #fff, #e61587);
+      background-clip: text; -webkit-background-clip: text; color: transparent;
+    }
+    .glitch-title::before {
+      animation: glitch1 4s infinite; clip-path: polygon(0 25%, 100% 25%, 100% 45%, 0 45%);
+    }
+    .glitch-title::after {
+      animation: glitch2 2s infinite; clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    }
+    @keyframes glitch1 {
+      0%, 100%, 88% { transform: none; opacity: 0; }
+      89% { transform: translateX(-3px); opacity: 1; }
+      91% { transform: translateX(2px); opacity: 1; }
+      93% { transform: none; opacity: 0; }
+    }
+    @keyframes glitch2 {
+      0%, 100%, 91% { transform: none; opacity: 0; }
+      92% { transform: translateX(3px); opacity: 1; }
+      94% { transform: translateX(-1px); opacity: 1; }
+      96% { transform: none; opacity: 0; }
+    }
+    .desc {
+      color: rgba(255,255,255,0.6); font-size: 0.95rem;
+      margin-bottom: 28px; line-height: 1.6;
+    }
+    .home-btn {
+      display: inline-block; padding: 12px 28px;
+      background: rgba(230,21,135,0.2); border: 1px solid rgba(230,21,135,0.4);
+      color: #fff; text-decoration: none; border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      font-size: 0.9rem; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position: relative; overflow: hidden;
+    }
+    .home-btn:hover {
+      background: #e61587; transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(230,21,135,0.5); border-color: #fff;
+    }
+    .home-btn::after {
+      content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(255,255,255,0));
+      transform: rotate(35deg); transition: all 0.6s cubic-bezier(0.4,0,0.2,1);
+      pointer-events: none;
+    }
+    .home-btn:hover::after { left: 140%; }
+    .footer {
+      margin-top: 30px; font-size: 0.7rem; color: rgba(255,255,255,0.3);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .game-count-badge {
+      display: inline-block; margin-bottom: 24px;
+      background: rgba(230,21,135,0.2); backdrop-filter: blur(4px);
+      padding: 5px 14px; border-radius: 60px; font-size: 0.75rem;
+      font-weight: 600; font-family: 'Space Grotesk', monospace;
+      border: 1px solid rgba(230,21,135,0.5);
+      box-shadow: 0 0 6px rgba(230,21,135,0.3); color: rgba(255,255,255,0.7);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="content-box">
+    <div class="error-code">404</div>
+    <div class="glitch-title" data-text="page not found">page not found</div>
+    <div class="game-count-badge">⌨ GAME OVER</div>
+    <p class="desc">
+      The page you're looking for doesn't exist.<br>
+      It may have been moved, deleted, or you may have mistyped the URL.
+    </p>
+    <a href="/" class="home-btn">← Back to x3e</a>
+    <div class="footer">COMPOUND//CREATIONS 2025</div>
+  </div>
+
+  <script>
+    (function(){
+      var canvas = document.getElementById('particles');
+      var ctx = canvas.getContext('2d');
+      var W, H;
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      resize(); window.addEventListener('resize', resize);
+
+      var particles = [];
+      function Particle() { this.reset(); }
+      Particle.prototype.reset = function() {
+        this.x = Math.random() * W; this.y = Math.random() * H;
+        this.size = Math.random() * 1.5 + 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        this.life = Math.random(); this.maxLife = this.life + 100 + Math.random() * 200;
+        this.hue = 330 + Math.random() * 30;
+      };
+      Particle.prototype.update = function() {
+        this.x += this.speedX; this.y += this.speedY;
+        if (this.x < 0 || this.x > W) this.speedX *= -1;
+        if (this.y < 0 || this.y > H) this.speedY *= -1;
+        this.life++; if (this.life >= this.maxLife) this.reset();
+      };
+      Particle.prototype.draw = function() {
+        var alpha = this.life < 20 ? this.life / 20 : 1;
+        ctx.save(); ctx.globalAlpha = alpha;
+        ctx.shadowColor = 'hsl(' + this.hue + ', 100%, 65%)'; ctx.shadowBlur = 6;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      };
+      for (var i = 0; i < 120; i++) { var p = new Particle(); p.life = Math.random(); particles.push(p); }
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        for (var i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); }
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden && particlesRAF) { cancelAnimationFrame(particlesRAF); particlesRAF = null; }
+        else if (!document.hidden && !particlesRAF) animate();
+      });
+    })();
+  </script>
+</body>
+</html>

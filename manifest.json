@@ -1,0 +1,28 @@
+{
+  "name": "x3e unblocked games",
+  "short_name": "x3e",
+  "description": "The largest collection of unblocked games on the internet. Play free online games at school or work.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#111111",
+  "theme_color": "#e61587",
+  "categories": ["games", "entertainment", "education"],
+  "icons": [
+    {
+      "src": "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

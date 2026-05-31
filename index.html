@@ -32,6 +32,7 @@
 })();
 </script>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 	<div id="preloader">
@@ -1405,6 +1406,31 @@ document.addEventListener('DOMContentLoaded', () => {
       oninput="setVolume(this.value)">
     <span id="volume-label" style="font-size:0.8rem;color:rgba(255,255,255,0.6);min-width:36px;">100%</span>
   </div>
+</div>
+
+<!-- Changelog -->
+<div style="margin-top: 24px;">
+  <div class="setting-section-label">What's New</div>
+  <p class="setting-description">Recent updates to x3e.</p>
+  <details style="margin-top:8px;cursor:pointer;">
+    <summary style="font-size:0.8rem;color:rgba(255,255,255,0.6);padding:4px 0;">Click to expand</summary>
+    <div style="margin-top:8px;font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.7;max-height:200px;overflow-y:auto;">
+      <b style="color:#e61587;">2026/05/28</b><br>
+      — PWA manifest added (install as app)<br>
+      — Custom 404 page<br>
+      — Volume control in settings<br>
+      — Scroll position restore on back<br>
+      — Ctrl+F now focuses search bar<br>
+      — Fixed update notification sticking forever<br>
+      <br>
+      <b style="color:#e61587;">2026/05/27</b><br>
+      — Service Worker cache bumped to v2<br>
+      — Fixed SW crashing on opaque responses<br>
+      — Library of Babel easter egg<br>
+      — Game picker screen lock during cache<br>
+      — Particles pause when modals open<br>
+    </div>
+  </details>
 </div>
 			</div>
 		</div>
