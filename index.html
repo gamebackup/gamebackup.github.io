@@ -878,6 +878,16 @@
 		  setVolume(volumeLevel);
 		});
 
+		function clearAllSaveData() {
+		  if (!confirm('Are you sure you want to continue? This will delete all save progress for EVERY game on x3e.')) return;
+		  if (!confirm('This cannot be undone. All localStorage and IndexedDB data will be wiped. Continue?')) return;
+		  localStorage.clear();
+		  indexedDB.databases().then(dbs => dbs.forEach(db => { if (db.name) indexedDB.deleteDatabase(db.name); }));
+		  document.cookie.split(';').forEach(c => { document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'); });
+		  alert('All save data cleared. Reloading page.');
+		  location.reload();
+		}
+
 		const cloakPresets = {
 		  "x3e unblocked games": { title: "x3e unblocked games",           icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png", label: "x3e Games",          url: "x3e" },
 		  "Google":               { title: "Google",                        icon: "https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/googleiconv2.png",           label: "Google",             url: "google.com" },
@@ -1433,6 +1443,16 @@ document.addEventListener('DOMContentLoaded', () => {
       — Particles pause when modals open<br>
     </div>
   </details>
+</div>
+
+<!-- Clear Save Data -->
+<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);">
+  <div class="setting-section-label" style="color:#e74c3c;">Danger Zone</div>
+  <p class="setting-description">Reset all site data, including saved games and settings.</p>
+  <button class="offline-action-btn" onclick="clearAllSaveData()"
+    style="background: rgba(200,40,40,0.2); border-color: rgba(200,40,40,0.4); margin-top:8px;">
+    🗑 Delete All Save Data
+  </button>
 </div>
 			</div>
 		</div>
