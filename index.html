@@ -1070,6 +1070,18 @@ function getAllGameEntries() {
   return out;
 }
 
+function requestCachedUrls() {
+  return new Promise(resolve => {
+    if (!navigator.serviceWorker || !navigator.serviceWorker.controller) { resolve([]); return; }
+    const channel = new MessageChannel();
+    channel.port1.onmessage = e => resolve(e.data && e.data.type === 'CACHED_URLS' ? e.data.urls : []);
+    try {
+      navigator.serviceWorker.controller.postMessage({ type: 'GET_CACHED_URLS' }, [channel.port2]);
+    } catch(e) { resolve([]); }
+    setTimeout(() => resolve([]), 3000);
+  });
+}
+
 function openGamePicker() {
   if (cachingLock) return;
   pauseParticles();
@@ -1080,6 +1092,15 @@ function openGamePicker() {
   document.getElementById('picker-search').value = '';
   buildPickerList('');
   updateCounter();
+  requestCachedUrls().then(urls => {
+    const oldCount = cachedGamesList.length;
+    cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
+    if (cachedGamesList.length !== oldCount) {
+      localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+      updateOfflineBadge();
+      buildPickerList(document.getElementById('picker-search').value);
+    }
+  });
 }
 
 function closeGamePicker() {
@@ -1111,7 +1132,7 @@ function buildPickerList(filter) {
         + (!g.cacheable ? ' uncacheable' : '')
         + (isCached     ? ' is-cached'   : '');
 
-      if (g.cacheable && !isCached) {
+      if (g.cacheable) {
         div.onclick = () => toggleGame(g);
       }
 
@@ -1128,7 +1149,7 @@ function buildPickerList(filter) {
 const debouncedBuildPickerList = debounce((v) => buildPickerList(v), 150);
 
 function toggleGame(g) {
-  if (!g.cacheable || cachedGamesList.includes(g.url)) return;
+  if (!g.cacheable) return;
   const idx = selectedGames.findIndex(s => s.url === g.url);
   if (idx > -1) { selectedGames.splice(idx, 1); }
   else {
