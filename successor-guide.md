@@ -1,6 +1,6 @@
 # x3e unblocked games. successor guide
 
-so youre the one taking over (or group of you). ive been running this thing since 2023, and its quickly grown way bigger than i ever thought it would. this document should be a guide for keeping x3e alive. read it front to back before you touch anything
+so youre the one taking over (or group of you). ive been running this thing since 2023, and its quickly grown way bigger than i ever thought it would. this document should be a guide for keeping x3e alive. read it front to back before you touch anything. **please keep this updated if you ever decide to quit or pass the torch to someone else**
 
 ---
 
