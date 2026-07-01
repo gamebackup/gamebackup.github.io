@@ -1,14 +1,14 @@
-# x3e Unblocked Games — Maintainer's Handbook
+# x3e unblocked games. successor guide
 
-So youre the one taking over (or group of you). ive been running this thing since 2023, and its quickly grown way bigger than i ever thought it would. this document should be a guide for keeping x3e alive. read it front to back before you touch anything
+so youre the one taking over (or group of you). ive been running this thing since 2023, and its quickly grown way bigger than i ever thought it would. this document should be a guide for keeping x3e alive. read it front to back before you touch anything
 
 ---
 
-## 1. What x3e Is
+## 1. x3e explained
 
 x3e is a static HTML/CSS/JS website that hosts **~370 playable games** (at the time of making this) for free, designed to work on school chromebooks and bypass web filters (think securly, fortiguard, etc). it lives at **https://gamebackup.github.io/** and is served via **GitHub Pages**. important disctinction: x3e is both served through https://gamebackup.github.io. but the main method of access (and better method) is through the local file named finalproduct-v2.html. give that to people, not the https://gamebackup.github.io link.
 
-the whole thing is **vanilla HTML/CSS/JS**. no framework, no package manager. you push to `main`, it deploys. that's it.
+the whole thing is **vanilla HTML/CSS/JS**. no framework, no packages. you push to `main`, it deploys. that's it.
 
 ---
 
