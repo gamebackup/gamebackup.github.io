@@ -45,7 +45,7 @@ GitHub Pages deploys each repo's `main` branch to `https://gamebackup.github.io/
 
 ---
 
-## 3. This Repo — File by File
+## 3. x3e file by file breakdown
 
 ### `index.html` (buncha lines of code). thats where the site is built
 The HTML includes:
@@ -73,7 +73,7 @@ Handles offline caching. Two modes:
 Custom error page, nothing else to say
 
 ### `finalproduct-v2.html`
-**THIS ONE IS IMPORTANT!!!** This is the one that you send to people. it fetches the index.html, compares versions with gamebackup.github.io (to make sure its up to date), and everything else. this is how x3e avoids being blocked
+**THIS ONE IS IMPORTANT!!!** This is the one that you send to people. it fetches the index.html, compares versions with gamebackup.github.io (to make sure its up to date), and everything else. this is how x3e avoids being blocked. IF YOU DONT UPDATE THE VERSION TAG IN THE META (line 9 of index.html) THIS WILL NOT UPDATE
 
 ### `dedications.html`
 exactly what it says on the tin. currently not attached to the main site, just a file floating in space
@@ -81,24 +81,24 @@ exactly what it says on the tin. currently not attached to the main site, just a
 ### `images/`
 site images served via jsdelivr cdn (`cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/...`).
 
-==========================================================================================================================================================================================================
+---
 
 ## 4. Adding a New Game
 
-This is the most common thing you'll do. Here's the process:
+this is probably what youll do the most. heres how:
 
 ### Step 1: Get the game files
 You need the actual game code (HTML, JS, WASM, etc.). Sources:
-- Flash games → use Ruffle emulator
-- HTML5 games → often found on itch.io, GameJolt, or GitHub
+- Flash games → use internet archive and ruffle 
+- HTML5 games → check itch.io, gamejolt, github, or gamedistribution.com
 - Ported games → check the National Porting Association (npa.lol)
 - The Game Request form → users submit games here
 
 ### Step 2: Add the game to the right category repo
-Find which category the game belongs to (standalone_games, flash_games, pico8_games, etc.) and clone that repo. Create a new directory for your game inside it (e.g., `standalone_games/mygame/`) with an `index.html` and all assets.
+Find which category the game belongs to (standalone_games, flash_games, pico8_games, etc.) and clone that repo to your github desktop. Create a new directory for your game inside it (e.g., `standalone_games/newgame/`) with an `index.html` and all the assets. the index.html has to be in the root of the new directory: `standalone_games/newgame/index.html`
 
 ### Step 3: Push the game files
-Commit the new directory and push to `main` of that category repo. GitHub Pages will auto-deploy it.
+Commit the new directory and push to `main` of that category repo. gitHub pages will do the rest.
 
 ### Step 4: Add a button in index.html
 Edit `index.html` in THIS repo. Find the right genre section and add:
@@ -111,38 +111,36 @@ Update the meta tag at line 9:
 ```html
 <meta name="x3e-version" content="YYYY/MM/DD-NN">
 ```
-Increment NN each time you update in a day.
+Increment NN each time you update in a day. most ive done in a day is like 26 or smth 
 
 ### Step 6: Update the changelog (optional but nice)
-Add an entry in the settings modal changelog at ~line 1461.
+Add an entry in the settings modal changelog, look for "div class="setting-section-label">Changelog</div". tbh i havent done this in a while
 
 ### Step 7: Push and deploy
-Commit and push to `main`. GitHub Pages deploys automatically.
+Commit and push to `main`. github does the rest.
 
 ---
 
 ## 5. How to Make Changes to the Site
 
-Everything is in this repo. Workflow:
+everything you need to edit the **looks** of the site are in this repo
 
-1. Clone/edit locally
-2. Test by opening `index.html` in a browser (it's all client-side)
-3. Commit and push to `main`
-4. GitHub Pages deploys automatically within a few minutes
-
-**No build step. No CI/CD. Push = deploy.**
+1. clone/edit locally
+2. test by opening `index.html` in a browser (all of it's clientside)
+3. commit and push to `main`
+4. once pushed, github pages will update x3e automatically and the finalproduct-v2 will update soon after.
 
 ### Version tracking
 The `<meta name="x3e-version">` tag (line 9 of index.html) is used for the update notification system. The site compares its local version against the raw GitHub version every 10 minutes. Bump it whenever you push notable changes.
 
 ### Images
-All images are served via jsDelivr CDN:
+all images are served using jsdlivr
 ```
 https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/<filename>
 ```
-If you add new images, commit them to `images/` and reference them through this URL pattern.
+If you add new images, commit them to `images/` and reference them using the url template in the line above.
 
----
+-------------------------------
 
 ## 6. Key Features You Need to Understand
 
