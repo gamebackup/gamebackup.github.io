@@ -14,37 +14,34 @@ The whole thing is **vanilla HTML/CSS/JS** — no build tools, no frameworks, no
 
 ## 2. Architecture — How the Site Works
 
-The site looks like one repo, but it's actually **538 repos** working together:
+The site is split across **about 7 repos** working together:
 
 ### This repo (`gamebackup.github.io`)
-Contains only the **shell** — the HTML homepage, CSS, service worker, and a few images. This is the storefront.
+Contains the **shell** — the HTML homepage, CSS, service worker, manifest, and images. This is the storefront.
 
-### The other 537 repos (one per game)
-Each game lives in its **own repository** in the `gamebackup` GitHub organization. Each is deployed as a **GitHub Pages project site**, which means they're accessible at:
-`https://gamebackup.github.io/<game-repo-name>/`
+### The game repos
+Games are organized into **category repos**, each deployed as a GitHub Pages project site at `https://gamebackup.github.io/<repo-name>/`. Each repo contains many games as subdirectories.
 
-For example:
-- The repo `gamebackup/2048` → `https://gamebackup.github.io/standalone_games/2048/`
-- The repo `gamebackup/happywheels` → `https://gamebackup.github.io/flash_games/games/happywheels/`
+| Repo | URL prefix | Contents |
+|---|---|---|
+| `standalone_games` | `/standalone_games/` | HTML5/JS standalone games (2048, Celeste, Undertale, etc.) |
+| `standalone_games_2` | `/standalone_games_2/` | More standalone games (Cuphead, Hotline Miami, etc.) |
+| `standalone_games_3` | `/standalone_games_3/` | Even more standalone games (Cookie Clicker, FNaF, etc.) |
+| `standalone_games_4` | `/standalone_games_4/` | A few larger ports (Stardew Valley) |
+| `flash_games` | `/flash_games/games/` | Flash games played via Ruffle (Fireboy & Watergirl, etc.) |
+| `emu_games` | `/emu_games/games/` | Emulated console games |
+| `gba_games` | `/gba_games/games/` | GBA Pokemon games |
+| `pico8_games` | `/pico8_games/` | PICO-8 fantasy console games |
+| `itchio_games` | `/itchio_games/` | Games sourced from itch.io |
+| `fnf-mods` | `/fnf-mods/` | Friday Night Funkin' mods |
 
-**The path in the URL is just the repository name** — GitHub Pages project sites always deploy at `https://<org>.github.io/<repo>/`.
+Some games are in their own single-game repos (like `balz/` for Run 3, `chord/`, `webOS/`).
 
-### How games are organized by folder prefix
+So when you see a URL like `https://gamebackup.github.io/standalone_games/2048/`, that means:
+- There's a repo called **`standalone_games`** in the `gamebackup` org
+- Inside it is a directory **`2048/`** with an `index.html` and game assets
 
-| Prefix in URL | What it is |
-|---|---|
-| `flash_games/games/` | Flash games (played via Ruffle) |
-| `standalone_games/` | HTML5/JS standalone games |
-| `standalone_games_2/` | More standalone games |
-| `standalone_games_3/` | Even more standalone games |
-| `standalone_games_4/` | A few larger ports |
-| `emu_games/games/` | Emulated console games |
-| `gba_games/games/` | GBA Pokemon games specifically |
-| `pico8_games/` | PICO-8 fantasy console games |
-| `itchio_games/` | Games sourced from itch.io |
-| `fnf-mods/` | Friday Night Funkin' mods |
-
-These prefixes are just **directory/repo naming conventions**. The actual GitHub repos are named whatever the game slug is. GitHub Pages doesn't care about the folder structure — what matters is the repo name matches the URL path.
+GitHub Pages deploys each repo's `main` branch to `https://gamebackup.github.io/<repo-name>/`.
 
 ---
 
@@ -101,24 +98,11 @@ You need the actual game code (HTML, JS, WASM, etc.). Sources:
 - Ported games → check the National Porting Association (npa.lol)
 - The Game Request form → users submit games here
 
-### Step 2: Create a new repo in the `gamebackup` organization
-- Repo name = the URL path you want (e.g., for `https://gamebackup.github.io/standalone_games/mygame/`, name the repo `standalone_games/mygame`)
-- Wait — actually GitHub doesn't allow slashes in repo names. So the **repo name is just the slug**, and the folder prefixes in the URL are achieved by how the repo is named.
-
-Wait, let me clarify: when you see `https://gamebackup.github.io/standalone_games/2048/`, that means there's a repo called literally `standalone_games/2048`? No — GitHub Pages project sites for organization accounts work like this:
-
-`https://<org>.github.io/<repo>/`
-
-So `https://gamebackup.github.io/standalone_games/2048/` means there's a GitHub repo called `standalone_games`... no, that doesn't work either.
-
-Actually, looking at the gamebackup org — it has 537 repos. The repo names match the URL paths directly. So there's a repo named `standalone_games` and inside it there's a directory `2048` with an index.html. OR each repo is named with the full path.
-
-Let me be honest: I'm not 100% sure how the repos are named since they're not in this repo. But the key insight is: **each game is in its own repo**, deployed as a GitHub Pages project site. The URL path after `gamebackup.github.io/` is the repo name. If games share a prefix like `standalone_games/`, they might be subdirectories within a single repo, or each might be its own repo with the full path as the name.
-
-**How to figure it out**: Go to `https://github.com/gamebackup` and look at the existing repos. See how they're named. Mirror that pattern.
+### Step 2: Add the game to the right category repo
+Find which category the game belongs to (standalone_games, flash_games, pico8_games, etc.) and clone that repo. Create a new directory for your game inside it (e.g., `standalone_games/mygame/`) with an `index.html` and all assets.
 
 ### Step 3: Push the game files
-Push an `index.html` (and all assets) to the `main` branch of that repo. GitHub Pages will auto-deploy it.
+Commit the new directory and push to `main` of that category repo. GitHub Pages will auto-deploy it.
 
 ### Step 4: Add a button in index.html
 Edit `index.html` in THIS repo. Find the right genre section and add:
@@ -202,18 +186,21 @@ There's a DMCA contact form link in the footer. If you receive a takedown reques
 
 ---
 
-## 7. Maintaining the Games (The 537 Repos)
+## 7. Maintaining the Games
 
-You'll need access to the **gamebackup GitHub organization**. The original creator should add you as an owner or admin.
+You'll need access to the **gamebackup GitHub organization** as an owner or admin.
 
 **What you need to maintain:**
-- **Broken games** — users report them via the Blocked/Bug Report form. Check if the game repo still exists, if the files are intact, if the URL is correct in index.html
-- **Dead links** — sometimes a game gets taken down or the repo gets deleted. Remove or replace those buttons
-- **New games** — users request them via the Game Request form. Add them when you can
-- **Game updates** — occasionally a game gets a new version. You'd need to update the files in its repo
+- **Broken games** — users report them via the Blocked/Bug Report form. Check the game's files in the category repo, fix or remove the button
+- **Dead links** — if a game directory was deleted or moved, remove or update its button in index.html
+- **New games** — users request them via the Game Request form. Add them to the right category repo
+- **Game updates** — occasionally a game gets a new version. Update the files in its directory
 
 **How to find which repo a game is in:**
-The game URL is `https://gamebackup.github.io/<path>/`. The `<path>` is the repo name. Go to `https://github.com/gamebackup/<path>` to find the repo.
+Look at the game's URL path. The first path segment tells you the repo. For example:
+- `https://gamebackup.github.io/standalone_games/2048/` → repo is `standalone_games`, game is in the `2048/` directory
+- `https://gamebackup.github.io/flash_games/games/btd1/` → repo is `flash_games`, game is in `games/btd1/`
+- `https://gamebackup.github.io/balz/` → repo is `balz` (single-game repo)
 
 ---
 
@@ -268,7 +255,7 @@ Also important:
 
 - [ ] **Check the Bug Report form** — weekly. Fix broken games, remove dead links
 - [ ] **Check the Game Request form** — weekly. Add promising games
-- [ ] **Review the 537 game repos** — monthly. Prune repos that are truly broken
+- [ ] **Review the category repos** — monthly. Prune game directories that are truly broken
 - [ ] **Update the changelog** — whenever you make changes worth noting
 - [ ] **Bump the version tag** — with every deploy
 - [ ] **Check external links** — the Google Doc links, forms, external game links. They can break
@@ -315,7 +302,7 @@ Available images:
 
 ## 12. Final Words
 
-I started x3e in 2023 because I wanted to play games at school without dealing with garbage sites full of popups and malware. It grew into something way bigger than I expected — 272 games, almost 540 repos, and who knows how many users.
+I started x3e in 2023 because I wanted to play games at school without dealing with garbage sites full of popups and malware. It grew into something way bigger than I expected — 272 games across about 7 category repos, and who knows how many users.
 
 You're taking over because I see something familiar in you. You care about the craft, you care about the users, and you understand what this site means to people who just want fifteen minutes of fun between classes.
 
