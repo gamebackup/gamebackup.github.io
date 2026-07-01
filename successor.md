@@ -1,45 +1,45 @@
 # x3e Unblocked Games — Maintainer's Handbook
 
-So you're the one taking over. I spent years on this — since 2023, running what became the biggest unblocked games site I know of. This document is everything I know about keeping x3e alive. Read it front to back before you touch anything.
+So youre the one taking over (or group of you). ive been running this thing since 2023, and its quickly grown way bigger than i ever thought it would. this document should be a guide for keeping x3e alive. read it front to back before you touch anything
 
 ---
 
 ## 1. What x3e Is
 
-x3e is a static HTML/CSS/JS website that hosts **~272 playable games** (mostly) for free, designed to work on school Chromebooks and locked-down networks. It lives at **https://gamebackup.github.io/** and is served via **GitHub Pages**.
+x3e is a static HTML/CSS/JS website that hosts **~370 playable games** (at the time of making this) for free, designed to work on school chromebooks and bypass web filters (think securly, fortiguard, etc). it lives at **https://gamebackup.github.io/** and is served via **GitHub Pages**. important disctinction: x3e is both served through https://gamebackup.github.io. but the main method of access (and better method) is through the local file named finalproduct-v2.html. give that to people, not the https://gamebackup.github.io link.
 
-The whole thing is **vanilla HTML/CSS/JS** — no build tools, no frameworks, no package manager. You push to `main`, it deploys. That's it.
+the whole thing is **vanilla HTML/CSS/JS**. no framework, no package manager. you push to `main`, it deploys. that's it.
 
 ---
 
 ## 2. Architecture — How the Site Works
 
-The site is split across **about 7 repos** working together:
+The site is split across ~10 repos (at the time of writing this) working together:
 
 ### This repo (`gamebackup.github.io`)
-Contains the **shell** — the HTML homepage, CSS, service worker, manifest, and images. This is the storefront.
+Contains the **shell** — the HTML homepage, CSS, service worker, manifest, and images. think of it as a storefront.
 
 ### The game repos
 Games are organized into **category repos**, each deployed as a GitHub Pages project site at `https://gamebackup.github.io/<repo-name>/`. Each repo contains many games as subdirectories.
 
 | Repo | URL prefix | Contents |
 |---|---|---|
-| `standalone_games` | `/standalone_games/` | HTML5/JS standalone games (2048, Celeste, Undertale, etc.) |
-| `standalone_games_2` | `/standalone_games_2/` | More standalone games (Cuphead, Hotline Miami, etc.) |
-| `standalone_games_3` | `/standalone_games_3/` | Even more standalone games (Cookie Clicker, FNaF, etc.) |
-| `standalone_games_4` | `/standalone_games_4/` | A few larger ports (Stardew Valley) |
-| `flash_games` | `/flash_games/games/` | Flash games played via Ruffle (Fireboy & Watergirl, etc.) |
+| `standalone_games` | `/standalone_games/` | HTML5/JS standalone games |
+| `standalone_games_2` | `/standalone_games_2/` | More standalone games |
+| `standalone_games_3` | `/standalone_games_3/` | Even more standalone games |
+| `standalone_games_4` | `/standalone_games_4/` | take a wild guess|
+| `flash_games` | `/flash_games/games/` | Flash games played via Ruffle (Fireboy & Watergirl, jelly truck, etc.) |
 | `emu_games` | `/emu_games/games/` | Emulated console games |
 | `gba_games` | `/gba_games/games/` | GBA Pokemon games |
 | `pico8_games` | `/pico8_games/` | PICO-8 fantasy console games |
 | `itchio_games` | `/itchio_games/` | Games sourced from itch.io |
 | `fnf-mods` | `/fnf-mods/` | Friday Night Funkin' mods |
 
-Some games are in their own single-game repos (like `balz/` for Run 3, `chord/`, `webOS/`).
+Some games are in their own single-game repos (like `chord/`, `webOS/`, etc), those are ones that i consistently updated and didnt feel like waiting 10 minutes for a whole games repo to upload for a simple change in those specific projects
 
-So when you see a URL like `https://gamebackup.github.io/standalone_games/2048/`, that means:
-- There's a repo called **`standalone_games`** in the `gamebackup` org
-- Inside it is a directory **`2048/`** with an `index.html` and game assets
+So when you see a url like `https://gamebackup.github.io/standalone_games/2048/`, that means:
+- its the repo called **`standalone_games`** in the `gamebackup` organization
+- inside that repo, theres a directory called **`2048/`** with an `index.html` and game assets inside that.
 
 GitHub Pages deploys each repo's `main` branch to `https://gamebackup.github.io/<repo-name>/`.
 
@@ -47,45 +47,41 @@ GitHub Pages deploys each repo's `main` branch to `https://gamebackup.github.io/
 
 ## 3. This Repo — File by File
 
-### `index.html` (1541 lines) — The whole site
-Everything is in one file. The HTML includes:
-- **Tab cloaking** — switches tab title/favicon to look like Google, YouTube, Canvas, etc.
-- **Preloader** — "G N I D A O L" animation on load
-- **Hero section** — tips for users
-- **Game grid** — buttons organized by genre, each calling `playGame(url)`
-- **Particle canvas** — animated pink/cyan background
-- **Search** — filters game buttons by name (Ctrl+F triggers it)
-- **Random game picker**
-- **Game overlay** — fullscreen iframe for playing
-- **Volume control** — slider that adjusts audio/video in the iframe
-- **Update notification** — fetches raw GitHub index.html every 10 minutes, compares version meta tag
-- **Settings modal** — tab cloaking picker, offline game preloader, volume, changelog, danger zone
-- **Offline play system** — lets users select up to 5 games to cache via the service worker
+### `index.html` (buncha lines of code). thats where the site is built
+The HTML includes:
+- **tab cloaking** — switches tab title/favicon to look like Google, YouTube, Canvas, etc.
+- **preloader** — "L O A D I N G" animation on load
+- **game grid** — buttons organized by genre, each calling `playGame(url)`
+- **particle canvas** — animated pink/cyan background
+- **search** — filters game buttons by name (Ctrl+F triggers it)
+- **random game picker**
+- **game overlay** — fullscreen iframe for playing
+- **volume control** — slider that adjusts audio/video in the iframe
+- **update notification** — fetches raw GitHub index.html every 10 minutes, compares version meta tag (the meta tag is near the top of the index.html code)
+- **settings modal** — tab cloaking picker, offline game preloader, volume, changelog, danger zone stuff
+- **offline play system** — lets users select up to 5 games at a time to cache via the service worker
 
-### `style.css` (1101 lines)
+### `style.css` (makes the site pretty)
 Dark theme with neon pink accent (#e61587). Glitch text on the title. Particle canvas overlay. Settings modal with frosted glass. Responsive at 600px.
 
-### `sw.js` (111 lines) — Service Worker
+### `sw.js` (literally all for the offline caching) — Service Worker
 Handles offline caching. Two modes:
 - **Normal**: caches `gamebackup.github.io` URLs only, cache-first with network fallback
 - **Preload session**: activated via `START_SESSION` message — caches everything (any origin) for offline preloading
 
-### `manifest.json`
-PWA manifest — lets users "install" x3e as an app on their device.
-
 ### `404.html`
-Custom error page matching the site theme.
+Custom error page, nothing else to say
 
 ### `finalproduct-v2.html`
-A standalone HTML file users can save locally. It fetches the latest index.html from GitHub and injects it. Allows playing x3e offline or from a local file.
+**THIS ONE IS IMPORTANT!!!** This is the one that you send to people. it fetches the index.html, compares versions with gamebackup.github.io (to make sure its up to date), and everything else. this is how x3e avoids being blocked
 
 ### `dedications.html`
-Credits page (uses Tailwind from CDN).
+exactly what it says on the tin. currently not attached to the main site, just a file floating in space
 
 ### `images/`
-Site images served via jsDelivr CDN (`cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/...`).
+site images served via jsdelivr cdn (`cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/...`).
 
----
+==========================================================================================================================================================================================================
 
 ## 4. Adding a New Game
 
