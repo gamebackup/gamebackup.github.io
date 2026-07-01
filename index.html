@@ -75,7 +75,22 @@
 </div>
     </div>
 </header>
-
+<div style="
+  text-align: center;
+  background: rgba(230,21,135,0.15);
+  color: #e61587;
+  padding: 6px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(230,21,135,0.2);
+  backdrop-filter: blur(4px);
+">
+  I’m retiring after senior year — 
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSddqCBgK6L23oEymqx6AAq5huXTHYPcwzB2HXRRiFu4kTJ2Lg/viewform?usp=dialog" 
+     style="color:#e61587;font-weight:bold;text-decoration:underline;" 
+     target="_blank">
+    click here if you want to run x3e after me
+  </a>
+</div>
 	<div id="update-notification" class="hidden">
 		<div class="update-icon">🔄</div>
 		<div class="update-content">
@@ -96,6 +111,7 @@
 				<p><strong>Stars next to games mean the following: * = Little Laggy, ** = Probably Playable, *** = Won't run on chromebooks.</strong></p>
 				<p><strong>Use "ctrl" and "+" or "-" to zoom in or out of the games.</strong></p>
 				<p><strong>Pressing CTRL and W at the same time will close your tab</strong></p>
+				<p><strong>Currently seems like a lot of games are exploding right now. I know the emulator games arent working. Make a blocked/bug report and play something that works please</strong></p>
 			</div>
 		</div>
 	</div>
@@ -711,7 +727,6 @@
 		})();
 
 		function debounce(fn, ms) { let t; return function(...a) { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), ms); }; }
-		/* ============ PARTICLE SYSTEM ============ */
 		const canvas = document.getElementById('particle-canvas');
 		const ctx = canvas.getContext('2d');
 		let particles = [];
@@ -761,7 +776,6 @@
 		function pauseParticles() { if (particlesRAF) { cancelAnimationFrame(particlesRAF); particlesRAF = null; } }
 		function resumeParticles() { if (!particlesRAF) animateParticles(); }
 
-		/* ============ SEARCH ============ */
 		function sanitizeQuery(s) {
 		  return s.replace(/<[^>]*>/g, '').replace(/[^\w\s'-]/g, '').trim().toLowerCase();
 		}
@@ -788,7 +802,6 @@
 		  if (m) playGame(m[1]);
 		}
 
-		/* ============ LIBRARY OF BABEL EASTER EGG ============ */
 		(function(){
 		  var title = document.querySelector('.glitch-title');
 		  if (!title) return;
@@ -1045,11 +1058,9 @@ function isGameCacheable(url) {
   return true;
 }
 
-// Clean out any cached games that are now forbidden
 cachedGamesList = cachedGamesList.filter(url => !NON_CACHEABLE_GAMES.includes(url));
 localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
 
-// Also tell the Service Worker to wipe those game files from the cache
 NON_CACHEABLE_GAMES.forEach(url => swPost({ type: 'CLEAR_GAME', prefix: url }));
 
 function swPost(msg) {
@@ -1182,7 +1193,6 @@ function flashCounter() {
   setTimeout(() => el.classList.remove('flash-red'), 600);
 }
 
-// ── SESSION‑BASED CACHING ─────────────────────────────────────
 
 async function startCaching() {
   if (!selectedGames.length) return;
@@ -1237,7 +1247,6 @@ function cacheNextGame() {
     position: 'fixed', top: '-9999px', left: '-9999px',
     width: '1px', height: '1px', opacity: '0', pointerEvents: 'none', border: 'none'
   });
-  // No sandbox → game can fetch everything
   document.body.appendChild(cacheIframe);
 
   let done = false;
@@ -1277,7 +1286,6 @@ function finishCaching() {
   markCachedButtons();
 }
 
-// ── UI HELPERS ─────────────────────────────────────────────────
 
 function updateOfflineBadge() {
   const badge = document.getElementById('offline-badge');
@@ -1341,7 +1349,6 @@ function handleCachedUrlsResponse(urls) {
   markCachedButtons();
 }
 
-// ── INIT ───────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
@@ -1362,10 +1369,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay' && !cachingLock) closeGamePicker(); });
 });
 		(function() {
-    // Count all buttons that call playGame()
     const allButtons = document.querySelectorAll('.button-grid button[onclick^="playGame(\'"]');
     const total = allButtons.length;
-    const gameCount = total - 10;   // subtract the 10 "Most Recent Games"
+    const gameCount = total - 10;   
 
     const countSpan = document.getElementById('game-count-number');
     const titleDiv  = document.querySelector('.glitch-title');
@@ -1378,14 +1384,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })();
 </script>
-	<!-- ============ GAME OVERLAY ============ -->
 	<div id="game-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 99999;">
 		<button onclick="closeGame()" class="back-btn">← Back to x3e</button>
 <iframe id="game-frame" style="width: 100%; height: 100%; border: none; background-color: black;"
         sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock"
         onload="applyVolumeToFrame(this)"></iframe>	</div>
 
-	<!-- ============ SETTINGS MODAL ============ -->
 	<div id="settings-modal" style="display: none;">
 		<div class="settings-content">
 			<div class="settings-topbar"></div>
@@ -1403,14 +1407,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				<span class="close-settings" onclick="closeSettings()">[✕]</span>
 			</div>
 
-			<!-- scrollable body -->
 			<div class="settings-body">
-				<!-- Tab Cloaking section -->
 				<div class="setting-section-label">Tab Cloaking</div>
 				<p class="setting-description">Changes tab name and icon instantly.</p>
 				<div class="cloak-grid" id="cloak-grid"></div>
 
-				<!-- ── Offline Play section (correctly placed AFTER cloak-grid) ── -->
 				<div style="margin-top: 24px;">
 					<div class="setting-section-label">Offline Play</div>
 					<p class="setting-description">
@@ -1426,7 +1427,6 @@ document.addEventListener('DOMContentLoaded', () => {
 						</div>
 					</div>
 				</div>
-<!-- after the existing <div id="offline-badge"> section -->
 				<div style="margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
   <button class="offline-action-btn" onclick="purgeAllGameCaches()" id="purge-cache-btn"
           style="background: rgba(200,40,40,0.2); border-color: rgba(200,40,40,0.4);">
@@ -1440,7 +1440,6 @@ document.addEventListener('DOMContentLoaded', () => {
   Keeping lots of games loaded can slow your browser. Unload preloaded games regularly.
 </div>
 
-<!-- Volume Control -->
 <div style="margin-top: 24px;">
   <div class="setting-section-label">Volume Control</div>
   <p class="setting-description">Adjust game audio. May not work for all games.</p>
@@ -1482,7 +1481,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </details>
 </div>
 
-<!-- Clear Save Data -->
 <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);">
   <div class="setting-section-label" style="color:#e74c3c;">Danger Zone</div>
   <p class="setting-description">Reset all site data, including saved games and settings.</p>
@@ -1495,7 +1493,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		</div>
 	</div>
 
-	<!-- ============ GAME PICKER OVERLAY ============ -->
 	<div id="game-picker-overlay">
 		<div class="picker-content">
 			<div class="settings-topbar"></div>
@@ -1510,7 +1507,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				<span class="close-settings" onclick="closeGamePicker()">[✕]</span>
 			</div>
 
-			<!-- Picker view -->
 			<div id="picker-view" style="display:flex; flex-direction:column; flex:1; overflow:hidden; min-height:0;">
 				<div class="picker-search-row">
 					<input id="picker-search" class="picker-search-input" type="text"
@@ -1526,7 +1522,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				</div>
 			</div>
 
-			<!-- Progress view -->
 			<div id="progress-view" style="display:none; flex-direction:column; flex:1; overflow:hidden; min-height:0;">
 				<div class="progress-inner">
 					<div id="prog-status">Preparing…</div>
