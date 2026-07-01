@@ -3,66 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dedications</title>
-    <!-- Use Tailwind CSS for a modern, responsive design -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use the Inter font for a clean, professional look -->
+    <title>x3e unblocked games // dedications</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        body { margin: 0; background-color: #111; color: white; min-height: 100vh; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: .4; }
+        .dedications-wrap { position: relative; z-index: 1; padding: 40px 20px 60px; max-width: 680px; margin: 0 auto; }
+        .dedications-header { text-align: center; margin-bottom: 40px; }
+        .dedications-header h1 {
+            font-family: 'Orbitron', monospace; font-weight: 900;
+            font-size: 2.2rem; letter-spacing: 3px; text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, #e61587);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            margin: 0 0 8px;
+            position: relative;
+        }
+        .dedications-header h1::after, .dedications-header h1::before {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0;
+            width: 100%; overflow: hidden;
+            background: linear-gradient(135deg, #fff, #e61587);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .dedications-header h1::before {
+            animation: glitch1 4s infinite;
+            clip-path: polygon(0 25%, 100% 25%, 100% 45%, 0 45%);
+        }
+        .dedications-header h1::after {
+            animation: glitch2 2s infinite;
+            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+        }
+        .dedications-sub {
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;
+            color: rgba(255,255,255,0.45); letter-spacing: 2px; text-transform: uppercase;
+        }
+        .d-card {
+            background: rgba(30,30,30,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 22px 26px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.3s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .d-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #e61587, transparent);
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+        .d-card:hover {
+            border-color: rgba(230,21,135,0.4);
+            background: rgba(230,21,135,0.06);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(230,21,135,0.15);
+        }
+        .d-card:hover::before { opacity: 1; }
+        .d-card-title {
+            font-family: 'Orbitron', sans-serif; font-weight: 700;
+            font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+            color: #e61587; margin: 0 0 6px;
+        }
+        .d-card-body {
+            font-family: 'Space Grotesk', sans-serif; font-weight: 400;
+            font-size: 1rem; color: rgba(255,255,255,0.8); margin: 0;
+        }
+        .d-card-body .highlight { color: #fff; font-weight: 500; }
+        .d-footer {
+            text-align: center; margin-top: 40px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem;
+            color: rgba(255,255,255,0.25); letter-spacing: 1px;
+        }
+        .d-footer a { color: rgba(230,21,135,0.6); text-decoration: none; }
+        .d-footer a:hover { color: #e61587; }
+        @media (max-width: 500px) {
+            .dedications-header h1 { font-size: 1.5rem; }
+            .d-card { padding: 18px 20px; }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+<body>
+    <canvas id="particle-canvas"></canvas>
 
-    <!-- Main container for the dedications page -->
-    <div class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-2xl text-center md:text-left">
-        <!-- Main title of the page -->
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-400 mb-8 tracking-tight">Dedications</h1>
-
-        <!-- Container for all dedication sections, using a responsive grid layout -->
-        <div class="space-y-6">
-
-            <!-- Dedication for "Site Idea" -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Site Idea</h2>
-                <p class="text-lg text-gray-300">Me</p>
+    <header>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png">
+            <div class="glitch-title" data-text="x3e // dedications">
+                x3e // dedications
             </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px; margin-left: auto;">
+            <nav>
+                <a href="/">Home</a>
+                <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Game Request</a>
+                <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Blocked/Bug Report</a>
+            </nav>
+        </div>
+    </header>
 
-            <!-- Dedication for "Moral Support" -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Moral Support</h2>
-                <p class="text-lg text-gray-300">Freeze Rat</p>
-            </div>
+    <div class="dedications-wrap">
+        <div class="dedications-header">
+            <h1 data-text="Dedications">Dedications</h1>
+            <div class="dedications-sub">x3e // compound creations</div>
+        </div>
 
-            <!-- Dedication for "Programming Help" -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Programming Help during Site Migration</h2>
-                <p class="text-lg text-gray-300">"An Anonymous Cyber Puppygirl &lt;3"</p>
-            </div>
+        <div class="d-card">
+            <div class="d-card-title">Site Idea</div>
+            <p class="d-card-body">Me</p>
+        </div>
 
-            <!-- Dedication for "Complex Games" -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Complex Games</h2>
-                <p class="text-lg text-gray-300">National Porting Association (npa.lol)</p>
-            </div>
+        <div class="d-card">
+            <div class="d-card-title">Moral Support</div>
+            <p class="d-card-body">Freeze Rat</p>
+        </div>
 
-            <!-- Honorable Mentions section -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Honorable Mentions</h2>
-                <p class="text-lg text-gray-300">Ublock Origin, YouTube Tutorials, and My friends</p>
-            </div>
+        <div class="d-card">
+            <div class="d-card-title">Programming Help during Site Migration</div>
+            <p class="d-card-body">"An Anonymous Cyber Puppygirl &lt;3"</p>
+        </div>
 
-                        <!-- Honorable Mentions section -->
-            <div class="bg-gray-700 p-6 rounded-xl transition-transform transform hover:scale-105 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-200 mb-1">Bug Finders</h2>
-                <p class="text-lg text-gray-300">Dalton</p>
-            </div>
+        <div class="d-card">
+            <div class="d-card-title">Complex Games</div>
+            <p class="d-card-body">National Porting Association <span style="color:rgba(255,255,255,0.4)">(npa.lol)</span></p>
+        </div>
+
+        <div class="d-card">
+            <div class="d-card-title">Honorable Mentions</div>
+            <p class="d-card-body">Ublock Origin, YouTube Tutorials, and my friends</p>
+        </div>
+
+        <div class="d-card">
+            <div class="d-card-title">Bug Finders</div>
+            <p class="d-card-body">Dalton</p>
+        </div>
+
+        <div class="d-footer">
+            <a href="/">← back to x3e</a>
         </div>
     </div>
 
+    <div style="text-align: center; padding: 5px; font-size: 14px; color: #888; position: relative; z-index: 1;">
+        &copy; COMPOUND//CREATIONS 2025
+    </div>
+    <div style="text-align: center; font-size: 10px; color: #666; padding-bottom: 20px; position: relative; z-index: 1;">
+        All games featured on this site are the property of their respective copyright holders. This site is a fan-made, non-commercial site intended for educational and entertainment use.
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.3;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = -Math.random() * 0.6 - 0.1;
+                this.life = 1;
+                this.decay = Math.random() * 0.003 + 0.001;
+                this.hue = Math.random() < 0.7 ? 320 : 185;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY; this.life -= this.decay;
+                if (this.life <= 0) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life * 0.8;
+                ctx.fillStyle = 'hsl(' + this.hue + ', 100%, 65%)';
+                ctx.shadowColor = 'hsl(' + this.hue + ', 100%, 65%)';
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        for (let i = 0; i < 200; i++) { const p = new Particle(); p.life = Math.random(); particles.push(p); }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
 </body>
 </html>
