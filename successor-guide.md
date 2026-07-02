@@ -60,6 +60,7 @@ The HTML includes:
 - **update notification** — fetches raw GitHub index.html every 10 minutes, compares version meta tag (the meta tag is near the top of the index.html code)
 - **settings modal** — tab cloaking picker, offline game preloader, volume, changelog, danger zone stuff
 - **offline play system** — lets users select up to 5 games at a time to cache via the service worker
+- **an unholy amount of spaghetti code** — good luck with all that spaghetti
 
 ### `style.css` (makes the site pretty)
 Dark theme with neon pink accent (#e61587). Glitch text on the title. Particle canvas overlay. Settings modal with frosted glass. Responsive at 600px.
