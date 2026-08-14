@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/08/13-06">
+    <meta name="x3e-version" content="2026/08/14-01">
 	<script>
 (function(){
     var cloakPresets = {
@@ -1562,5 +1562,79 @@ document.addEventListener('DOMContentLoaded', () => {
 			</div>
 		</div>
 	</div>
+<script>
+(function() {
+    const SEARCH = 'Your browser does not support WebGL';
+    const REPLACEMENT_HTML = 'Your browser does not support WebGL. Go here: <a href="https://www.wikihow.com/Enable-Webgl" target="_blank" style="color:#e61587;font-weight:bold;">https://www.wikihow.com/Enable-Webgl</a>, to see how to enable it.';
+
+    const observedRoots = new WeakSet();
+
+    function replaceInRoot(root) {
+        if (!root) return;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        textNodes.forEach(node => {
+            const text = node.textContent;
+            if (!text || !text.includes(SEARCH)) return;
+
+            // Skip already-replaced nodes to avoid infinite loops
+            let ancestor = node.parentElement;
+            if (ancestor && ancestor.closest('[data-webgl-replaced="true"]')) return;
+
+            const idx = text.indexOf(SEARCH);
+            const before = document.createTextNode(text.slice(0, idx));
+            const after = document.createTextNode(text.slice(idx + SEARCH.length));
+
+            const span = document.createElement('span');
+            span.setAttribute('data-webgl-replaced', 'true');
+            span.innerHTML = REPLACEMENT_HTML;
+
+            const parent = node.parentNode;
+            parent.insertBefore(before, node);
+            parent.insertBefore(span, node);
+            parent.insertBefore(after, node);
+            parent.removeChild(node);
+        });
+    }
+
+    function observeRoot(root) {
+        if (!root || observedRoots.has(root)) return;
+        observedRoots.add(root);
+
+        replaceInRoot(root);
+
+        let scheduled = false;
+        const observer = new MutationObserver(() => {
+            if (scheduled) return;
+            scheduled = true;
+            requestAnimationFrame(() => {
+                replaceInRoot(root);
+                scheduled = false;
+            });
+        });
+
+        observer.observe(root, { childList: true, subtree: true, characterData: true });
+    }
+
+    // Watch main page
+    observeRoot(document.body);
+
+    // Watch game iframe when it loads
+    const gameFrame = document.getElementById('game-frame');
+    if (gameFrame) {
+        gameFrame.addEventListener('load', function() {
+            try {
+                const doc = gameFrame.contentDocument || gameFrame.contentWindow.document;
+                observeRoot(doc.body || doc.documentElement);
+            } catch (e) {
+                console.warn('Cannot access game iframe contents (cross-origin).');
+            }
+        });
+    }
+})();
+</script>
 </body>
 </html>
