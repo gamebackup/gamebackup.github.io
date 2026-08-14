@@ -1098,4 +1098,74 @@ nav a:hover::after {
     #update-notification { left: 10px; right: 10px; max-width: none; bottom: 10px; }
 }
 
+/* ========== WEBGL FIRST-VISIT POPUP ========== */
+#webgl-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000001;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+#webgl-modal.open { display: flex; }
+.webgl-content {
+    position: relative;
+    background: linear-gradient(160deg, rgba(18, 5, 15, 0.98) 0%, rgba(10, 10, 18, 0.98) 100%);
+    border: 1px solid rgba(230, 21, 135, 0.5);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 440px;
+    padding: 28px 26px 22px;
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(230, 21, 135, 0.15),
+                0 0 40px rgba(230, 21, 135, 0.25);
+    animation: webgl-pop 0.25s ease-out;
+}
+@keyframes webgl-pop {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.webgl-header h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    color: #fff;
+}
+.webgl-body {
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+}
+.webgl-body p { margin: 8px 0; }
+.webgl-link {
+    display: inline-block;
+    margin: 14px 0 4px;
+    padding: 10px 16px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff2d95, #e61587);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+}
+.webgl-link:hover { transform: scale(1.05); }
+.webgl-footer { margin-top: 16px; }
+.webgl-ok-btn {
+    padding: 10px 22px;
+    color: #e61587;
+    background: transparent;
+    border: 1px solid rgba(230, 21, 135, 0.6);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.webgl-ok-btn:hover { background: rgba(230, 21, 135, 0.15); }
+
+
 

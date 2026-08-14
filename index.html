@@ -741,7 +741,7 @@
 		        const loader = document.getElementById('preloader');
 		        if (loader) {
 		            loader.style.opacity = '0';
-		            setTimeout(function() { loader.style.display = 'none'; }, 1000);
+		            setTimeout(function() { loader.style.display = 'none'; maybeShowWebGLPopup(); }, 1000);
 		        }
 		    }, displayTime);
 		})();
@@ -874,14 +874,68 @@
 		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
-		  document.getElementById('game-frame').src = gameUrl;
+		  const frame = document.getElementById('game-frame');
+		  frame.src = gameUrl;
+		  startWebGLHelpInjection(frame);
 		}
 		function closeGame() {
+		  stopWebGLHelpInjection();
 		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
 		  const saved = sessionStorage.getItem('x3e-scrollY');
 		  if (saved !== null) { window.scrollTo(0, parseInt(saved, 10)); sessionStorage.removeItem('x3e-scrollY'); }
+		}
+
+		/* ── WebGL error message rewrite (runs from here, inside each same-origin game iframe) ── */
+		function webglInjectPatchSource() {
+		  var MATCH = "Your browser does not support WebGL";
+		  var URL = "https://www.wikihow.com/Enable-Webgl";
+		  var done = false;
+
+		  function fix() {
+		    if (done || !document.body) return;
+		    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+		    var node;
+		    while ((node = walker.nextNode())) {
+		      if (node.nodeValue.indexOf(MATCH) === -1) continue;
+		      if (node.nodeValue.indexOf("Here's how to enable it") !== -1) { done = true; return; }
+		      var dot = node.nodeValue.trimEnd().endsWith(".") ? "" : ".";
+		      node.nodeValue += dot + " Here's how to enable it: " + URL;
+		      done = true;
+		      return;
+		    }
+		  }
+
+		  var origAlert = window.alert;
+		  window.alert = function (msg) {
+		    if (typeof msg === "string" && msg.indexOf(MATCH) !== -1 && msg.indexOf("Here's how to enable it") === -1) {
+		      msg += (msg.trimEnd().endsWith(".") ? "" : ".") + " Here's how to enable it: " + URL;
+		    }
+		    return origAlert.call(window, msg);
+		  };
+
+		  fix();
+		  setInterval(fix, 500);
+		}
+		var webglHelpTimer = null;
+		function startWebGLHelpInjection(frame) {
+		  stopWebGLHelpInjection();
+		  webglHelpTimer = setInterval(function () {
+		    try {
+		      var win = frame.contentWindow;
+		      var doc = frame.contentDocument;
+		      if (!win || !doc || !doc.documentElement) return;
+		      if (win.location.href === "about:blank" || doc.__webglHelpPatched) return;
+		      var script = doc.createElement("script");
+		      script.textContent = "(" + webglInjectPatchSource.toString() + ")();";
+		      (doc.head || doc.documentElement).appendChild(script);
+		      doc.__webglHelpPatched = true;
+		    } catch (e) {}
+		  }, 300);
+		}
+		function stopWebGLHelpInjection() {
+		  if (webglHelpTimer) { clearInterval(webglHelpTimer); webglHelpTimer = null; }
 		}
 
 		/* ── Volume Control ── */
@@ -996,7 +1050,26 @@
 		  document.getElementById('settings-modal').addEventListener('click', function(e) {
 		    if (e.target === this) closeSettings();
 		  });
+		  const webglModal = document.getElementById('webgl-modal');
+		  if (webglModal) {
+		    webglModal.addEventListener('click', function(e) {
+		      if (e.target === this) dismissWebGLPopup();
+		    });
+		  }
 		});
+
+		function maybeShowWebGLPopup() {
+		  try {
+		    if (localStorage.getItem('x3e-webgl-seen')) return;
+		    const modal = document.getElementById('webgl-modal');
+		    if (modal) modal.classList.add('open');
+		  } catch (e) {}
+		}
+		function dismissWebGLPopup() {
+		  try { localStorage.setItem('x3e-webgl-seen', '1'); } catch (e) {}
+		  const modal = document.getElementById('webgl-modal');
+		  if (modal) modal.classList.remove('open');
+		}
 	</script>
 
 	<script>
@@ -1514,11 +1587,29 @@ document.addEventListener('DOMContentLoaded', () => {
     🗑 Delete All Save Data
   </button>
 </div>
-			</div>
-		</div>
-	</div>
+ 			</div>
+ 		</div>
+ 	</div>
 
-	<div id="game-picker-overlay">
+ 	<div id="webgl-modal">
+ 		<div class="webgl-content">
+ 			<div class="webgl-header">
+ 				<h2>Enable WebGL</h2>
+ 				<span class="settings-sub">x3e // COMPOUND CREATIONS</span>
+ 			</div>
+ 			<div class="webgl-body">
+ 				<p>Most games on x3e use <b>WebGL</b> to render their graphics.</p>
+ 				<p>If it's turned off, you'll see a <i>"Your browser does not support WebGL"</i> error and games won't load.</p>
+ 				<p>Here's how to enable it:</p>
+ 				<a class="webgl-link" href="https://www.wikihow.com/Enable-Webgl" target="_blank" rel="noopener noreferrer">Open the How-To Guide →</a>
+ 			</div>
+ 			<div class="webgl-footer">
+ 				<button class="webgl-ok-btn" onclick="dismissWebGLPopup()">Got it</button>
+ 			</div>
+ 		</div>
+ 	</div>
+
+ 	<div id="game-picker-overlay">
 		<div class="picker-content">
 			<div class="settings-topbar"></div>
 			<div class="picker-header">
