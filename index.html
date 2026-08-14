@@ -6,7 +6,7 @@
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
     <base href="https://gamebackup.github.io/">
-    <meta name="x3e-version" content="2026/08/14-01">
+    <meta name="x3e-version" content="2026/08/14-03">
 	<script>
 (function(){
     var cloakPresets = {
@@ -126,7 +126,7 @@
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/dkc/')">Donkey Kong Country</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/pinepoint/')">Pine Point: Insomniac</button>
 			<button onclick="playGame('https://gamebackup.github.io/itchio_games/hickory/')">Hickory</button>
-			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/deltarune/')">DELTARUNE CH 5</button>
+			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/deltarune/')">DELTARUNE CH 5</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/games/maxpayne/')">Max Payne GBA</button>
 			<button onclick="playGame('https://gamebackup.github.io/flash_games/games/mpn/')">Madness: Project Nexus Classic</button>
 		</div>
@@ -887,7 +887,6 @@
 		  if (saved !== null) { window.scrollTo(0, parseInt(saved, 10)); sessionStorage.removeItem('x3e-scrollY'); }
 		}
 
-		/* ── WebGL error message rewrite (runs from here, inside each same-origin game iframe) ── */
 		function webglInjectPatchSource() {
 		  var MATCH = "Your browser does not support WebGL";
 		  var URL = "https://www.wikihow.com/Enable-Webgl";
