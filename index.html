@@ -91,6 +91,47 @@
     click here if you want to run x3e after me
   </a>
 </div>
+
+<!-- Countdown Timer -->
+<div class="countdown-section" style="
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    padding: 18px 10px;
+    border-bottom: 1px solid rgba(230,21,135,0.2);
+    backdrop-filter: blur(4px);
+">
+    <h3 style="margin: 0 0 12px; font-size: 1.1rem; letter-spacing: 2px; color: #e61587;">COUNTDOWN TO END OF <a href="https://docs.google.com/forms/d/e/1FAIpQLSddqCBgK6L23oEymqx6AAq5huXTHYPcwzB2HXRRiFu4kTJ2Lg/viewform?usp=dialog" 
+     style="color:#e61587;font-weight:bold;text-decoration:underline;" 
+     target="_blank">
+    HIGH SCORE CONTEST
+  </a>
+</h3>
+    <div class="countdown-timer" id="countdown-timer" style="
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    ">
+        <div class="countdown-item">
+            <span id="countdown-days" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
+            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">DAYS</span>
+        </div>
+        <div class="countdown-item">
+            <span id="countdown-hours" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
+            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">HOURS</span>
+        </div>
+        <div class="countdown-item">
+            <span id="countdown-minutes" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
+            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">MINUTES</span>
+        </div>
+        <div class="countdown-item">
+            <span id="countdown-seconds" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
+            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">SECONDS</span>
+        </div>
+    </div>
+</div>
+
 	<div id="update-notification" class="hidden">
 		<div class="update-icon">🔄</div>
 		<div class="update-content">
@@ -1569,5 +1610,35 @@ document.addEventListener('DOMContentLoaded', () => {
 			</div>
  		</div>
  	</div>
+    <script>
+        const COUNTDOWN_TARGET = new Date('2026-11-02T00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = COUNTDOWN_TARGET - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown-days').textContent = '00';
+                document.getElementById('countdown-hours').textContent = '00';
+                document.getElementById('countdown-minutes').textContent = '00';
+                document.getElementById('countdown-seconds').textContent = '00';
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown-days').textContent = String(days).padStart(2, '0');
+            document.getElementById('countdown-hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
