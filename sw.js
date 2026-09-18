@@ -1,4 +1,4 @@
-const CACHE_NAME = 'x3e-offline-v2';
+const CACHE_NAME = 'x3e-offline-v3';
 let preloadSession = false;
 
 // ── Lifecycle ────────────────────────────────────────────────────
@@ -27,41 +27,63 @@ function validCached(res) {
   return res && res.ok && res.status !== 0 && res.type === 'basic';
 }
 
+// Network-first: always fetch the latest from the network, and refresh the
+// cache copy. Only fall back to the cache when the network is unavailable
+// (e.g. offline play of a preloaded game). Used for the emulator runtime and
+// core blobs, so that updated cores are always picked up instead of being
+// served stale forever.
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const res = await fetch(request);
+    if (validCached(res)) cache.put(request, res.clone());
+    return res;
+  } catch (err) {
+    const cached = await cache.match(request);
+    if (cached && validCached(cached)) return cached;
+    throw err;
+  }
+}
+
+// Cache-first: serve the cached copy immediately (fast, offline-capable) and
+// update the cache copy from the network in the background.
+async function cacheFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  if (cached && !validCached(cached)) {
+    await cache.delete(request);
+    return networkFirst(request);
+  }
+  if (cached && validCached(cached)) {
+    networkFirst(request).catch(() => {});
+    return cached;
+  }
+  return networkFirst(request);
+}
+
 // ── Fetch handler ────────────────────────────────────────────────
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
 
-  // During a preload session, cache everything (any origin)
+  // During a preload session, fetch everything fresh from the network and
+  // cache it for offline use (any origin).
   if (preloadSession) {
-    e.respondWith(
-      caches.open(CACHE_NAME).then(cache =>
-        fetch(e.request).then(res => {
-          if (validCached(res)) cache.put(e.request, res.clone());
-          return res;
-        }).catch(() => caches.match(e.request).then(r => validCached(r) ? r : null))
-      )
-    );
+    e.respondWith(networkFirst(e.request));
     return;
   }
 
   // Normal operation – only cache gamebackup.github.io
   if (!e.request.url.includes('gamebackup.github.io')) return;
 
-  e.respondWith(
-    caches.open(CACHE_NAME).then(cache =>
-      cache.match(e.request).then(cached => {
-        if (cached && !validCached(cached)) {
-          cache.delete(e.request);
-          cached = null;
-        }
-        const networkFetch = fetch(e.request).then(res => {
-          if (validCached(res)) cache.put(e.request, res.clone());
-          return res;
-        }).catch(() => null);
-        return cached || networkFetch;
-      })
-    ).catch(() => fetch(e.request))
-  );
+  // Emulator runtime + core files must always revalidate so that updated
+  // cores (e.g. picodrive-wasm.data) never get pinned to an old, broken copy.
+  if (e.request.url.includes('/emulatorjs/')) {
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
+
+  // Everything else: cache-first for preloaded offline games.
+  e.respondWith(cacheFirst(e.request));
 });
 
 // ── Message handler ──────────────────────────────────────────────
