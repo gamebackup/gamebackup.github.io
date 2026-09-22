@@ -103,10 +103,12 @@ self.addEventListener('message', e => {
   }
 
   // Existing commands
-  if (e.data.type === 'GET_CACHED_URLS' && e.source) {
+  if (e.data.type === 'GET_CACHED_URLS') {
+    const target = (e.ports && e.ports.length) ? e.ports[0] : e.source;
+    if (!target) return;
     caches.open(CACHE_NAME)
       .then(c => c.keys())
-      .then(keys => e.source.postMessage({
+      .then(keys => target.postMessage({
         type: 'CACHED_URLS',
         urls: keys.map(r => r.url)
       })).catch(() => {});
