@@ -138,6 +138,42 @@ nav a:hover::after {
     letter-spacing: 1px;
 }
 
+/* ========== COLLAPSIBLE SECTIONS ========== */
+.section.collapsible {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    transition: grid-template-rows .4s cubic-bezier(.4, 0, .2, 1),
+                padding-top .4s cubic-bezier(.4, 0, .2, 1),
+                padding-bottom .4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.section.collapsible.collapsed {
+    grid-template-rows: auto 0fr;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.section.collapsible.collapsed h2 {
+    margin-bottom: 0;
+}
+
+.section.collapsible .button-grid {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.section.collapsible h2 {
+    cursor: pointer;
+    user-select: none;
+    transition: color .3s cubic-bezier(.4, 0, .2, 1),
+                margin-bottom .4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.section.collapsible h2:hover,
+.section.collapsible h2:focus-visible {
+    color: #ff5fa8;
+}
+
 .button-grid {
     display: flex;
     flex-wrap: wrap;
