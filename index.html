@@ -974,13 +974,108 @@
 		  title.addEventListener('mouseleave', stop);
 		})();
 
+		/* ── Mirror failover ──
+		   Mirrors each gamebackup.github.io/<repo>/<path>/ URL onto a CDN that is less
+		   likely to be filtered. The game HTML is fetched as text and handed to the
+		   iframe as a blob URL with a <base> tag, because CDNs serve .html as
+		   text/plain and an iframe pointed straight at one would only show source.
+		   Blob URLs inherit the top page's origin, so saves stay local to this site. */
+		const X3E_MIRRORS = [
+		  'https://cdn.jsdelivr.net/gh/gamebackup/',
+		  'https://fastly.jsdelivr.net/gh/gamebackup/',
+		  'https://gcore.jsdelivr.net/gh/gamebackup/',
+		  'https://quantil.jsdelivr.net/gh/gamebackup/',
+		  'https://originfastly.jsdelivr.net/gh/gamebackup/',
+		  'https://testingcf.jsdelivr.net/gh/gamebackup/'
+		];
+		const X3E_MIRROR_TIMEOUT = 7000;
+
+		function x3eMirrorCandidates(gameUrl) {
+		  const m = /^https?:\/\/gamebackup\.github\.io\/([^/]+)\/(.*)$/.exec(gameUrl);
+		  if (!m) return null;
+		  const repo = m[1], rest = m[2].replace(/\/?index\.html$/, '');
+		  const list = [{ label: 'direct', base: 'https://gamebackup.github.io/' + repo + '/' + rest }];
+		  for (const prefix of X3E_MIRRORS) {
+			list.push({ label: prefix, base: prefix + repo + '@main/' + rest });
+		  }
+		  // collapse accidental double slashes and guarantee a trailing slash
+		  for (const c of list) {
+			let b = c.base.replace(/([^:])\/{2,}/g, '$1/');
+			if (!b.endsWith('/')) b += '/';
+			c.base = b;
+		  }
+		  return list;
+		}
+
+		async function x3eFetchWithTimeout(url, ms) {
+		  const ctrl = new AbortController();
+		  const timer = setTimeout(() => ctrl.abort(), ms);
+		  try {
+			const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+			if (!res.ok) throw new Error('status ' + res.status);
+			return await res.text();
+		  } finally {
+			clearTimeout(timer);
+		  }
+		}
+
+		function x3eShowLoadStatus(msg) {
+		  let el = document.getElementById('x3e-load-status');
+		  if (!el) {
+			el = document.createElement('div');
+			el.id = 'x3e-load-status';
+			el.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#9aa0a6;font:14px system-ui,sans-serif;text-align:center;pointer-events:none;';
+			document.getElementById('game-overlay').appendChild(el);
+		  }
+		  el.textContent = msg;
+		}
+		function x3eHideLoadStatus() {
+		  const el = document.getElementById('x3e-load-status');
+		  if (el) el.remove();
+		}
+
+		async function x3eLaunchViaMirrors(gameUrl) {
+		  const frame = document.getElementById('game-frame');
+		  const cands = x3eMirrorCandidates(gameUrl);
+		  if (!cands) { frame.src = gameUrl; return; }
+
+		  for (let i = 0; i < cands.length; i++) {
+			const cand = cands[i];
+			x3eShowLoadStatus(i === 0 ? 'Loading…' : 'Retrying (' + (i + 1) + '/' + cands.length + ')…');
+			try {
+			  const html = await x3eFetchWithTimeout(cand.base + 'index.html', X3E_MIRROR_TIMEOUT);
+			  if (i === 0) {
+			    // primary is reachable: keep the original, unmodified path
+			    frame.src = gameUrl;
+			    x3eHideLoadStatus();
+			    return;
+			  }
+			  // mirror won: inject a <base> so the game's own relative assets resolve
+			  const inhead = html.match(/<head[^>]*>/i);
+			  const tag = '<base href="' + cand.base + '">';
+			  const patched = inhead
+			    ? html.replace(inhead[0], inhead[0] + tag)
+			    : tag + html;
+			  frame.src = URL.createObjectURL(new Blob([patched], { type: 'text/html' }));
+			  x3eHideLoadStatus();
+			  return;
+			} catch (e) { /* try next candidate */ }
+		  }
+		  x3eShowLoadStatus('Could not load this game. Check your connection and try again.');
+		}
+
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
 		  document.activeElement && document.activeElement.blur();
 		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
-		  document.getElementById('game-frame').src = gameUrl;
+		  if (/^https?:\/\/gamebackup\.github\.io\/[^/]+\//.test(gameUrl || '')) {
+			x3eLaunchViaMirrors(gameUrl);
+		  } else {
+			x3eHideLoadStatus();
+			document.getElementById('game-frame').src = gameUrl;
+		  }
 		}
 		function closeGame() {
 		  document.body.style.overflow = '';
