@@ -989,12 +989,17 @@
 		  'https://testingcf.jsdelivr.net/gh/gamebackup/'
 		];
 		const X3E_MIRROR_TIMEOUT = 7000;
+		const X3E_PRIMARY_TIMEOUT = 2500;
 
 		function x3eMirrorCandidates(gameUrl) {
 		  const m = /^https?:\/\/gamebackup\.github\.io\/([^/]+)\/(.*)$/.exec(gameUrl);
 		  if (!m) return null;
 		  const repo = m[1], rest = m[2].replace(/\/?index\.html$/, '');
 		  const list = [{ label: 'direct', base: 'https://gamebackup.github.io/' + repo + '/' + rest }];
+		  // raw.githubusercontent.com is tried first: it is the same host that
+		  // finalproduct-v2.html already loads from, so on networks that block
+		  // gamebackup.github.io it is the one origin known to be reachable.
+		  if (rest) list.push({ label: 'raw', base: 'https://raw.githubusercontent.com/gamebackup/' + repo + '/main/' + rest });
 		  for (const prefix of X3E_MIRRORS) {
 			list.push({ label: prefix, base: prefix + repo + '@main/' + rest });
 		  }
@@ -1034,23 +1039,48 @@
 		  if (el) el.remove();
 		}
 
+		/* Remember which origin last worked. On a filtered network the direct
+		   origin fails every time, so re-probing it on every launch costs the
+		   user a stall before reaching the mirror that actually works. */
+		function x3eRememberWinner(label) {
+		  try { localStorage.setItem('x3e-mirror', label); } catch (e) {}
+		}
+		function x3eKnownGood() {
+		  try { return localStorage.getItem('x3e-mirror') || ''; } catch (e) { return ''; }
+		}
+
 		async function x3eLaunchViaMirrors(gameUrl) {
 		  const frame = document.getElementById('game-frame');
 		  const cands = x3eMirrorCandidates(gameUrl);
 		  if (!cands) { frame.src = gameUrl; return; }
 
+		  // If a mirror won last time, try it first, but only after one quick
+		  // attempt at the direct origin so working networks stay on it.
+		  const known = x3eKnownGood();
+		  if (known && known !== 'direct') {
+			const idx = cands.findIndex(c => c.label === known);
+			if (idx > 1) {
+			  const hit = cands.splice(idx, 1)[0];
+			  cands.splice(1, 0, hit);
+			}
+		  }
+
 		  for (let i = 0; i < cands.length; i++) {
 			const cand = cands[i];
+			// first attempt is quick; only mirrors get the long timeout
+			const budget = i === 0 ? X3E_PRIMARY_TIMEOUT : X3E_MIRROR_TIMEOUT;
 			x3eShowLoadStatus(i === 0 ? 'Loading…' : 'Retrying (' + (i + 1) + '/' + cands.length + ')…');
 			try {
-			  const html = await x3eFetchWithTimeout(cand.base + 'index.html', X3E_MIRROR_TIMEOUT);
-			  if (i === 0) {
+			  const html = await x3eFetchWithTimeout(cand.base + 'index.html', budget);
+			  if (cand.label === 'direct') {
 			    // primary is reachable: keep the original, unmodified path
+			    x3eRememberWinner('direct');
 			    frame.src = gameUrl;
 			    x3eHideLoadStatus();
 			    return;
 			  }
 			  // mirror won: inject a <base> so the game's own relative assets resolve
+			  x3eRememberWinner(cand.label);
 			  const inhead = html.match(/<head[^>]*>/i);
 			  const tag = '<base href="' + cand.base + '">';
 			  const patched = inhead
