@@ -996,10 +996,6 @@
 		  if (!m) return null;
 		  const repo = m[1], rest = m[2].replace(/\/?index\.html$/, '');
 		  const list = [{ label: 'direct', base: 'https://gamebackup.github.io/' + repo + '/' + rest }];
-		  // raw.githubusercontent.com is tried first: it is the same host that
-		  // finalproduct-v2.html already loads from, so on networks that block
-		  // gamebackup.github.io it is the one origin known to be reachable.
-		  if (rest) list.push({ label: 'raw', base: 'https://raw.githubusercontent.com/gamebackup/' + repo + '/main/' + rest });
 		  for (const prefix of X3E_MIRRORS) {
 			list.push({ label: prefix, base: prefix + repo + '@main/' + rest });
 		  }
