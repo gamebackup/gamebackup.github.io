@@ -28,6 +28,11 @@
             link.href = cloakPresets[savedKey].icon;
         }
     }
+    // Apply the saved theme before the first paint so the page never flashes
+    // the default theme on load.
+    if (localStorage.getItem("x3e-theme") === "halloween") {
+        document.documentElement.classList.add("halloween");
+    }
 })();
 </script>
     <link rel="stylesheet" href="https://gamebackup.github.io/style.css">
@@ -57,6 +62,18 @@
     </div>
     <div style="display: flex; align-items: center; gap: 15px; margin-left: auto;">
         <nav>
+            <button type="button" id="pumpkin-btn" class="pumpkin-btn" onclick="toggleHalloween(); return false;"
+                    aria-pressed="false" aria-label="Toggle Halloween theme" title="Toggle Halloween theme">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+                    <path class="pumpkin-stem" d="M11.1 6.1c0-1.6.8-3 2-3.8.7.5 1.1 1.2 1.1 2 0 .5-.1 1-.4 1.4l1.9 1.3-2.6 1.7z"></path>
+                    <ellipse class="pumpkin-lobe" cx="6.4" cy="13.6" rx="4.3" ry="5.3"></ellipse>
+                    <ellipse class="pumpkin-lobe" cx="17.6" cy="13.6" rx="4.3" ry="5.3"></ellipse>
+                    <ellipse class="pumpkin-lobe" cx="12" cy="13.8" rx="4.7" ry="5.7"></ellipse>
+                    <path class="pumpkin-face" d="M8.1 12.1l2.3 1.7-2.3 1.7z"></path>
+                    <path class="pumpkin-face" d="M15.9 12.1l-2.3 1.7 2.3 1.7z"></path>
+                    <path class="pumpkin-face" d="M7.2 16.4l1.7 1.4 1.5-1.4 1.6 1.4 1.5-1.4 1.6 1.4 1.7-1.4v2.1c-1.2 1-3 1.5-4.8 1.5s-3.6-.5-4.8-1.5z"></path>
+                </svg>
+            </button>
 	        <a href="#" onclick="randomGame(); return false;">Random Game</a>
             <a href="https://forms.gle/4qtsrTs18sW5equ9A" target="_blank">Game Request</a>
             <a href="https://forms.gle/TPk7ZofJveGqhbXs6" target="_blank">Blocked/Bug Report</a>
@@ -74,34 +91,17 @@
 </div>
     </div>
 </header>
-<div style="
-  text-align: center;
-  background: rgba(230,21,135,0.15);
-  color: #e61587;
-  padding: 6px;
-  font-size: 0.85rem;
-  border-bottom: 1px solid rgba(230,21,135,0.2);
-  backdrop-filter: blur(4px);
-">
+<div class="retire-banner">
   I’m retiring after senior year — 
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSddqCBgK6L23oEymqx6AAq5huXTHYPcwzB2HXRRiFu4kTJ2Lg/viewform?usp=dialog" 
-     style="color:#e61587;font-weight:bold;text-decoration:underline;" 
      target="_blank">
     click here if you want to run x3e after me
   </a>
 </div>
 
 <!-- Countdown Timer -->
-<div class="countdown-section" style="
-    text-align: center;
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    padding: 18px 10px;
-    border-bottom: 1px solid rgba(230,21,135,0.2);
-    backdrop-filter: blur(4px);
-">
-    <h3 style="margin: 0 0 12px; font-size: 1.1rem; letter-spacing: 2px; color: #e61587;">COUNTDOWN TO END OF <a href="https://docs.google.com/document/d/1FhUuhkgaoNFxXK0gDycIbdx-2SxoSqjveZY_SfWrjDk/edit?tab=t.0" 
-     style="color:#e61587;font-weight:bold;text-decoration:underline;" 
+<div class="countdown-section">
+    <h3 class="countdown-title">COUNTDOWN TO END OF <a href="https://docs.google.com/document/d/1FhUuhkgaoNFxXK0gDycIbdx-2SxoSqjveZY_SfWrjDk/edit?tab=t.0" 
      target="_blank">
     HIGH SCORE CONTEST
   </a>
@@ -113,20 +113,20 @@
         flex-wrap: wrap;
     ">
         <div class="countdown-item">
-            <span id="countdown-days" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
-            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">DAYS</span>
+            <span id="countdown-days" class="countdown-num">00</span>
+            <span class="countdown-label">DAYS</span>
         </div>
         <div class="countdown-item">
-            <span id="countdown-hours" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
-            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">HOURS</span>
+            <span id="countdown-hours" class="countdown-num">00</span>
+            <span class="countdown-label">HOURS</span>
         </div>
         <div class="countdown-item">
-            <span id="countdown-minutes" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
-            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">MINUTES</span>
+            <span id="countdown-minutes" class="countdown-num">00</span>
+            <span class="countdown-label">MINUTES</span>
         </div>
         <div class="countdown-item">
-            <span id="countdown-seconds" style="font-size: 2rem; font-weight: bold; font-family: monospace; color: #fff; text-shadow: 0 0 10px #e61587;">00</span>
-            <span style="display: block; font-size: 0.75rem; letter-spacing: 1px;">SECONDS</span>
+            <span id="countdown-seconds" class="countdown-num">00</span>
+            <span class="countdown-label">SECONDS</span>
         </div>
     </div>
 </div>
@@ -499,7 +499,7 @@
 	</div>
 
 	<div class="section">
-		<center><h2 style="color: #e61587;">⇓ Game Series are below ⇓</h2></center>
+		<center><h2>⇓ Game Series are below ⇓</h2></center>
 	</div>
 
 <div class="section">
@@ -871,7 +871,7 @@
 		    this.speedY = -Math.random() * 0.6 - 0.1;
 		    this.life = 1;
 		    this.decay = Math.random() * 0.003 + 0.001;
-		    this.hue = Math.random() < 0.7 ? 320 : 185;
+		    this.hue = randomHue();
 		  }
 		  update() {
 		    this.x += this.speedX; this.y += this.speedY; this.life -= this.decay;
@@ -903,6 +903,32 @@
 		});
 		function pauseParticles() { if (particlesRAF) { cancelAnimationFrame(particlesRAF); particlesRAF = null; } }
 		function resumeParticles() { if (!particlesRAF) animateParticles(); }
+
+		/* ========== THEME (HALLOWEEN) ========== */
+		function isHalloween() {
+		  return document.documentElement.classList.contains('halloween');
+		}
+		// Embers instead of sparks when the spooky theme is on.
+		function randomHue() {
+		  const hues = isHalloween() ? [28, 285] : [320, 185];
+		  return Math.random() < 0.7 ? hues[0] : hues[1];
+		}
+		function setHalloween(on, remember) {
+		  document.documentElement.classList.toggle('halloween', on);
+		  const btn = document.getElementById('pumpkin-btn');
+		  if (btn) {
+		    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+		    btn.title = on ? 'Halloween theme: on' : 'Halloween theme: off';
+		  }
+		  particles.forEach(p => { p.hue = randomHue(); });
+		  if (remember) {
+		    try { localStorage.setItem('x3e-theme', on ? 'halloween' : 'default'); } catch (e) {}
+		  }
+		}
+		function toggleHalloween() { setHalloween(!isHalloween(), true); }
+		document.addEventListener('DOMContentLoaded', () => {
+		  setHalloween(isHalloween(), false);
+		});
 
 		function sanitizeQuery(s) {
 		  return s.replace(/<[^>]*>/g, '').replace(/[^\w\s'-]/g, '').trim().toLowerCase();
@@ -1710,17 +1736,17 @@ document.addEventListener('DOMContentLoaded', () => {
   <details style="margin-top:8px;cursor:pointer;">
     <summary style="font-size:0.8rem;color:rgba(255,255,255,0.6);padding:4px 0;">Click to expand</summary>
     <div style="margin-top:8px;font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.7;max-height:200px;overflow-y:auto;">
-      <b style="color:#e61587;">2026/8/13</b><br>
+      <b class="changelog-date">2026/8/13</b><br>
       — a lot of stuff has changed. forgot about the changelog sorry<br>
       — Added more games<br>
 	  — i also found a way to remove the sitelock from swf files!!
       <br>
-	  <b style="color:#e61587;">2026/06/05</b><br>
+	  <b class="changelog-date">2026/06/05</b><br>
       — Added Fireboy and watergirl 1-5<br>
       — Added more games<br>
 	  — Made the flash games always fit the screen
       <br>
-	  <b style="color:#e61587;">2026/05/28</b><br>
+	  <b class="changelog-date">2026/05/28</b><br>
       — PWA manifest aded (install x3e as an app)<br>
       — Custom 404 page<br>
       — Volume control in settings<br>
@@ -1728,7 +1754,7 @@ document.addEventListener('DOMContentLoaded', () => {
       — Ctrl+F now uses x3e search bar<br>
       — Fixed update notification sticking<br>
       <br>
-      <b style="color:#e61587;">2026/05/27</b><br>
+      <b class="changelog-date">2026/05/27</b><br>
       — Service worker cache bumped to v2<br>
       — Fixed serviceworker crashing on certain responses<br>
       — x3e unblocked games easter egg<br>

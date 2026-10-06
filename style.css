@@ -160,6 +160,14 @@ nav a:hover::after {
 .section.collapsible .button-grid {
     min-height: 0;
     overflow: hidden;
+    /* Headroom so the hover grow on the top row of buttons isn't clipped.
+       Collapses back to 0 with the row so the open/close animation is unchanged. */
+    padding-top: 8px;
+    transition: padding-top .4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.section.collapsible.collapsed .button-grid {
+    padding-top: 0;
 }
 
 .section.collapsible h2 {
@@ -1133,6 +1141,327 @@ nav a:hover::after {
 @media (max-width: 500px) {
     #update-notification { left: 10px; right: 10px; max-width: none; bottom: 10px; }
 }
+
+/* ========== RETIREMENT BANNER ========== */
+.retire-banner {
+    text-align: center;
+    background: rgba(230, 21, 135, 0.15);
+    color: #e61587;
+    padding: 6px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(230, 21, 135, 0.2);
+    backdrop-filter: blur(4px);
+}
+
+.retire-banner a {
+    color: #e61587;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* ========== HIGH SCORE COUNTDOWN ========== */
+.countdown-section {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    padding: 18px 10px;
+    border-bottom: 1px solid rgba(230, 21, 135, 0.2);
+    backdrop-filter: blur(4px);
+}
+
+.countdown-title {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: #e61587;
+}
+
+.countdown-title a {
+    color: #e61587;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.countdown-num {
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: #fff;
+    text-shadow: 0 0 10px #e61587;
+}
+
+.countdown-label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+/* ========== CHANGELOG ========== */
+.changelog-date { color: #e61587; }
+
+/* ========== PUMPKIN THEME TOGGLE ========== */
+.pumpkin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 34px;
+    padding: 0;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.pumpkin-btn svg { display: block; width: 22px; height: 22px; }
+
+.pumpkin-btn .pumpkin-stem { fill: #4f6b32; }
+.pumpkin-btn .pumpkin-lobe { fill: #7d4a22; transition: fill .3s; }
+.pumpkin-btn .pumpkin-face { fill: #1b0d04; }
+
+.pumpkin-btn:hover {
+    background: rgba(255, 140, 26, .15);
+    border-color: rgba(255, 140, 26, .6);
+    box-shadow: 0 0 15px rgba(255, 140, 26, .35);
+    transform: translateY(-2px);
+}
+
+.pumpkin-btn:hover .pumpkin-lobe { fill: #c8762b; }
+
+.pumpkin-btn:focus-visible {
+    outline: 2px solid #ff8c1a;
+    outline-offset: 2px;
+}
+
+html.halloween .pumpkin-btn {
+    background: rgba(255, 140, 26, .2);
+    border-color: #ff8c1a;
+    animation: pumpkinGlow 2.4s ease-in-out infinite;
+}
+
+html.halloween .pumpkin-btn .pumpkin-lobe { fill: #ff8c1a; }
+html.halloween .pumpkin-btn .pumpkin-stem { fill: #6f9c3c; }
+html.halloween .pumpkin-btn .pumpkin-face { fill: #2b0a02; }
+
+@keyframes pumpkinGlow {
+    0%, 100% { box-shadow: 0 0 14px rgba(255, 140, 26, .45); }
+    50%      { box-shadow: 0 0 26px rgba(255, 180, 60, .8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.halloween .pumpkin-btn { animation: none; }
+}
+
+/* ============================================================
+   HALLOWEEN THEME
+   Turned on by the pumpkin button in the header. The .halloween
+   class sits on <html> so it can be applied before first paint.
+   ============================================================ */
+html.halloween {
+    --pink: #ff8c1a;
+    --cyan: #b455ff;
+    --primary: #ff8c1a;
+}
+
+html.halloween body {
+    background-color: #0b0611;
+    background-image:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 140, 26, .12), transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(139, 92, 246, .14), transparent 60%);
+    background-attachment: fixed;
+    color: #f3e6d8;
+}
+
+html.halloween header {
+    background-color: #0d0716;
+    border-bottom: 1px solid rgba(255, 140, 26, .25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, .6);
+}
+
+html.halloween header img { filter: drop-shadow(0 0 8px rgba(255, 140, 26, .35)); }
+
+html.halloween nav a:hover {
+    background: rgba(255, 140, 26, .2);
+    border-color: #ff8c1a;
+    box-shadow: 0 0 15px rgba(255, 140, 26, .4);
+}
+
+html.halloween .game-count {
+    background: rgba(255, 140, 26, .2);
+    border-color: rgba(255, 140, 26, .5);
+    box-shadow: 0 0 6px rgba(255, 140, 26, .3);
+}
+
+html.halloween .hero {
+    background-image: linear-gradient(rgba(60, 15, 5, .45), rgba(20, 5, 30, .7)),
+                      url("https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/darken_tree_hd.png");
+}
+
+html.halloween .content-box {
+    background-color: rgba(38, 16, 8, .65);
+    border-color: rgba(255, 140, 26, .35);
+    color: #ffb066;
+    box-shadow: inset 0 1px 1px rgba(255, 190, 120, .18), 2px 2px 10px rgba(0, 0, 0, .6);
+}
+
+html.halloween .section h2 {
+    color: #ff8c1a;
+    text-shadow: 0 0 16px rgba(255, 120, 20, .35);
+}
+
+html.halloween .button-grid button {
+    background-color: rgba(94, 38, 6, .38);
+    border: 1px solid rgba(255, 140, 26, .28);
+}
+
+html.halloween .button-grid button:hover {
+    background-color: #ff8c1a;
+    box-shadow: 0 8px 20px rgba(255, 120, 20, .5);
+}
+
+html.halloween .search-bar {
+    background: #1c1108;
+    border-color: #ff8c1a;
+}
+
+html.halloween .search-icon { color: #ff8c1a; }
+
+html.halloween .glitch-title,
+html.halloween .glitch-title::before,
+html.halloween .glitch-title::after {
+    background: linear-gradient(135deg, #fff, #ff8c1a);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+html.halloween #load div { color: #ff8c1a; }
+
+/* Game overlay back button (its colours are !important in the base rule) */
+html.halloween .back-btn {
+    background-color: rgba(94, 38, 6, .4) !important;
+    border: 1px solid rgba(255, 140, 26, .4) !important;
+}
+
+html.halloween .back-btn:hover {
+    background-color: #ff8c1a !important;
+    box-shadow: 0 8px 20px rgba(255, 120, 20, .5);
+}
+
+/* Retirement banner + countdown */
+html.halloween .retire-banner {
+    background: rgba(255, 140, 26, .15);
+    color: #ff8c1a;
+    border-bottom-color: rgba(255, 140, 26, .25);
+}
+
+html.halloween .retire-banner a,
+html.halloween .countdown-title,
+html.halloween .countdown-title a,
+html.halloween .changelog-date { color: #ff8c1a; }
+
+html.halloween .countdown-section { border-bottom-color: rgba(255, 140, 26, .25); }
+html.halloween .countdown-num { text-shadow: 0 0 10px #ff8c1a; }
+
+/* Settings modal */
+html.halloween .settings-content {
+    background: linear-gradient(160deg, rgba(34, 14, 6, 0.98) 0%, rgba(12, 6, 20, 0.98) 100%);
+    border-color: rgba(255, 140, 26, 0.5);
+    box-shadow: 0 0 0 1px rgba(255, 140, 26, 0.15),
+                0 0 40px rgba(255, 120, 20, 0.25),
+                0 0 100px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+html.halloween .settings-topbar { background: linear-gradient(90deg, #ff8c1a, #b455ff, #ff8c1a); }
+html.halloween .settings-header { border-bottom-color: rgba(255, 140, 26, 0.25); }
+html.halloween .settings-gear-icon { color: #ff8c1a; filter: drop-shadow(0 0 8px rgba(255, 140, 26, .7)); }
+html.halloween .settings-title-text h2 { background: linear-gradient(135deg, #fff 30%, #ff8c1a); background-clip: text; -webkit-background-clip: text; }
+html.halloween .settings-title-text .settings-sub { color: rgba(255, 140, 26, .7); }
+html.halloween .close-settings:hover {
+    color: #ff8c1a;
+    border-color: rgba(255, 140, 26, .5);
+    text-shadow: 0 0 12px rgba(255, 140, 26, .8);
+    background: rgba(255, 140, 26, .1);
+}
+html.halloween .settings-body { scrollbar-color: rgba(255, 140, 26, .4) transparent; }
+html.halloween .settings-body::-webkit-scrollbar-thumb { background: rgba(255, 140, 26, .4); }
+html.halloween .setting-section-label { color: rgba(255, 140, 26, .6); }
+html.halloween .setting-section-label::after { background: linear-gradient(90deg, rgba(255, 140, 26, .3), transparent); }
+html.halloween .cloak-card:hover {
+    border-color: rgba(255, 140, 26, .4);
+    background: rgba(255, 140, 26, .08);
+    box-shadow: 0 4px 16px rgba(255, 120, 20, .2);
+}
+html.halloween .cloak-card.active {
+    border-color: #ff8c1a;
+    background: rgba(255, 140, 26, .15);
+    box-shadow: 0 0 0 1px rgba(255, 140, 26, .3), 0 4px 20px rgba(255, 120, 20, .2);
+}
+html.halloween .cloak-card.active::after { color: #ff8c1a; background: rgba(255, 140, 26, .2); }
+html.halloween .settings-footer { border-top-color: rgba(255, 140, 26, .15); }
+html.halloween .settings-footer-dot { background: #ff8c1a; box-shadow: 0 0 8px rgba(255, 140, 26, .8); }
+html.halloween .offline-action-btn {
+    background: rgba(94, 38, 6, .35);
+    border-color: rgba(255, 140, 26, .4);
+}
+html.halloween .offline-action-btn:hover { background: #ff8c1a; box-shadow: 0 6px 18px rgba(255, 120, 20, .5); }
+html.halloween #offline-badge {
+    color: rgba(255, 140, 26, .9);
+    background: rgba(255, 140, 26, .1);
+    border-color: rgba(255, 140, 26, .35);
+}
+
+/* Game picker + preload progress */
+html.halloween .picker-content {
+    background: linear-gradient(160deg, rgba(34, 14, 6, 0.98) 0%, rgba(12, 6, 20, 0.98) 100%);
+    border-color: rgba(255, 140, 26, 0.5);
+    box-shadow: 0 0 0 1px rgba(255, 140, 26, .15),
+                0 0 50px rgba(255, 120, 20, .2),
+                inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+html.halloween .picker-header,
+html.halloween .picker-footer,
+html.halloween .prog-footer { border-color: rgba(255, 140, 26, .2); }
+html.halloween .picker-big-icon { filter: drop-shadow(0 0 10px rgba(255, 140, 26, .8)); }
+html.halloween .picker-search-input { border-color: rgba(255, 140, 26, .3); }
+html.halloween .picker-search-input:focus { border-color: #ff8c1a; box-shadow: 0 0 0 2px rgba(255, 140, 26, .15); }
+html.halloween #selection-counter {
+    color: rgba(255, 140, 26, .9);
+    background: rgba(255, 140, 26, .12);
+    border-color: rgba(255, 140, 26, .35);
+}
+html.halloween .picker-game-list { scrollbar-color: rgba(255, 140, 26, .4) transparent; }
+html.halloween .picker-game-list::-webkit-scrollbar-thumb { background: rgba(255, 140, 26, .4); }
+html.halloween .picker-game-card:hover:not(.uncacheable) { border-color: rgba(255, 140, 26, .4); background: rgba(255, 140, 26, .08); }
+html.halloween .picker-game-card.selected {
+    border-color: #ff8c1a;
+    background: rgba(255, 140, 26, .14);
+    box-shadow: 0 0 0 1px rgba(255, 140, 26, .2);
+}
+html.halloween .pgc-check { border-color: rgba(255, 140, 26, .5); color: #ff8c1a; }
+html.halloween .pgc-check.on { background: rgba(255, 140, 26, .25); border-color: #ff8c1a; }
+html.halloween .load-btn {
+    background: rgba(255, 140, 26, .2);
+    border-color: rgba(255, 140, 26, .6);
+}
+html.halloween .load-btn:hover:not(:disabled) { background: #ff8c1a; box-shadow: 0 4px 18px rgba(255, 120, 20, .5); }
+html.halloween #prog-bar-fill { background: linear-gradient(90deg, #ff8c1a, #b455ff); box-shadow: 0 0 8px rgba(255, 140, 26, .4); }
+html.halloween .prog-item.loading { border-color: rgba(255, 140, 26, .45); background: rgba(255, 140, 26, .07); }
+
+/* Update notification */
+html.halloween #update-notification {
+    background: linear-gradient(145deg, #2a1330 0%, #160a12 100%);
+    border-left-color: #ff8c1a;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 140, 26, 0.2);
+}
+html.halloween .update-icon { filter: drop-shadow(0 0 8px #ff8c1a); }
+html.halloween .update-btn { background: rgba(255, 140, 26, 0.2); border-color: rgba(255, 140, 26, 0.5); }
+html.halloween .update-btn:hover { background: #ff8c1a; border-color: #ff8c1a; box-shadow: 0 0 12px rgba(255, 140, 26, 0.5); }
+
+/* Footer */
+html.halloween .dmca-footer a { color: #b455ff; }
 
 
 
