@@ -1013,45 +1013,95 @@
 		   likely to be filtered. The game HTML is fetched as text and handed to the
 		   iframe as a blob URL with a <base> tag, because CDNs serve .html as
 		   text/plain and an iframe pointed straight at one would only show source.
-		   Blob URLs inherit the top page's origin, so saves stay local to this site. */
-		const X3E_MIRRORS = [
-		  'https://cdn.jsdelivr.net/gh/gamebackup/',
-		  'https://fastly.jsdelivr.net/gh/gamebackup/',
-		  'https://gcore.jsdelivr.net/gh/gamebackup/',
-		  'https://quantil.jsdelivr.net/gh/gamebackup/',
-		  'https://originfastly.jsdelivr.net/gh/gamebackup/',
-		  'https://testingcf.jsdelivr.net/gh/gamebackup/'
-		];
-		const X3E_MIRROR_TIMEOUT = 7000;
-		const X3E_PRIMARY_TIMEOUT = 2500;
+		   Blob URLs inherit the top page's origin, so saves stay local to this site.
 
+		   Hosts are now probed in parallel (direct origin first, the rest staggered)
+		   and the first one to answer wins, so a filtered host costs milliseconds
+		   instead of a full timeout. Hosts that fail are remembered and skipped. */
+
+		/* A proxy origin you control, e.g. 'https://x3e.example.com' (see
+		   proxy/README.md). It must also be listed in sw.js to work offline.
+		   Leave empty to disable. */
+		const X3E_PROXY_ORIGIN = '';
+
+		/* `prefix(repo)` returns the base URL (trailing slash) that the game's
+		   index.html and its relative assets resolve against on that host. */
+		const X3E_MIRRORS = [
+		  { label: 'jsdelivr-cdn',          prefix: r => 'https://cdn.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'jsdelivr-fastly',       prefix: r => 'https://fastly.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'jsdelivr-gcore',        prefix: r => 'https://gcore.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'jsdelivr-quantil',      prefix: r => 'https://quantil.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'jsdelivr-originfastly', prefix: r => 'https://originfastly.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'jsdelivr-testingcf',    prefix: r => 'https://testingcf.jsdelivr.net/gh/gamebackup/' + r + '@main/' },
+		  { label: 'statically',            prefix: r => 'https://cdn.statically.io/gh/gamebackup/' + r + '/main/' },
+		  { label: 'githack',               prefix: r => 'https://raw.githack.com/gamebackup/' + r + '/main/' },
+		  { label: 'githack-cdn',           prefix: r => 'https://rawcdn.githack.com/gamebackup/' + r + '/main/' }
+		];
+		const X3E_MIRROR_TIMEOUT  = 7000;                 // how long one host may take
+		const X3E_PRIMARY_TIMEOUT = 2500;                 // quick probe of the real origin
+		const X3E_STAGGER_MS      = 300;                  // gap between starting each probe
+		const X3E_RACE_MS         = 12000;                // give up on a game after this
+		const X3E_DEAD_TTL        = 6 * 60 * 60 * 1000;   // skip a failed host for 6 hours
+
+		/* Hosts that just failed, so we stop paying for them on every launch. */
+		function x3eDeadHosts() {
+		  try {
+			const raw = JSON.parse(localStorage.getItem('x3e-mirror-dead') || '{}');
+			const now = Date.now(), live = {};
+			let pruned = false;
+			for (const k in raw) { if (raw[k] > now) live[k] = raw[k]; else pruned = true; }
+			if (pruned) localStorage.setItem('x3e-mirror-dead', JSON.stringify(live));
+			return live;
+		  } catch (e) { return {}; }
+		}
+		function x3eMarkDead(label) {
+		  if (!label || label === 'direct') return;   // the real origin is always worth a try
+		  try {
+			const dead = x3eDeadHosts();
+			dead[label] = Date.now() + X3E_DEAD_TTL;
+			localStorage.setItem('x3e-mirror-dead', JSON.stringify(dead));
+		  } catch (e) {}
+		}
+
+		/* Turn a game URL into the list of hosts we can try for it. A game may be a
+		   directory (probe its index.html) or a single .html file (probe the file). */
 		function x3eMirrorCandidates(gameUrl) {
 		  const m = /^https?:\/\/gamebackup\.github\.io\/([^/]+)\/(.*)$/.exec(gameUrl);
 		  if (!m) return null;
-		  const repo = m[1], rest = m[2].replace(/\/?index\.html$/, '');
-		  const list = [{ label: 'direct', base: 'https://gamebackup.github.io/' + repo + '/' + rest }];
-		  for (const prefix of X3E_MIRRORS) {
-			list.push({ label: prefix, base: prefix + repo + '@main/' + rest });
+		  const repo = m[1];
+		  const rest = m[2].replace(/\/?index\.html$/, '').replace(/^\/+/, '');
+		  const isFile = /\.html?$/i.test(rest);
+		  const dir  = isFile ? rest.replace(/[^/]+$/, '') : (rest ? rest.replace(/\/+$/, '') + '/' : '');
+		  const leaf = isFile ? rest.replace(/^.*\//, '') : 'index.html';
+
+		  // The real origin is probed with the game URL itself; it is never rewritten.
+		  const directBase = 'https://gamebackup.github.io/' + repo + '/' + dir;
+		  const list = [{ label: 'direct', kind: 'direct', probe: gameUrl, base: directBase, budget: X3E_PRIMARY_TIMEOUT }];
+		  const add = (label, prefix) => list.push({
+			label, kind: 'mirror',
+			probe: prefix + dir + leaf,
+			base: prefix + dir,          // <base href> so the game's relative assets resolve
+			budget: X3E_MIRROR_TIMEOUT
+		  });
+
+		  if (X3E_PROXY_ORIGIN) add('proxy', X3E_PROXY_ORIGIN.replace(/\/+$/, '') + '/' + repo + '/');
+
+		  const dead = x3eDeadHosts();
+		  for (const mir of X3E_MIRRORS) {
+			if (dead[mir.label]) continue;
+			add(mir.label, mir.prefix(repo));
 		  }
-		  // collapse accidental double slashes and guarantee a trailing slash
-		  for (const c of list) {
-			let b = c.base.replace(/([^:])\/{2,}/g, '$1/');
-			if (!b.endsWith('/')) b += '/';
-			c.base = b;
+
+		  // collapse accidental double slashes (but never the one in https://)
+		  for (const c of list) c.base = c.base.replace(/([^:])\/{2,}/g, '$1/');
+
+		  // Put whichever host won last time right after the direct probe.
+		  const known = x3eKnownGood();
+		  if (known && known !== 'direct') {
+			const idx = list.findIndex(c => c.label === known);
+			if (idx > 1) list.splice(1, 0, list.splice(idx, 1)[0]);
 		  }
 		  return list;
-		}
-
-		async function x3eFetchWithTimeout(url, ms) {
-		  const ctrl = new AbortController();
-		  const timer = setTimeout(() => ctrl.abort(), ms);
-		  try {
-			const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
-			if (!res.ok) throw new Error('status ' + res.status);
-			return await res.text();
-		  } finally {
-			clearTimeout(timer);
-		  }
 		}
 
 		function x3eShowLoadStatus(msg) {
@@ -1079,49 +1129,84 @@
 		  try { return localStorage.getItem('x3e-mirror') || ''; } catch (e) { return ''; }
 		}
 
+		/* Probe one host after `delay` ms and resolve with { cand, html }, or reject.
+		   Every controller is pushed onto `ctrls` so the winner can cancel the rest. */
+		function x3eProbe(cand, delay, ctrls) {
+		  return new Promise((resolve, reject) => {
+			setTimeout(() => {
+			  const ctrl = new AbortController();
+			  ctrls.push(ctrl);
+			  const timer = setTimeout(() => ctrl.abort(), cand.budget);
+			  fetch(cand.probe, { signal: ctrl.signal, cache: 'no-store' })
+				.then(res => {
+				  if (!res.ok) {
+					const err = new Error('status ' + res.status);
+					err.httpStatus = res.status;
+					throw err;
+				  }
+				  return res.text();
+				})
+				.then(html => { clearTimeout(timer); resolve({ cand, html }); })
+				.catch(err => {
+				  clearTimeout(timer);
+				  // Only a blocked/unreachable host counts as dead. A 404 just means this
+				  // one game is missing, and must not disable the host for everyone else.
+				  if (!err.httpStatus) x3eMarkDead(cand.label);
+				  reject(err);
+				});
+			}, delay);
+		  });
+		}
+
+		/* Race every candidate host and return the first that answers, along with the
+		   URL to load the game from and the prefix its files resolve under (used as
+		   the offline-cache key). Returns null when no host answered at all. */
+		async function x3eResolveCandidates(cands) {
+		  const ctrls = [];
+		  // The direct origin starts at once so an unfiltered network stays on it;
+		  // every other host is staggered slightly to avoid a thundering herd.
+		  const probes = cands.map((cand, i) => x3eProbe(cand, i === 0 ? 0 : i * X3E_STAGGER_MS, ctrls));
+		  const settled = Promise.any(probes);
+		  settled.catch(() => {});   // all-failed case is handled below
+		  const cap = new Promise((_, reject) => setTimeout(() => reject(new Error('race timeout')), X3E_RACE_MS));
+
+		  let winner = null;
+		  try {
+			winner = await Promise.race([settled, cap]);
+		  } catch (e) {
+			winner = null;
+		  } finally {
+			ctrls.forEach(c => { try { c.abort(); } catch (e) {} });
+		  }
+		  if (!winner) return null;
+
+		  x3eRememberWinner(winner.cand.label);
+		  const base = winner.cand.base;
+		  if (winner.cand.kind === 'direct') {
+			// primary is reachable: keep the original, unmodified path
+			return { base, src: winner.cand.probe };
+		  }
+		  // mirror won: inject a <base> so the game's own relative assets resolve
+		  const inhead = winner.html.match(/<head[^>]*>/i);
+		  const tag = '<base href="' + base + '">';
+		  const patched = inhead
+			? winner.html.replace(inhead[0], inhead[0] + tag)
+			: tag + winner.html;
+		  return { base, src: URL.createObjectURL(new Blob([patched], { type: 'text/html' })) };
+		}
+
 		async function x3eLaunchViaMirrors(gameUrl) {
-		  const frame = document.getElementById('game-frame');
 		  const cands = x3eMirrorCandidates(gameUrl);
-		  if (!cands) { frame.src = gameUrl; return; }
+		  if (!cands) { document.getElementById('game-frame').src = gameUrl; return; }
 
-		  // If a mirror won last time, try it first, but only after one quick
-		  // attempt at the direct origin so working networks stay on it.
-		  const known = x3eKnownGood();
-		  if (known && known !== 'direct') {
-			const idx = cands.findIndex(c => c.label === known);
-			if (idx > 1) {
-			  const hit = cands.splice(idx, 1)[0];
-			  cands.splice(1, 0, hit);
-			}
+		  x3eShowLoadStatus('Loading…');
+		  const hit = await x3eResolveCandidates(cands);
+		  if (!hit) {
+			x3eShowLoadStatus('Could not load this game. Check your connection and try again.');
+			return;
 		  }
-
-		  for (let i = 0; i < cands.length; i++) {
-			const cand = cands[i];
-			// first attempt is quick; only mirrors get the long timeout
-			const budget = i === 0 ? X3E_PRIMARY_TIMEOUT : X3E_MIRROR_TIMEOUT;
-			x3eShowLoadStatus(i === 0 ? 'Loading…' : 'Retrying (' + (i + 1) + '/' + cands.length + ')…');
-			try {
-			  const html = await x3eFetchWithTimeout(cand.base + 'index.html', budget);
-			  if (cand.label === 'direct') {
-			    // primary is reachable: keep the original, unmodified path
-			    x3eRememberWinner('direct');
-			    frame.src = gameUrl;
-			    x3eHideLoadStatus();
-			    return;
-			  }
-			  // mirror won: inject a <base> so the game's own relative assets resolve
-			  x3eRememberWinner(cand.label);
-			  const inhead = html.match(/<head[^>]*>/i);
-			  const tag = '<base href="' + cand.base + '">';
-			  const patched = inhead
-			    ? html.replace(inhead[0], inhead[0] + tag)
-			    : tag + html;
-			  frame.src = URL.createObjectURL(new Blob([patched], { type: 'text/html' }));
-			  x3eHideLoadStatus();
-			  return;
-			} catch (e) { /* try next candidate */ }
-		  }
-		  x3eShowLoadStatus('Could not load this game. Check your connection and try again.');
+		  document.getElementById('game-frame').src = hit.src;
+		  x3eHideLoadStatus();
 		}
 
 		function playGame(gameUrl) {
@@ -1320,6 +1405,20 @@ let cachedGamesList = JSON.parse(localStorage.getItem('x3e-cachedGames') || '[]'
 let cacheQueue      = [];
 let cacheIndex      = 0;
 let cacheIframe     = null;
+// Where each cached game's files actually live. A filtered game gets cached under
+// a mirror, not its own URL, so bookkeeping cannot assume the gamebackup path.
+let cachedBases = {};
+try { cachedBases = JSON.parse(localStorage.getItem('x3e-cachedBases') || '{}'); } catch (e) { cachedBases = {}; }
+
+/* Every prefix a cached game's files could live under: the origin it was actually
+   served from (a mirror, when the real origin was filtered) and its own directory on
+   the real origin. Always test both — a stale record must never hide a real file. */
+function cachedPrefixesFor(url) {
+  const i = url.lastIndexOf('/');
+  const own = i > 0 ? url.slice(0, i + 1) : url + '/';
+  const recorded = cachedBases[url];
+  return recorded && recorded !== own ? [recorded, own] : [own];
+}
 
 const NON_CACHEABLE_GAMES = [
   'https://gamebackup.github.io/chord/',
@@ -1340,7 +1439,9 @@ function isGameCacheable(url) {
 }
 
 cachedGamesList = cachedGamesList.filter(url => !NON_CACHEABLE_GAMES.includes(url));
+Object.keys(cachedBases).forEach(u => { if (!cachedGamesList.includes(u)) delete cachedBases[u]; });
 localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+localStorage.setItem('x3e-cachedBases', JSON.stringify(cachedBases));
 
 NON_CACHEABLE_GAMES.forEach(url => swPost({ type: 'CLEAR_GAME', prefix: url }));
 
@@ -1396,11 +1497,9 @@ function openGamePicker() {
   buildPickerList('');
   updateCounter();
   requestCachedUrls().then(urls => {
-    const oldCount = cachedGamesList.length;
-    cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
-    if (cachedGamesList.length !== oldCount) {
-      localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
-      updateOfflineBadge();
+    const before = cachedGamesList.join('\n');
+    pruneCachedList(urls);
+    if (cachedGamesList.join('\n') !== before) {
       buildPickerList(document.getElementById('picker-search').value);
     }
   });
@@ -1510,7 +1609,7 @@ async function startCaching() {
   cacheNextGame();
 }
 
-function cacheNextGame() {
+async function cacheNextGame() {
   if (cacheIndex >= cacheQueue.length) { finishCaching(); return; }
   const g = cacheQueue[cacheIndex], n = cacheQueue.length;
 
@@ -1521,6 +1620,20 @@ function cacheNextGame() {
   const item = document.getElementById(`prog-item-${cacheIndex}`);
   if (icon) icon.textContent = '🔄';
   if (item) item.classList.add('loading');
+
+  const advance = () => { cacheIndex++; setTimeout(cacheNextGame, 800); };
+
+  // Find a host that actually answers, using the same fallback playGame uses.
+  // Without this a filtered origin hands us its block page, and we would happily
+  // "cache" that instead of the game.
+  const cands = x3eMirrorCandidates(g.url);
+  const hit = cands ? await x3eResolveCandidates(cands) : null;
+  if (!hit) {
+    if (icon) icon.textContent = '⚠️';
+    if (item) item.classList.remove('loading');
+    advance();
+    return;
+  }
 
   if (cacheIframe) cacheIframe.remove();
   cacheIframe = document.createElement('iframe');
@@ -1540,14 +1653,17 @@ function cacheNextGame() {
       cachedGamesList.push(g.url);
       localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
     }
-    cacheIndex++;
-    setTimeout(cacheNextGame, 800);
+    // Remember where the files came from, so the offline check and the purge
+    // look under the origin that actually served them.
+    cachedBases[g.url] = hit.base;
+    localStorage.setItem('x3e-cachedBases', JSON.stringify(cachedBases));
+    advance();
   };
 
   cacheIframe.onload  = () => setTimeout(markDone, CACHE_WAIT_MS);
   cacheIframe.onerror = () => markDone();
   setTimeout(markDone, CACHE_MAX_MS);
-  cacheIframe.src = g.url;
+  cacheIframe.src = hit.src;
 }
 
 function finishCaching() {
@@ -1597,11 +1713,16 @@ function purgeAllGameCaches() {
     setTimeout(resolve, 2000);
   });
 
-  const prefixes = [...new Set(cachedGamesList.map(url => { const i = url.lastIndexOf('/'); return i > 0 ? url.slice(0, i + 1) : url + '/'; }))];
+  // Clear wherever each game's files actually live, plus the real origin's copy
+  // in case that is the origin that answered when the game was preloaded.
+  const prefixes = new Set();
+  cachedGamesList.forEach(url => cachedPrefixesFor(url).forEach(p => prefixes.add(p)));
 
-  Promise.all(prefixes.map(sendClear)).then(() => {
+  Promise.all([...prefixes].map(sendClear)).then(() => {
     cachedGamesList = [];
+    cachedBases = {};
     localStorage.setItem('x3e-cachedGames', JSON.stringify([]));
+    localStorage.setItem('x3e-cachedBases', JSON.stringify({}));
     updateOfflineBadge();
     markCachedButtons();
     alert('All cached game data has been removed.');
@@ -1623,11 +1744,24 @@ function markCachedButtons() {
   });
 }
 
-function handleCachedUrlsResponse(urls) {
-  cachedGamesList = cachedGamesList.filter(url => urls.some(cached => cached.startsWith(url)));
+/* Drop games whose files are no longer in the cache, checking the prefix each
+   game was actually cached under, then forget the bases of the games we dropped. */
+function pruneCachedList(cachedUrls) {
+  cachedGamesList = cachedGamesList.filter(url => {
+    const prefixes = cachedPrefixesFor(url);
+    return cachedUrls.some(cached => prefixes.some(p => cached.startsWith(p)));
+  });
+  const keep = {};
+  cachedGamesList.forEach(u => { if (cachedBases[u]) keep[u] = cachedBases[u]; });
+  cachedBases = keep;
   localStorage.setItem('x3e-cachedGames', JSON.stringify(cachedGamesList));
+  localStorage.setItem('x3e-cachedBases', JSON.stringify(cachedBases));
   updateOfflineBadge();
   markCachedButtons();
+}
+
+function handleCachedUrlsResponse(urls) {
+  pruneCachedList(urls);
 }
 
 

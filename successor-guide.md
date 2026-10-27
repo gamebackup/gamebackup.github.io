@@ -17,7 +17,7 @@ the whole thing is **vanilla HTML/CSS/JS**. no framework, no packages. you push 
 The site is split across ~10 repos (at the time of writing this) working together:
 
 ### This repo (`gamebackup.github.io`)
-Contains the **shell** — the HTML homepage, CSS, service worker, manifest, and images. think of it as a storefront.
+Contains the **shell** — the HTML homepage, CSS, service worker, manifest, and images. think of it as a storefront. it also contains `proxy/`, an optional pass-through server that can re-serve the same game files from a hostname you control (see section 6). nothing depends on it — the site behaves exactly as before while `X3E_PROXY_ORIGIN` is empty.
 
 ### The game repos
 Games are organized into **category repos**, each deployed as a GitHub Pages project site at `https://gamebackup.github.io/<repo-name>/`. Each repo contains many games as subdirectories.
@@ -59,7 +59,9 @@ The HTML includes:
 - **volume control** — slider that adjusts audio/video in the iframe
 - **update notification** — fetches raw GitHub index.html every 10 minutes, compares version meta tag (the meta tag is near the top of the index.html code)
 - **settings modal** — tab cloaking picker, offline game preloader, volume, changelog, danger zone stuff
-- **offline play system** — lets users select up to 5 games at a time to cache via the service worker
+- **mirror failover** — probes the real origin plus several CDN mirrors at once and loads from whichever answers first (see section 6)
+- **offline play system** — lets users select up to 5 games at a time to cache via the service worker. it resolves through the same failover as playGame, so a filtered game can still be preloaded
+- **optional proxy** — can serve everything from your own hostname (see section 6)
 - **an unholy amount of spaghetti code** — good luck with all that spaghetti
 
 ### `style.css` (makes the site pretty)
@@ -67,7 +69,7 @@ Dark theme with neon pink accent (#e61587). Glitch text on the title. Particle c
 
 ### `sw.js` (literally all for the offline caching) — Service Worker
 Handles offline caching. Two modes:
-- **Normal**: caches `gamebackup.github.io` URLs only, cache-first with network fallback
+- **Normal**: serves `gamebackup.github.io` URLs (plus the configured proxy origin) cache-first with network fallback. it also serves back anything a mirror cached during a preload, but never writes mirror responses to the cache here, so ordinary CDN traffic is not intercepted
 - **Preload session**: activated via `START_SESSION` message — caches everything (any origin) for offline preloading
 
 ### `404.html`
@@ -78,6 +80,9 @@ Custom error page, nothing else to say
 
 ### `dedications.html`
 exactly what it says on the tin. currently not attached to the main site, just a file floating in space
+
+### `proxy/` (optional)
+a small pass-through server you can deploy to a hostname you control, so the games keep loading even when the gamebackup *and* jsDelivr domains are blocked. see section 6.
 
 ### `images/`
 site images served via jsdelivr cdn (`cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/...`).
@@ -158,9 +163,73 @@ The service worker (`sw.js`) enables two things:
 2. **Offline game preloading** — users can select up to 5 games from the settings menu. The site opens each game in a hidden iframe; the service worker caches all assets during a "preload session."
 
 If the service worker breaks:
-- Check that it's being registered correctly (lines 1353-1365 of index.html)
-- Bump the `CACHE_NAME` in sw.js (currently `x3e-offline-v2`) to force a fresh cache
-- The `CLEAR_GAME` message handler has a security check — it only allows clearing URLs under `gamebackup.github.io/`
+- Check that it's being registered correctly (around line 1771 of index.html)
+- Bump the `CACHE_NAME` in sw.js (currently `x3e-offline-v3`) to force a fresh cache for everyone
+- The `CLEAR_GAME` message handler has a security check — it only clears URLs under `gamebackup.github.io/`, the configured proxy origin, or a known mirror host
+
+The preloader also records *where* each game's files came from, in `x3e-cachedBases`,
+because a filtered game gets cached under a mirror rather than its own URL. the offline
+badge, the "already cached" marker and "Unload Loaded Games" all key off that, so if
+the badge ever lies, that map is what to look at.
+
+### Mirror Failover
+
+this is what keeps games playable when the real origin is filtered.
+
+when a game button is clicked, `playGame()` sees a `gamebackup.github.io/<repo>/...`
+URL and calls `x3eLaunchViaMirrors()`. that builds a list of *candidates* — the real
+origin plus a pile of CDN mirrors serving the same git repo — and **probes them all at
+once**, taking the first to answer:
+
+- the real origin is probed immediately, with a short 2500ms budget
+- every other host starts 300ms later than the one before it, so clicking a game does
+  not fire ten simultaneous requests
+- the first host to return a real 200 wins and every other probe is aborted
+- the whole race is capped at 12 seconds
+
+this replaced an older loop that tried hosts strictly one after another — on a filtered
+network that meant waiting roughly a minute before it gave up. now a blocked host costs
+milliseconds.
+
+if the real origin wins, the iframe loads the original URL untouched. if a mirror wins,
+the game's HTML is fetched as text, a `<base href>` pointing at the mirror is injected,
+and the result is handed to the iframe as a blob URL. the `<base>` is what makes the
+game's own relative asset paths resolve on the mirror, and CDNs serve `.html` as
+`text/plain`, which is why the iframe cannot just point at one directly.
+
+hosts that fail are remembered in `localStorage` (`x3e-mirror-dead`) and skipped for 6
+hours, so you stop paying for a dead host. only *network* failures count — a 404 for one
+missing game must not disable that host for every other game. the last winner is
+remembered in `x3e-mirror` and tried first next time.
+
+**to add a mirror:** add an entry to `X3E_MIRRORS` in index.html *and* add its hostname
+to `X3E_MIRROR_HOSTS` in sw.js. those two lists have to stay in sync, same rule as the
+cloak presets. each entry is `{ label, prefix(repo) }`, because the path shape differs
+per CDN (`@main/` for jsDelivr, `/main/` for the others).
+
+### The Game Proxy (`proxy/`)
+
+`proxy/worker.js` is an optional pass-through server. it serves the exact same game
+files under **your own hostname**, so if the gamebackup *and* jsDelivr domains are both
+categorized and blocked, games still load from somewhere the filter has not seen.
+
+it is a one-to-one mapping — `/<repo>/<path>` becomes
+`gamebackup.github.io/<repo>/<path>` — with a jsDelivr fallback, and the upstream host
+is hard-coded so it is not an open proxy. the same file runs on Cloudflare Workers,
+Deno Deploy and Vercel edge functions.
+
+**the hostname is the whole problem.** shared platform subdomains (`*.workers.dev`,
+`*.deno.dev`, `*.vercel.app`) are used by thousands of sites doing exactly this, so
+they tend to get categorized wholesale. a domain you own (~$10/year) pointed at one of
+those platforms is the only durable answer. `proxy/README.md` has the deploy steps.
+
+**to wire it up:** set `X3E_PROXY_ORIGIN` in **both** index.html and sw.js to the
+deployed origin — just the origin, no trailing slash or path. leave it `''` to disable.
+the proxy is probed second, right after the quick probe of the real origin.
+
+**you never have to touch `finalproduct-v2.html` for any of this.** it fetches
+index.html at runtime, so existing users pick up new config automatically and never
+have to re-download the file they use to get in.
 
 ### Update Notification
 Every 10 minutes, the site fetches the raw GitHub version of index.html (bytes 0-1500 via Range header) and compares the `x3e-version` meta tag. If different, it shows a "New Update Available" banner. The user clicks Update to reload.
@@ -222,6 +291,7 @@ Also important:
 - Check if the game repo still exists in the `gamebackup` org
 - Check if the game's index.html is valid
 - Some games need specific browser features — Flash games need Ruffle, WASM games need a modern browser
+- If it's *every* game, the network is filtering every host. check `localStorage['x3e-mirror-dead']`, and consider deploying the proxy (section 6) to get a hostname the filter doesn't know yet
 
 ### "The site won't load"
 - GitHub Pages might be down (rare)
@@ -256,6 +326,7 @@ Also important:
 - [ ] **Check external links** — the Google Doc links, forms, external game links. They can break
 - [ ] **Test tab cloaking presets** — external favicon URLs change over time
 - [ ] **Test the service worker** — make sure caching and offline play still work
+- [ ] **Test mirror failover** — from a filtered network, check that games still load and that `localStorage['x3e-mirror-dead']` isn't full of hosts
 - [ ] **Review the Q&A doc** — make sure it stays relevant
 
 ---
@@ -264,13 +335,26 @@ Also important:
 
 ### Key Constants in index.html
 
-| Constant | Line | Value | Purpose |
-|---|---|---|---|
-| `CACHEABLE_BASE` | 1031 | `https://gamebackup.github.io` | Only URLs under this are cacheable |
-| `MAX_SELECT` | 1032 | 5 | Max games for offline preload |
-| `CACHE_WAIT_MS` | 1033 | 12000 | Wait time after iframe loads |
-| `CACHE_MAX_MS` | 1034 | 25000 | Hard timeout for caching |
-| `CHECK_INTERVAL` | 984 | 10 min | Update check frequency |
+line numbers move every time someone edits those files — if one of these looks wrong,
+just search for the constant name. at the time of writing:
+
+| Constant | Line | File | Value | Purpose |
+|---|---|---|---|---|
+| `X3E_PROXY_ORIGIN` | 1025 | index.html | `''` | Proxy origin, empty = disabled. **must match sw.js** |
+| `X3E_MIRRORS` | 1029 | index.html | 9 hosts | CDN mirrors, as `{ label, prefix(repo) }` |
+| `X3E_MIRROR_TIMEOUT` | 1040 | index.html | 7000 | Budget for one mirror probe |
+| `X3E_PRIMARY_TIMEOUT` | 1041 | index.html | 2500 | Budget for the real origin's probe |
+| `X3E_STAGGER_MS` | 1042 | index.html | 300 | Delay between starting each probe |
+| `X3E_RACE_MS` | 1043 | index.html | 12000 | Give up on a game after this |
+| `X3E_DEAD_TTL` | 1044 | index.html | 6 hours | How long a failed host is skipped |
+| `CHECK_INTERVAL` | 1350 | index.html | 10 min | Update check frequency |
+| `CACHEABLE_BASE` | 1397 | index.html | `https://gamebackup.github.io` | Only URLs under this are cacheable |
+| `MAX_SELECT` | 1398 | index.html | 5 | Max games for offline preload |
+| `CACHE_WAIT_MS` | 1399 | index.html | 12000 | Wait time after iframe loads |
+| `CACHE_MAX_MS` | 1400 | index.html | 25000 | Hard timeout for caching |
+| `CACHE_NAME` | 1 | sw.js | `x3e-offline-v3` | Bump to force a fresh cache for everyone |
+| `X3E_PROXY_ORIGIN` | 6 | sw.js | `''` | Must match index.html, otherwise offline caching ignores the proxy |
+| `X3E_MIRROR_HOSTS` | 18 | sw.js | 9 hosts | Mirror hosts the SW may serve from cache. **must match `X3E_MIRRORS`** |
 
 ### Key Service Worker Messages
 

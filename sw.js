@@ -1,6 +1,47 @@
 const CACHE_NAME = 'x3e-offline-v3';
 let preloadSession = false;
 
+// Keep this in sync with X3E_PROXY_ORIGIN in index.html, otherwise offline
+// caching ignores everything the proxy serves. Empty string = disabled.
+const X3E_PROXY_ORIGIN = '';
+
+// The origins whose responses belong in the offline cache.
+function isX3eUrl(url) {
+  if (url.includes('gamebackup.github.io')) return true;
+  if (!X3E_PROXY_ORIGIN) return false;
+  return url.startsWith(X3E_PROXY_ORIGIN.replace(/\/+$/, '') + '/');
+}
+
+// Keep this in sync with X3E_MIRRORS in index.html. Between an activated preload
+// session, a filtered game is cached under a mirror rather than its own URL, so
+// these hosts are served back from the cache when we have them.
+const X3E_MIRROR_HOSTS = [
+  'cdn.jsdelivr.net',
+  'fastly.jsdelivr.net',
+  'gcore.jsdelivr.net',
+  'quantil.jsdelivr.net',
+  'originfastly.jsdelivr.net',
+  'testingcf.jsdelivr.net',
+  'cdn.statically.io',
+  'raw.githack.com',
+  'rawcdn.githack.com'
+];
+
+function hostOf(url) {
+  try { return new URL(url).hostname; } catch (e) { return ''; }
+}
+function isMirrorUrl(url) { return X3E_MIRROR_HOSTS.includes(hostOf(url)); }
+
+/* A CLEAR_GAME request is only honoured for prefixes that really belong to a game:
+   the real origin, the configured proxy, or a known mirror host. */
+function isSafeClearPrefix(prefix) {
+  if (typeof prefix !== 'string' || !prefix.startsWith('https://')) return false;
+  if (prefix.startsWith('https://gamebackup.github.io/') && prefix !== 'https://gamebackup.github.io/') return true;
+  if (X3E_PROXY_ORIGIN && prefix.startsWith(X3E_PROXY_ORIGIN.replace(/\/+$/, '') + '/')) return true;
+  if (!X3E_MIRROR_HOSTS.includes(hostOf(prefix))) return false;
+  return new URL(prefix).pathname.length > 1;
+}
+
 // ── Lifecycle ────────────────────────────────────────────────────
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
@@ -24,7 +65,10 @@ self.addEventListener('activate', e => {
 });
 
 function validCached(res) {
-  return res && res.ok && res.status !== 0 && res.type === 'basic';
+  // 'basic' = same-origin, 'cors' = a CORS read of a mirror/proxy origin. Both
+  // are real, readable responses. Opaque responses have status 0 and are still
+  // rejected, so a failed cross-origin load is never cached as a game.
+  return res && res.ok && res.status !== 0 && (res.type === 'basic' || res.type === 'cors');
 }
 
 // Network-first: always fetch the latest from the network, and refresh the
@@ -72,8 +116,23 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Normal operation – only cache gamebackup.github.io
-  if (!e.request.url.includes('gamebackup.github.io')) return;
+  // Normal operation – only the x3e origins. Mirror responses are also served
+  // back from the cache when it holds them (so a game preloaded through a mirror
+  // still runs offline), but are otherwise left completely alone, so ordinary
+  // CDN traffic is never intercepted or written to the cache here.
+  if (!isX3eUrl(e.request.url)) {
+    if (isMirrorUrl(e.request.url)) {
+      e.respondWith(
+        caches.open(CACHE_NAME).then(cache =>
+          cache.match(e.request).then(hit => {
+            if (hit && validCached(hit)) return hit;
+            return fetch(e.request);
+          })
+        )
+      );
+    }
+    return;
+  }
 
   // Emulator runtime + core files must always revalidate so that updated
   // cores (e.g. picodrive-wasm.data) never get pinned to an old, broken copy.
@@ -119,7 +178,7 @@ self.addEventListener('message', e => {
     const port = e.ports ? e.ports[0] : null;
     const respond = () => { if (port) port.postMessage('done'); };
 
-    if (prefix.startsWith('https://gamebackup.github.io/') && prefix !== 'https://gamebackup.github.io/') {
+    if (isSafeClearPrefix(prefix)) {
       caches.open(CACHE_NAME).then(c =>
         c.keys().then(keys =>
           Promise.all(

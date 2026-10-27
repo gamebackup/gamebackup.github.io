@@ -1,0 +1,9 @@
+# Optional. Only needed to deploy to Cloudflare Workers or to run `wrangler dev`
+# locally. Deno Deploy / Vercel / Netlify ignore this file entirely.
+name = "x3e-proxy"
+main = "worker.js"
+compatibility_date = "2026-10-27"
+
+# Cloudflare gives you https://x3e-proxy.<your-subdomain>.workers.dev, but shared
+# *.workers.dev hostnames are commonly filtered. Add a domain you own under
+# Workers -> your worker -> Settings -> Domains & Routes for this to be useful.
