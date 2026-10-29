@@ -157,7 +157,7 @@
 
 	<div class="section">
 		<h2>10 Most Recent Games:</h2>
-		<div class="button-grid">
+		<div class="button-grid" id="recent-games-grid">
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/doom2/')">DOOM 1994*</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/doom3-demo/')">DOOM 3 - Demo**</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/doom3/')">DOOM 3 **</button>
@@ -1130,13 +1130,22 @@
 		}
 
 		/* Probe one host after `delay` ms and resolve with { cand, html }, or reject.
-		   Every controller is pushed onto `ctrls` so the winner can cancel the rest. */
+		   Controllers are registered immediately so a winner also cancels probes
+		   that have not started yet instead of letting them hit the network. */
 		function x3eProbe(cand, delay, ctrls) {
 		  return new Promise((resolve, reject) => {
-			setTimeout(() => {
-			  const ctrl = new AbortController();
-			  ctrls.push(ctrl);
-			  const timer = setTimeout(() => ctrl.abort(), cand.budget);
+			const ctrl = new AbortController();
+			ctrls.push(ctrl);
+			let settled = false;
+			const fail = err => {
+			  if (settled) return;
+			  settled = true;
+			  reject(err);
+			};
+			const start = setTimeout(() => {
+			  if (ctrl.signal.aborted) { fail(new DOMException('Aborted', 'AbortError')); return; }
+			  let timedOut = false;
+			  const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, cand.budget);
 			  fetch(cand.probe, { signal: ctrl.signal, cache: 'no-store' })
 				.then(res => {
 				  if (!res.ok) {
@@ -1146,15 +1155,25 @@
 				  }
 				  return res.text();
 				})
-				.then(html => { clearTimeout(timer); resolve({ cand, html }); })
+				.then(html => {
+				  clearTimeout(timer);
+				  if (settled) return;
+				  settled = true;
+				  resolve({ cand, html });
+				})
 				.catch(err => {
 				  clearTimeout(timer);
-				  // Only a blocked/unreachable host counts as dead. A 404 just means this
-				  // one game is missing, and must not disable the host for everyone else.
-				  if (!err.httpStatus) x3eMarkDead(cand.label);
-				  reject(err);
+				  // A probe cancelled by the winner is not a dead host. A 404 only means
+				  // this one game is missing; only blocked/unreachable hosts are remembered.
+				  if (err.name !== 'AbortError' && !err.httpStatus) x3eMarkDead(cand.label);
+				  else if (timedOut) x3eMarkDead(cand.label);
+				  fail(err);
 				});
 			}, delay);
+			ctrl.signal.addEventListener('abort', () => {
+			  clearTimeout(start);
+			  fail(new DOMException('Aborted', 'AbortError'));
+			}, { once: true });
 		  });
 		}
 
@@ -1209,8 +1228,56 @@
 		  x3eHideLoadStatus();
 		}
 
+		/* ── Recently played games ── */
+		const RECENT_GAMES_KEY = 'x3e-recentGames';
+		const RECENT_GAMES_LIMIT = 10;
+
+		function getRecentGames() {
+		  try {
+			const list = JSON.parse(localStorage.getItem(RECENT_GAMES_KEY) || '[]');
+			return Array.isArray(list) ? list.filter(g => g && typeof g.url === 'string') : [];
+		  } catch (e) { return []; }
+		}
+
+		/* Use the label the game already has on the page, so the recent list keeps
+		   the same names, stars and warnings as the category button. */
+		function gameLabelForUrl(gameUrl) {
+		  const btn = Array.from(document.querySelectorAll('.button-grid button')).find(b => {
+			const m = (b.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+			return m && m[1] === gameUrl;
+		  });
+		  if (btn) return btn.innerText.replace(/\s*💾\s*$/, '').trim();
+		  try {
+			const leaf = decodeURIComponent(gameUrl.replace(/\/$/, '').split('/').pop());
+			return leaf || gameUrl;
+		  } catch (e) { return gameUrl; }
+		}
+
+		function recordRecentGame(gameUrl) {
+		  if (!gameUrl) return;
+		  const list = getRecentGames().filter(g => g.url !== gameUrl);
+		  list.unshift({ name: gameLabelForUrl(gameUrl), url: gameUrl });
+		  try {
+			localStorage.setItem(RECENT_GAMES_KEY, JSON.stringify(list.slice(0, RECENT_GAMES_LIMIT)));
+		  } catch (e) {}
+		}
+
+		function renderRecentGames() {
+		  const grid = document.getElementById('recent-games-grid');
+		  const recent = getRecentGames();
+		  if (!grid || !recent.length) return;
+		  grid.innerHTML = '';
+		  recent.slice(0, RECENT_GAMES_LIMIT).forEach(g => {
+			const btn = document.createElement('button');
+			btn.textContent = g.name;
+			btn.setAttribute('onclick', "playGame('" + g.url + "')");
+			grid.appendChild(btn);
+		  });
+		}
+
 		function playGame(gameUrl) {
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
+		  recordRecentGame(gameUrl);
 		  document.activeElement && document.activeElement.blur();
 		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
@@ -1226,6 +1293,7 @@
 		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
 		  document.getElementById('game-frame').src = '';
+		  renderRecentGames();
 		  const saved = sessionStorage.getItem('x3e-scrollY');
 		  if (saved !== null) { window.scrollTo(0, parseInt(saved, 10)); sessionStorage.removeItem('x3e-scrollY'); }
 		}
@@ -1784,9 +1852,16 @@ document.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', e => { if (e.target.id === 'game-picker-overlay' && !cachingLock) closeGamePicker(); });
 });
 		(function() {
-    const allButtons = document.querySelectorAll('.button-grid button[onclick^="playGame(\'"]');
-    const total = allButtons.length;
-    const gameCount = total - 10;   
+    renderRecentGames();
+
+    // Count unique game URLs instead of assuming the recent list is always ten
+    // entries. The recent list changes with what the visitor has played.
+    const urls = new Set();
+    document.querySelectorAll('.button-grid button').forEach(btn => {
+        const m = (btn.getAttribute('onclick') || '').match(/playGame\('([^']+)'\)/);
+        if (m) urls.add(m[1]);
+    });
+    const gameCount = urls.size;
 
     const countSpan = document.getElementById('game-count-number');
     const titleDiv  = document.querySelector('.glitch-title');

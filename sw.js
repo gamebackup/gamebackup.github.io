@@ -1,4 +1,4 @@
-const CACHE_NAME = 'x3e-offline-v3';
+const CACHE_NAME = 'x3e-offline-v4';
 let preloadSession = false;
 
 // Keep this in sync with X3E_PROXY_ORIGIN in index.html, otherwise offline
@@ -31,6 +31,13 @@ function hostOf(url) {
   try { return new URL(url).hostname; } catch (e) { return ''; }
 }
 function isMirrorUrl(url) { return X3E_MIRROR_HOSTS.includes(hostOf(url)); }
+
+/* A cancelled mirror probe must still settle respondWith(), otherwise the
+   browser logs "a ServiceWorker passed a promise ... that rejected" for what is
+   an intentional abort by the winning host. */
+function mirrorUnavailable() {
+  return new Response('', { status: 504, statusText: 'Mirror unavailable' });
+}
 
 /* A CLEAR_GAME request is only honoured for prefixes that really belong to a game:
    the real origin, the configured proxy, or a known mirror host. */
@@ -112,7 +119,14 @@ self.addEventListener('fetch', e => {
   // During a preload session, fetch everything fresh from the network and
   // cache it for offline use (any origin).
   if (preloadSession) {
-    e.respondWith(networkFirst(e.request));
+    e.respondWith(
+      networkFirst(e.request).catch(err => {
+        // Same intentional cancellation as below: a mirror probe is aborted as
+        // soon as another host wins, so answer it instead of rejecting.
+        if (isMirrorUrl(e.request.url)) return mirrorUnavailable();
+        throw err;
+      })
+    );
     return;
   }
 
@@ -126,7 +140,10 @@ self.addEventListener('fetch', e => {
         caches.open(CACHE_NAME).then(cache =>
           cache.match(e.request).then(hit => {
             if (hit && validCached(hit)) return hit;
-            return fetch(e.request);
+            // A mirror probe can be cancelled the moment another host wins.
+            // Returning a failed response keeps respondWith() from rejecting and
+            // filling the console with a network error for an intentional cancel.
+            return fetch(e.request).catch(mirrorUnavailable);
           })
         )
       );

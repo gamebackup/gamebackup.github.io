@@ -164,7 +164,7 @@ The service worker (`sw.js`) enables two things:
 
 If the service worker breaks:
 - Check that it's being registered correctly (around line 1771 of index.html)
-- Bump the `CACHE_NAME` in sw.js (currently `x3e-offline-v3`) to force a fresh cache for everyone
+- Bump the `CACHE_NAME` in sw.js (currently `x3e-offline-v4`) to force a fresh cache for everyone
 - The `CLEAR_GAME` message handler has a security check — it only clears URLs under `gamebackup.github.io/`, the configured proxy origin, or a known mirror host
 
 The preloader also records *where* each game's files came from, in `x3e-cachedBases`,
@@ -352,7 +352,7 @@ just search for the constant name. at the time of writing:
 | `MAX_SELECT` | 1398 | index.html | 5 | Max games for offline preload |
 | `CACHE_WAIT_MS` | 1399 | index.html | 12000 | Wait time after iframe loads |
 | `CACHE_MAX_MS` | 1400 | index.html | 25000 | Hard timeout for caching |
-| `CACHE_NAME` | 1 | sw.js | `x3e-offline-v3` | Bump to force a fresh cache for everyone |
+| `CACHE_NAME` | 1 | sw.js | `x3e-offline-v4` | Bump to force a fresh cache for everyone |
 | `X3E_PROXY_ORIGIN` | 6 | sw.js | `''` | Must match index.html, otherwise offline caching ignores the proxy |
 | `X3E_MIRROR_HOSTS` | 18 | sw.js | 9 hosts | Mirror hosts the SW may serve from cache. **must match `X3E_MIRRORS`** |
 
