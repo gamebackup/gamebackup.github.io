@@ -1196,6 +1196,24 @@ nav a:hover::after {
     letter-spacing: 1px;
 }
 
+/* Shown in place of the timer once the contest deadline passes */
+.countdown-winner {
+    display: none;
+    font-size: 1.15rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow: 0 0 10px #e61587;
+}
+
+.countdown-winner.show {
+    display: block;
+}
+
+.countdown-winner .winner-name {
+    color: #e61587;
+}
+
 /* ========== CHANGELOG ========== */
 .changelog-date { color: #e61587; }
 

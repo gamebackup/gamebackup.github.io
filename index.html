@@ -126,6 +126,9 @@
             <span class="countdown-label">SECONDS</span>
         </div>
     </div>
+    <div class="countdown-winner" id="countdown-winner">
+        🏆 <span class="winner-name">Lucian P</span> wins the contest with 14 high scores
+    </div>
 </div>
 
 	<div id="update-notification" class="hidden">
@@ -2036,6 +2039,13 @@ document.addEventListener('DOMContentLoaded', () => {
     <script>
         const COUNTDOWN_TARGET = new Date('2026-11-02T00:00:00').getTime();
 
+        function showContestResult() {
+            const timer = document.getElementById('countdown-timer');
+            const winner = document.getElementById('countdown-winner');
+            if (timer) timer.style.display = 'none';
+            if (winner) winner.classList.add('show');
+        }
+
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = COUNTDOWN_TARGET - now;
@@ -2045,8 +2055,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('countdown-hours').textContent = '00';
                 document.getElementById('countdown-minutes').textContent = '00';
                 document.getElementById('countdown-seconds').textContent = '00';
-                clearInterval(countdownInterval);
-                return;
+                showContestResult();
+                if (countdownInterval) clearInterval(countdownInterval);
+                return false;
             }
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -2058,10 +2069,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('countdown-hours').textContent = String(hours).padStart(2, '0');
             document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
             document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
+            return true;
         }
 
-        updateCountdown();
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        // Declared before the first tick: the first call runs before the interval
+        // exists, and it is what decides whether a timer is needed at all.
+        let countdownInterval = null;
+        if (updateCountdown()) countdownInterval = setInterval(updateCountdown, 1000);
     </script>
 
     <script>
