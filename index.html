@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
-    <meta name="x3e-version" content="2026/11/5-1">
+    <meta name="x3e-version" content="2026/11/5-2">
 	<script>
 (function(){
     var cloakPresets = {
@@ -2117,6 +2117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             var grid = section.querySelector(':scope > .button-grid');
             var h2 = section.querySelector(':scope > h2');
             if (!grid || !h2) return;
+            // The recents list is always expanded: no arrow, no collapsing.
+            if (/^10\s+most\s+recent/i.test(h2.textContent.trim())) return;
             section.classList.add('collapsible');
             h2.setAttribute('tabindex', '0');
             h2.setAttribute('role', 'button');
