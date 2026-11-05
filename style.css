@@ -182,6 +182,22 @@ nav a:hover::after {
     color: #ff5fa8;
 }
 
+/* Collapse indicator: ▼ open, rotating to ▶ when collapsed.
+   inline-block so the transform applies to the pseudo-element. */
+.section.collapsible h2::after {
+    content: '▼';
+    display: inline-block;
+    margin-left: 10px;
+    font-size: .7em;
+    vertical-align: middle;
+    transform: rotate(0deg);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.section.collapsible.collapsed h2::after {
+    transform: rotate(-90deg);
+}
+
 .button-grid {
     display: flex;
     flex-wrap: wrap;
