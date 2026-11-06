@@ -114,6 +114,27 @@ async function cacheFirst(request) {
 
 // ── Fetch handler ────────────────────────────────────────────────
 self.addEventListener('fetch', e => {
+  /*
+     Poptropica mirrors call two legacy endpoints with a leading slash, so they land
+     on the site root rather than beside the game: /getPrefix.php (POST) tells the
+     client which base to resolve every asset against, and when it fails the client
+     falls back to "/" and then asks for /framework/data/config.xml, which does not
+     exist at the root either. GitHub Pages answers a POST with 405 and the file with
+     404, and no folder-scoped worker can reach either path - this root worker is the
+     only place they can be answered.
+  */
+  const rootPath = new URL(e.request.url).pathname;
+
+  if (rootPath === '/getPrefix.php') {
+    // Empty rather than ".": the client concatenates this onto paths such as
+    // "images//flags/flag-index.txt", where a leading dot produces ".images/...".
+    e.respondWith(new Response('prefix=', {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    }));
+    return;
+  }
+
   if (e.request.method !== 'GET') return;
 
   // During a preload session, fetch everything fresh from the network and
