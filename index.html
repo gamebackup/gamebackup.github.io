@@ -126,9 +126,6 @@
             <span class="countdown-label">SECONDS</span>
         </div>
     </div>
-    <div class="countdown-winner" id="countdown-winner">
-        🏆 <span class="winner-name">Lucian P</span> wins the contest with 14 high scores
-    </div>
 </div>
 
 	<div id="update-notification" class="hidden">
@@ -2059,14 +2056,7 @@ document.addEventListener('DOMContentLoaded', () => {
  		</div>
  	</div>
     <script>
-        const COUNTDOWN_TARGET = new Date('2026-11-02T00:00:00').getTime();
-
-        function showContestResult() {
-            const timer = document.getElementById('countdown-timer');
-            const winner = document.getElementById('countdown-winner');
-            if (timer) timer.style.display = 'none';
-            if (winner) winner.classList.add('show');
-        }
+        const COUNTDOWN_TARGET = new Date('2027-01-21T00:00:00').getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -2077,7 +2067,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('countdown-hours').textContent = '00';
                 document.getElementById('countdown-minutes').textContent = '00';
                 document.getElementById('countdown-seconds').textContent = '00';
-                showContestResult();
                 if (countdownInterval) clearInterval(countdownInterval);
                 return false;
             }
