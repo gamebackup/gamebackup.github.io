@@ -1,4 +1,4 @@
-const CACHE_NAME = 'x3e-offline-v4';
+const CACHE_NAME = 'x3e-offline-v5';
 let preloadSession = false;
 
 // Keep this in sync with X3E_PROXY_ORIGIN in index.html, otherwise offline
@@ -7,6 +7,9 @@ const X3E_PROXY_ORIGIN = '';
 
 // The origins whose responses belong in the offline cache.
 function isX3eUrl(url) {
+  // Same origin as this worker: the live site, and also local previews
+  // (127.0.0.1 / localhost) where the hostname is not gamebackup.github.io.
+  if (url.startsWith(self.location.origin + '/')) return true;
   if (url.includes('gamebackup.github.io')) return true;
   if (!X3E_PROXY_ORIGIN) return false;
   return url.startsWith(X3E_PROXY_ORIGIN.replace(/\/+$/, '') + '/');
@@ -49,6 +52,26 @@ function isSafeClearPrefix(prefix) {
   return new URL(prefix).pathname.length > 1;
 }
 
+/* ── Cross-origin isolation ───────────────────────────────────────
+   GitHub Pages cannot send response headers, so this worker stamps the two
+   that make a document crossOriginIsolated onto every same-origin response it
+   serves: that is what gives the 3DS emulator access to SharedArrayBuffer.
+   A nested document only counts as isolated when it carries COEP itself, not
+   just its parent, so the overlay iframe needs this too. credentialless (not
+   require-corp) keeps cross-origin images, scripts and iframes working
+   without CORP headers; they are simply fetched without credentials. */
+function withCoi(response) {
+  if (!response || response.status === 0 || response.type === 'opaque') return response;
+  const headers = new Headers(response.headers);
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 // ── Lifecycle ────────────────────────────────────────────────────
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
@@ -88,10 +111,10 @@ async function networkFirst(request) {
   try {
     const res = await fetch(request);
     if (validCached(res)) cache.put(request, res.clone());
-    return res;
+    return withCoi(res);
   } catch (err) {
     const cached = await cache.match(request);
-    if (cached && validCached(cached)) return cached;
+    if (cached && validCached(cached)) return withCoi(cached);
     throw err;
   }
 }
@@ -107,7 +130,7 @@ async function cacheFirst(request) {
   }
   if (cached && validCached(cached)) {
     networkFirst(request).catch(() => {});
-    return cached;
+    return withCoi(cached);
   }
   return networkFirst(request);
 }

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
-    <meta name="x3e-version" content="2026/11/11-3">
+    <meta name="x3e-version" content="2026/11/11-7">
+    <script src="coi-boot.js"></script>
 	<script>
 (function(){
     var cloakPresets = {
@@ -166,6 +167,19 @@
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/blobopera/')">Blob Opera</button>
  		    <button onclick="playGame('https://gamebackup.github.io/standalone_games/krillion/')">Krillion</button>
 			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/')">3DS Emulator*</button>
+		</div>
+	</div>
+	</div>
+
+	<div class="section">
+		<h2>Nintendo 3DS*:</h2>
+		<div class="button-grid">
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FPokemon%2520Omega%2520Ruby%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CKo%2529%2520%2528Rev%25202%2529.zip%2FPokemon%2520Omega%2520Ruby%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CKo%2529%2520%2528Rev%25202%2529%2520Decrypted.3ds')">Pokemon Omega Ruby (3DS)</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FPokemon%2520Alpha%2520Sapphire%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CKo%2529%2520%2528Rev%25202%2529.zip%2FPokemon%2520Alpha%2520Sapphire%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CKo%2529%2520%2528Rev%25202%2529%2520Decrypted.3ds')">Pokemon Alpha Sapphire (3DS)</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FMario%2520Kart%25207%2520%2528USA%2529%2520%2528En%252CFr%252CEs%2529.zip%2FMario%2520Kart%25207%2520%2528USA%2529%2520%2528En%252CFr%252CEs%2529%2520Decrypted.3ds')">Mario Kart 7 (3DS)</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FPokemon%2520Sun%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CZh%252CKo%2529.zip%2FPokemon%2520Sun%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CZh%252CKo%2529%2520Decrypted.3ds')">Pokemon Sun (3DS)</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FPokemon%2520Moon%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CZh%252CKo%2529.zip%2FPokemon%2520Moon%2520%2528USA%2529%2520%2528En%252CJa%252CFr%252CDe%252CEs%252CIt%252CZh%252CKo%2529%2520Decrypted.3ds')">Pokemon Moon (3DS)</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/?play=https%3A%2F%2Farchive.org%2Fdownload%2F3ds-decrypted-roms321com%2Fall%2FMario%2520%2526%2520Luigi%2520-%2520Dream%2520Team%2520%2528USA%2529%2520%2528En%252CFr%252CEs%2529.zip%2FMario%2520%2526%2520Luigi%2520-%2520Dream%2520Team%2520%2528USA%2529%2520%2528En%252CFr%252CEs%2529%2520Decrypted.3ds')">Mario &amp; Luigi - Dream Team (3DS)</button>
 		</div>
 	</div>
 
@@ -1055,12 +1069,28 @@
 		   proxy/README.md). It must also be listed in sw.js to work offline.
 		   Leave empty to disable. */
 		const X3E_PROXY_ORIGIN = '';
-		// Games that only work as a top-level page. The 3DS emulator needs SharedArrayBuffer,
-		// which browsers give only to cross-origin isolated documents; an iframe cannot get
-		// that from this page, so these open in their own tab instead of the overlay.
-		const X3E_NEW_TAB_GAMES = [
+		/* Games that need cross-origin isolation: they use SharedArrayBuffer, which browsers
+		   hand out only to cross-origin isolated documents. sw.js serves this origin with
+		   COOP/COEP, so they play in the overlay like everything else and the tab fallback is
+		   only for a browser where isolation is unavailable. Matched by prefix, so the
+		   ?play=<game> deep links below count as well. */
+		const X3E_ISOLATION_PREFIXES = [
 		  'https://gamebackup.github.io/emu_games/azahar/'
 		];
+		function x3eNeedsIsolation(url) {
+		  return X3E_ISOLATION_PREFIXES.some(function (prefix) { return (url || '').indexOf(prefix) === 0; });
+		}
+
+		/* These games need cross-origin isolation to get SharedArrayBuffer. A sandboxed
+		   frame is never cross-origin isolated, even when it is same-origin with an
+		   isolated parent, so the overlay drops the sandbox attribute for them and puts
+		   it back for everything else. */
+		const X3E_FRAME_SANDBOX = 'allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock allow-downloads allow-storage-access-by-user-activation';
+		function x3eApplyFrameSandbox(frame, needsIsolation) {
+		  if (!frame) return;
+		  if (needsIsolation) { frame.removeAttribute('sandbox'); return; }
+		  if (frame.getAttribute('sandbox') !== X3E_FRAME_SANDBOX) frame.setAttribute('sandbox', X3E_FRAME_SANDBOX);
+		}
 
 		/* `prefix(repo)` returns the base URL (trailing slash) that the game's
 		   index.html and its relative assets resolve against on that host. */
@@ -1317,10 +1347,20 @@
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
 		  recordRecentGame(gameUrl);
 		  document.activeElement && document.activeElement.blur();
-		  if (X3E_NEW_TAB_GAMES.includes(gameUrl)) { window.open(gameUrl, '_blank', 'noopener'); return; }
+		  const needsIsolation = x3eNeedsIsolation(gameUrl);
+		  if (needsIsolation && !window.crossOriginIsolated) { window.open(gameUrl, '_blank', 'noopener'); return; }
+		  x3eApplyFrameSandbox(document.getElementById('game-frame'), needsIsolation);
 		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
+		  if (needsIsolation) {
+			// Same-origin, and the query string has to survive: a mirror would answer from
+			// another origin, where the frame is no longer isolated and the emulator cannot
+			// start. Load the real URL directly.
+			x3eHideLoadStatus();
+			document.getElementById('game-frame').src = gameUrl;
+			return;
+		  }
 		  if (/^https?:\/\/gamebackup\.github\.io\/[^/]+\//.test(gameUrl || '')) {
 			x3eLaunchViaMirrors(gameUrl);
 		  } else {
@@ -1331,7 +1371,9 @@
 		function closeGame() {
 		  document.body.style.overflow = '';
 		  document.getElementById('game-overlay').style.display = 'none';
-		  document.getElementById('game-frame').src = '';
+		  const closingFrame = document.getElementById('game-frame');
+		  closingFrame.src = '';
+		  x3eApplyFrameSandbox(closingFrame, false);
 		  renderRecentGames();
 		  const saved = sessionStorage.getItem('x3e-scrollY');
 		  if (saved !== null) { window.scrollTo(0, parseInt(saved, 10)); sessionStorage.removeItem('x3e-scrollY'); }
