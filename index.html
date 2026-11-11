@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>x3e unblocked games</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/gamebackup/gamebackup.github.io@main/images/Cat-looks-inside-meme.png"/>
-    <meta name="x3e-version" content="2026/11/11-2">
+    <meta name="x3e-version" content="2026/11/11-3">
 	<script>
 (function(){
     var cloakPresets = {
@@ -247,7 +247,7 @@
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_4/100colors/')">100 Colors</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/absolute_solver/')">x3e math solver</button>
 			<button onclick="playGame('https://gamebackup.github.io/standalone_games_3/ai/')">AI without AI</button>
-			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/)">3DS Emulator*</button>
+			<button onclick="playGame('https://gamebackup.github.io/emu_games/azahar/')">3DS Emulator*</button>
 		</div>
 	</div>
 
@@ -1055,6 +1055,12 @@
 		   proxy/README.md). It must also be listed in sw.js to work offline.
 		   Leave empty to disable. */
 		const X3E_PROXY_ORIGIN = '';
+		// Games that only work as a top-level page. The 3DS emulator needs SharedArrayBuffer,
+		// which browsers give only to cross-origin isolated documents; an iframe cannot get
+		// that from this page, so these open in their own tab instead of the overlay.
+		const X3E_NEW_TAB_GAMES = [
+		  'https://gamebackup.github.io/emu_games/azahar/'
+		];
 
 		/* `prefix(repo)` returns the base URL (trailing slash) that the game's
 		   index.html and its relative assets resolve against on that host. */
@@ -1311,6 +1317,7 @@
 		  if (!gameUrl) { alert("Placeholder: Game coming soon!"); return; }
 		  recordRecentGame(gameUrl);
 		  document.activeElement && document.activeElement.blur();
+		  if (X3E_NEW_TAB_GAMES.includes(gameUrl)) { window.open(gameUrl, '_blank', 'noopener'); return; }
 		  sessionStorage.setItem('x3e-scrollY', window.scrollY);
 		  document.body.style.overflow = 'hidden';
 		  document.getElementById('game-overlay').style.display = 'block';
