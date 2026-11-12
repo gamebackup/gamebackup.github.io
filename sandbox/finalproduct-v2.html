@@ -1,0 +1,25 @@
+<!-- HOW TO USE: Press "CTRL" and "S" or do whatever you do to save the file. Save it as "finalproduct-v2.hml". -->
+<!-- Finally, open "finalproduct-v2.html" in your browser (if you dont know how, look up "how to open html in browser on *operating system here*"), and enjoy -->
+<script>
+    launch();
+    function launch() {
+      try {
+        fetch("https://raw.githubusercontent.com/gamebackup/gamebackup.github.io/refs/heads/main/index.html?t=" + Date.now())
+          .then(response => response.text())
+          .then(html => {
+                document.documentElement.innerHTML = html;
+                document.documentElement.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    if (oldScript.src) {
+                        newScript.src = oldScript.src;
+                    } else {
+                        newScript.textContent = oldScript.textContent;
+                    }
+                    document.body.appendChild(newScript);
+                });
+          });
+      } catch (error) {
+        console.error('Update error:', error);
+      }
+    }
+</script>
